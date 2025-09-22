@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8417e4f02667c9943a725dffd6634d05
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 166731
+  packageName: Metroidvania Controller
+  packageVersion: 1.2
+  assetPath: Assets/MetroidvaniaController/Scenes/Demo.unity
+  uploadId: 398611
