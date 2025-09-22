@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      grace battle_0: 8883821668075093384
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

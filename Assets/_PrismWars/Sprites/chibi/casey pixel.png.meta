@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      casey pixel_0: 6678123732569117242
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

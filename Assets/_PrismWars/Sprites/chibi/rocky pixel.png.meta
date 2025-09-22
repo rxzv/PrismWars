@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      rocky pixel_0: -4966323071813872718
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      hiravatta pixel_0: -419628280603200678
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

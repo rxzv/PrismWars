@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      poppy pixel_0: -5281705969020727896
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

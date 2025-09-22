@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      manya battle_0: 468069620417001137
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

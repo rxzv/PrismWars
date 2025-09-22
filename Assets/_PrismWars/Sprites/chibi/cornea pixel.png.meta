@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      cornea pixel_0: 2164343842401508698
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

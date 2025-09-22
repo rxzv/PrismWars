@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ivy pixel_0: 279265982304734657
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
