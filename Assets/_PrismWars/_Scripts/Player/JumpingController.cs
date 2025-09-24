@@ -9,10 +9,9 @@ namespace _PrismWars._Scripts.Player {
         public JumpingController(Rigidbody2D rigidbody, float jumpForce) {
             _rigidbody = rigidbody;
             _jumpForce = jumpForce;
-            InputManager.Instance.OnJump += Jump;
         }
 
-        void Jump() {
+        public void Jump() {
             RaycastHit2D hit =  Physics2D.Raycast(_rigidbody.transform.position, Vector2.down);
             if (hit.collider != null && hit.collider.IsTouchingLayers(LayerMask.GetMask("Ground"))) 
                 _rigidbody.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);

@@ -16,7 +16,7 @@ public class InputManager : MonoBehaviour
 
     #endregion
     
-    public Action OnJump;
+    public Action OnJumpStarted;
     
     PlayerInputActions _playerInputActions;
     
@@ -27,6 +27,6 @@ public class InputManager : MonoBehaviour
     {
         _playerInputActions = new PlayerInputActions();
         _playerInputActions.Player.Enable();
-        _playerInputActions.Player.Jump.performed += _ => OnJump?.Invoke();
+        _playerInputActions.Player.Jump.started += _ => OnJumpStarted?.Invoke();
     }
 }
