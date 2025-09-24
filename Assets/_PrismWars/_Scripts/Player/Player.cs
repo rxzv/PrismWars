@@ -1,4 +1,3 @@
-using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,15 +7,12 @@ namespace _PrismWars._Scripts.Player
     {
         [SerializeField] PlayerConfig _config;
         
-        public ulong Id { get; private set; }
-        
         MovementController _movementController;
         JumpingController _jumpingController;
         
         bool _isJumping = false;
 
         private void Start() {
-            Id = NetworkManager.Singleton.LocalClientId;
             _movementController = new MovementController(transform, _config.MoveSpeed);
             _jumpingController = new JumpingController(GetComponent<Rigidbody2D>(), _config.JumpForce);
             InputManager.Instance.OnJumpStarted += JumpStarted;
