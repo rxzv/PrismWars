@@ -3,7 +3,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputSystem : MonoBehaviour
+public class InputSystem : MonoBehaviour, IDisposable
 {
     #region Singleton
 

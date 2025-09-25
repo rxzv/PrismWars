@@ -1,9 +1,10 @@
 using System;
+using R3;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts {
-    public class PlayerSpawner : NetworkBehaviour {
+    public class PlayerSpawner : NetworkBehaviour, IDisposable {
 
         #region Singleton
 
@@ -19,8 +20,9 @@ namespace _PrismWars._Scripts {
 
         [SerializeField] Transform _playerPrefab;
 
-        public Action<NetworkObjectReference, ulong> OnPlayerSpawned;
-
+        public readonly Subject<(ulong clientId, NetworkObjectReference playerRef)> OnPlayerSpawned = new();
+        readonly CompositeDisposable _disposables = new();
+        
         public override void OnNetworkSpawn() {
             if (IsServer) {
                 NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
@@ -29,13 +31,15 @@ namespace _PrismWars._Scripts {
 
         private void OnClientConnected(ulong clientId) {
             if (IsServer) {
-                SpawnPlayer(clientId);
+                Observable.NextFrame()
+                    .Subscribe(_ => SpawnPlayer(clientId))
+                    .AddTo(_disposables);
             }
         }
         private void SpawnPlayer(ulong clientId) {
             if (!IsServer) return;
             
-            var currentPlayer = Instantiate(_playerPrefab, _playerPrefab.position, _playerPrefab.rotation);
+            var currentPlayer = Instantiate(_playerPrefab);
             NetworkObject networkObject = currentPlayer.GetComponent<NetworkObject>();
             networkObject.SpawnWithOwnership(clientId, true);
             SpawnPlayerRpc(networkObject, clientId);
@@ -43,12 +47,12 @@ namespace _PrismWars._Scripts {
 
         [Rpc(SendTo.ClientsAndHost)]
         void SpawnPlayerRpc(NetworkObjectReference transform, ulong clientId) =>
-            OnPlayerSpawned?.Invoke(transform, clientId);
+            OnPlayerSpawned?.OnNext((clientId,transform));
 
-        public override void OnNetworkDespawn() {
-            if (IsServer) {
-                NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-            }
+        public void Dispose()
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+            _disposables.Dispose();
         }
     }
 }

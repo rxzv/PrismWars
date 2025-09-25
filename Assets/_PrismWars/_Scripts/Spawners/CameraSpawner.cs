@@ -1,28 +1,38 @@
+using System;
 using _PrismWars._Scripts;
+using R3;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class CameraSpawner : MonoBehaviour {
+public class CameraSpawner : MonoBehaviour, IDisposable {
     
     [SerializeField] CinemachineCamera _camera;
     
+    readonly CompositeDisposable _disposables = new();
+    
     private void Start() {
-        PlayerSpawner.Instance.OnPlayerSpawned += SpawnCamera;
+        PlayerSpawner.Instance.OnPlayerSpawned
+            .Where(tuple => tuple.clientId == NetworkManager.Singleton.LocalClientId)
+            .Subscribe(tuple => SpawnCamera(tuple.playerRef))
+            .AddTo(_disposables);
     }
     
-    void SpawnCamera(NetworkObjectReference playerReference, ulong clientId) {
-        if (clientId != NetworkManager.Singleton.LocalClientId) return;
-        
-        playerReference.TryGet(out NetworkObject playerObject);
-        
-        Transform player = playerObject.gameObject.transform;
-        var cam = Instantiate(_camera, player.position, Quaternion.identity);
-        cam.Follow = player;
+    void SpawnCamera(NetworkObjectReference playerReference) {
+        Observable.EveryUpdate()
+            .Select(_ => playerReference.TryGet(out NetworkObject playerObject) ? playerObject : null)
+            .Where(playerObject => playerObject != null)
+            .Take(1)
+            .Subscribe(player => {
+                var cam = Instantiate(_camera, player.transform.position, Quaternion.identity);
+                cam.Follow = player.transform;
+                cam.LookAt = player.transform;
+            })
+            .AddTo(_disposables);
     }
 
-    private void OnDestroy() {
-        PlayerSpawner.Instance.OnPlayerSpawned -= SpawnCamera;
+    public void Dispose() {
+        _disposables?.Dispose();
     }
 
 }
