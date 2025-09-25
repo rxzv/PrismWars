@@ -5,14 +5,14 @@ using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class CameraSpawner : MonoBehaviour, IDisposable {
+public class CameraSpawnSystem : MonoBehaviour, IDisposable {
     
     [SerializeField] CinemachineCamera _camera;
     
     readonly CompositeDisposable _disposables = new();
     
     private void Start() {
-        PlayerSpawner.Instance.OnPlayerSpawned
+        PlayerSpawnSystem.Instance.OnPlayerSpawned
             .Where(tuple => tuple.clientId == NetworkManager.Singleton.LocalClientId)
             .Subscribe(tuple => SpawnCamera(tuple.playerRef))
             .AddTo(_disposables);

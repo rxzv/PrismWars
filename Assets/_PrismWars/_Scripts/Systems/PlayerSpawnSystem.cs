@@ -4,11 +4,11 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts {
-    public class PlayerSpawner : NetworkBehaviour, IDisposable {
+    public class PlayerSpawnSystem : NetworkBehaviour, IDisposable {
 
         #region Singleton
 
-        public static PlayerSpawner Instance;
+        public static PlayerSpawnSystem Instance;
 
         private void Awake() {
             if (Instance != null)
