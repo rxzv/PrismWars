@@ -11,9 +11,12 @@ namespace _PrismWars._Scripts.Player {
         }
 
         public void Jump() {
-            RaycastHit2D hit =  Physics2D.Raycast(_rigidbody.transform.position, Vector2.down);
-            if (hit.collider.IsTouchingLayers(LayerMask.GetMask("Ground"))) 
+            if (GroundCheck())
                 _rigidbody.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
+        }
+        bool GroundCheck() {
+             RaycastHit2D hit = Physics2D.Raycast(_rigidbody.transform.position, Vector2.down);
+             return hit.collider.IsTouchingLayers(LayerMask.GetMask("Ground"));
         }
     }
 }
