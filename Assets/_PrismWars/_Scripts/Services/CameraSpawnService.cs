@@ -1,10 +1,11 @@
+using System;
 using _PrismWars._Scripts;
 using R3;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class CameraSpawnService : MonoBehaviour, IService, IInitializable<CinemachineCamera> {
+public class CameraSpawnService : MonoBehaviour, IService, IDisposable, IInitializable<CinemachineCamera> {
     
     CinemachineCamera _camera;
     

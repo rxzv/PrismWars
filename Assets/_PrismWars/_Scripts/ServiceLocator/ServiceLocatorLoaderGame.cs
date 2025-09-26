@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using _PrismWars._Scripts;
@@ -20,7 +21,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     [Header("Configs")]
     [SerializeField] PlayerConfig _playerConfig;
     
-    List<IService> _disposables = new();
+    List<IDisposable> _disposables = new();
 
     void Awake()
     {

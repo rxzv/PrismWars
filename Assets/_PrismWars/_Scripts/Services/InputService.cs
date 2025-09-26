@@ -1,8 +1,9 @@
+using System;
 using R3;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputService : MonoBehaviour, IService, IInitializable
+public class InputService : MonoBehaviour, IService, IInitializable, IDisposable
 {
     public Observable<Vector2> MoveInput { get; private set; }
     public readonly ReactiveCommand JumpCommand = new();

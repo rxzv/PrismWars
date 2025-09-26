@@ -1,10 +1,11 @@
+using System;
 using _PrismWars._Scripts.Player;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts {
-    public class PlayerSpawnService : NetworkBehaviour, IService, IInitializable<Transform, PlayerConfig> {
+    public class PlayerSpawnService : NetworkBehaviour, IService,IDisposable, IInitializable<Transform, PlayerConfig> {
 
         Transform _playerPrefab;
         PlayerConfig _playerConfig;
