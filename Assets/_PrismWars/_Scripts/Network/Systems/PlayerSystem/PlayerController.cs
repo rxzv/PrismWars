@@ -1,13 +1,10 @@
 using R3;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _PrismWars._Scripts.Player
 {
     public class PlayerController : NetworkBehaviour {
-        
-        [SerializeField] Slider _slider;
         [SerializeField] PlayerConfig _config;
         
         MovementController _movementController;
