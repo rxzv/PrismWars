@@ -4,13 +4,14 @@ using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class CameraSpawnService : MonoBehaviour, IService {
+public class CameraSpawnService : MonoBehaviour, IService, IInitializable<CinemachineCamera> {
     
-    [SerializeField] CinemachineCamera _camera;
+    CinemachineCamera _camera;
     
     readonly CompositeDisposable _disposables = new();
     
-    public void Init() {
+    public void Initialize(CinemachineCamera camera) {
+        _camera = camera;
         ServiceLocator.Current.Get<PlayerSpawnService>().OnPlayerSpawned
             .Where(tuple => tuple.clientId == NetworkManager.Singleton.LocalClientId)
             .Subscribe(tuple => SpawnCamera(tuple.playerRef))

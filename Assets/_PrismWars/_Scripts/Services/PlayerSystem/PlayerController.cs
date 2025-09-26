@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Player
 {
-    public class PlayerController : NetworkBehaviour
+    public class PlayerController : NetworkBehaviour, IInitializable<PlayerConfig>
     {
-        [SerializeField] PlayerConfig _config;
+        PlayerConfig _config;
         
         MovementController _movementController;
         JumpingController _jumpingController;
@@ -15,7 +15,11 @@ namespace _PrismWars._Scripts.Player
 
         Vector3 _direction;
         Rigidbody2D _rb;
-
+        
+        public void Initialize(PlayerConfig config) {
+            _config = config;
+        }
+        
         private void Start() {
             _rb = GetComponent<Rigidbody2D>();
             _movementController = new MovementController(transform, _config.MoveSpeed);
@@ -33,5 +37,6 @@ namespace _PrismWars._Scripts.Player
             if (_direction.magnitude >= 0.1f) 
                 _movementController.Move(_direction);
         }
+
     }
 }

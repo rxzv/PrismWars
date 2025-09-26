@@ -869,7 +869,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c209de63547ede04cbc784ec93e3380e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _camera: {fileID: 6063854705339723721, guid: f09a1e9709c9b184aac9895bd8e9e5a8, type: 3}
 --- !u!224 &618733450 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9015123340051940185, guid: 4aca3efdd079e5e459bbeedfc4a32240, type: 3}
@@ -1138,7 +1137,7 @@ GameObject:
   - component: {fileID: 847482991}
   - component: {fileID: 847482990}
   m_Layer: 0
-  m_Name: ServiceLocatorLoaderGame
+  m_Name: GameBootstrap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1159,6 +1158,9 @@ MonoBehaviour:
   _cameraSpawnService: {fileID: 353033706}
   _inputService: {fileID: 1933323808}
   _playerSpawnService: {fileID: 2099328955}
+  _playerPrefab: {fileID: 6806005377891613153, guid: b6880799619ea3940a8cddf02251057d, type: 3}
+  _cameraPrefab: {fileID: 6063854705339723721, guid: f09a1e9709c9b184aac9895bd8e9e5a8, type: 3}
+  _playerConfig: {fileID: 11400000, guid: e418dcfd6ea884c409cc9f190f3e5d02, type: 2}
 --- !u!4 &847482991
 Transform:
   m_ObjectHideFlags: 0
@@ -4299,7 +4301,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  _playerPrefab: {fileID: 6806005377891613153, guid: b6880799619ea3940a8cddf02251057d, type: 3}
 --- !u!114 &2099328956
 MonoBehaviour:
   m_ObjectHideFlags: 0
