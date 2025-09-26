@@ -1,39 +1,59 @@
-using R3;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Health
+public class Health : NetworkBehaviour
 {
-    private ReactiveProperty<float> _max;
-    private ReactiveProperty<float> _current;
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private Slider healthSlider;
+    
+    private NetworkVariable<float> currentHealth = new(100f);
 
-    public Health(float current, float max)
+    public override void OnNetworkSpawn()
     {
-        _current = new ReactiveProperty<float>(current);
-        _max = new ReactiveProperty<float>(max);
+        if (IsServer)
+        {
+            currentHealth.Value = maxHealth;
+        }
+        
+        currentHealth.OnValueChanged += OnHealthChanged;
+        UpdateHealthBar(currentHealth.Value);
     }
 
-    public ReadOnlyReactiveProperty<float> Max => _max;
-    public ReadOnlyReactiveProperty<float> Current => _current;
-
-    public void Reduce(float value)
+    private void OnHealthChanged(float oldHealth, float newHealth)
     {
-        if (value < 0)
+        UpdateHealthBar(newHealth);
+        
+        if (newHealth <= 0)
         {
-            Debug.LogError(nameof(value));
-            return;
+            Debug.Log("Player died!");
         }
-
-        _current.Value = Mathf.Clamp(Current.CurrentValue - value, 0, Max.CurrentValue);
     }
 
-    public void Add(float value)
+    private void UpdateHealthBar(float health)
     {
-        if (value < 0)
+        if (healthSlider != null)
         {
-            Debug.LogError(nameof(value));
-            return;
+            healthSlider.value = health / maxHealth;
         }
+    }
 
-        _current.Value = Mathf.Clamp(Current.CurrentValue + value, 0, Max.CurrentValue);
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeDamageServerRpc(float damage = 10f)
+    {
+        if (currentHealth.Value > 0)
+        {
+            currentHealth.Value = Mathf.Clamp(currentHealth.Value - damage, 0, maxHealth);
+        }
+    }
+
+    private void Update()
+    {
+        // Тест: нажми H чтобы нанести урон себе
+        if (IsOwner && Input.GetKeyDown(KeyCode.H))
+        {
+            TakeDamageServerRpc(10f);
+            Debug.Log("Damage taken!");
+        }
     }
 }
