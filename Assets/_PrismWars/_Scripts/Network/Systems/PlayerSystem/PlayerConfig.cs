@@ -7,8 +7,10 @@ namespace _PrismWars._Scripts.Player
     {
         [SerializeField] float _moveSpeed = 10f;
         [SerializeField] float _jumpForce = 10f;
+        [SerializeField] float _health;
         
         public float JumpForce => _jumpForce;
         public float MoveSpeed => _moveSpeed;
+        public float Health => _health;
     }
 }

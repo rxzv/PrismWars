@@ -1,12 +1,13 @@
+using Assets.SimpleReactiveExample.Scripts;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Player
 {
-    public class PlayerController : NetworkBehaviour, IInitializable<PlayerConfig>
-    {
-        PlayerConfig _config;
+    public class PlayerController : NetworkBehaviour, IInitializable<PlayerConfig> {
+
+        [SerializeField] SliderView _healthBar;
         
         MovementController _movementController;
         JumpingController _jumpingController;
@@ -16,15 +17,25 @@ namespace _PrismWars._Scripts.Player
         Vector3 _direction;
         Rigidbody2D _rb;
         
+        PlayerConfig _config;
+        Health _health;
+        
+        public Health Health => _health;
+        
         public void Initialize(PlayerConfig config) {
             _config = config;
         }
         
         private void Start() {
+            if (!IsOwner) return;
             _rb = GetComponent<Rigidbody2D>();
+            
             _movementController = new MovementController(transform, _config.MoveSpeed);
             _jumpingController = new JumpingController(_rb, _config.JumpForce);
-            if (!IsOwner) return;
+            _health = new Health(_config.Health, _config.Health);
+            
+            _healthBar.Initialize(_health.Current, _health.Max);
+            
             ServiceLocator.Current.Get<InputService>().MoveInput
                 .Subscribe(d => _movementController.Move(d))
                 .AddTo(_disposables);
