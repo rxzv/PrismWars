@@ -1,42 +1,27 @@
-using System;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts {
-    public class PlayerSpawnSystem : NetworkBehaviour, IDisposable {
-
-        #region Singleton
-
-        public static PlayerSpawnSystem Instance;
-
-        private void Awake() {
-            if (Instance != null)
-                Debug.LogError("There can only be one instance of PlayerSpawner");
-            Instance = this;
-        }
-
-        #endregion
+    public class PlayerSpawnService : NetworkBehaviour, IService {
 
         [SerializeField] Transform _playerPrefab;
 
         public readonly Subject<(ulong clientId, NetworkObjectReference playerRef)> OnPlayerSpawned = new();
         readonly CompositeDisposable _disposables = new();
         
-        public override void OnNetworkSpawn() {
-            if (IsServer) {
-                NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-            }
+        public void Init() {
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         }
 
-        private void OnClientConnected(ulong clientId) {
+        void OnClientConnected(ulong clientId) {
             if (IsServer) {
                 Observable.NextFrame()
                     .Subscribe(_ => SpawnPlayer(clientId))
                     .AddTo(_disposables);
             }
         }
-        private void SpawnPlayer(ulong clientId) {
+        void SpawnPlayer(ulong clientId) {
             if (!IsServer) return;
             
             var currentPlayer = Instantiate(_playerPrefab);
@@ -52,7 +37,7 @@ namespace _PrismWars._Scripts {
         public void Dispose()
         {
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-            _disposables.Dispose();
+            _disposables?.Dispose();
         }
     }
 }

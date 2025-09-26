@@ -1,18 +1,17 @@
-using System;
 using _PrismWars._Scripts;
 using R3;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class CameraSpawnSystem : MonoBehaviour, IDisposable {
+public class CameraSpawnService : MonoBehaviour, IService {
     
     [SerializeField] CinemachineCamera _camera;
     
     readonly CompositeDisposable _disposables = new();
     
-    private void Start() {
-        PlayerSpawnSystem.Instance.OnPlayerSpawned
+    public void Init() {
+        ServiceLocator.Current.Get<PlayerSpawnService>().OnPlayerSpawned
             .Where(tuple => tuple.clientId == NetworkManager.Singleton.LocalClientId)
             .Subscribe(tuple => SpawnCamera(tuple.playerRef))
             .AddTo(_disposables);

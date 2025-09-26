@@ -21,10 +21,10 @@ namespace _PrismWars._Scripts.Player
             _movementController = new MovementController(transform, _config.MoveSpeed);
             _jumpingController = new JumpingController(_rb, _config.JumpForce);
             if (!IsOwner) return;
-            InputSystem.Instance.MoveInput
+            ServiceLocator.Current.Get<InputService>().MoveInput
                 .Subscribe(d => _direction = d)
                 .AddTo(_disposables);
-            InputSystem.Instance.JumpCommand
+            ServiceLocator.Current.Get<InputService>().JumpCommand
                 .Subscribe(_ => _jumpingController.Jump())
                 .AddTo(_disposables);
         }

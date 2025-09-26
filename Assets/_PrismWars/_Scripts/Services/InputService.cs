@@ -1,29 +1,16 @@
-using System;
 using R3;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputSystem : MonoBehaviour, IDisposable
+public class InputService : MonoBehaviour, IService
 {
-    #region Singleton
-
-    public static InputSystem Instance { get; private set; }
-
-    void Awake()
-    {
-        if (Instance != null)
-            Debug.LogError("InputManager Instance already initialized");
-        Instance = this;
-    }
-
-    #endregion
     public Observable<Vector2> MoveInput { get; private set; }
     public readonly ReactiveCommand JumpCommand = new();
     
     PlayerInputActions _inputActions;
     readonly CompositeDisposable _disposables = new();
 
-    private void Start()
+    public void Init()
     {
         _inputActions = new PlayerInputActions();
         _inputActions.Player.Enable();
