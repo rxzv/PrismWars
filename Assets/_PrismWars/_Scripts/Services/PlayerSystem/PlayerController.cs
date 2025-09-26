@@ -26,17 +26,11 @@ namespace _PrismWars._Scripts.Player
             _jumpingController = new JumpingController(_rb, _config.JumpForce);
             if (!IsOwner) return;
             ServiceLocator.Current.Get<InputService>().MoveInput
-                .Subscribe(d => _direction = d)
+                .Subscribe(d => _movementController.Move(d))
                 .AddTo(_disposables);
             ServiceLocator.Current.Get<InputService>().JumpCommand
                 .Subscribe(_ => _jumpingController.Jump())
                 .AddTo(_disposables);
         }
-        
-        void Update() {
-            if (_direction.magnitude >= 0.1f) 
-                _movementController.Move(_direction);
-        }
-
     }
 }

@@ -42,7 +42,6 @@ namespace _PrismWars._Scripts {
 
         public void Dispose()
         {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
             _disposables?.Dispose();
         }
     }

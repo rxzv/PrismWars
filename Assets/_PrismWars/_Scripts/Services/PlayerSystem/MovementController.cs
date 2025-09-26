@@ -13,8 +13,10 @@ namespace _PrismWars._Scripts.Player
         }
         
         public void Move(Vector2 direction) {
-            direction.y = 0f;
-            _transform.Translate(direction * _speed * Time.deltaTime, Space.World);
+            if (direction.magnitude >= 0.1f) {
+                direction.y = 0f;
+                _transform.Translate(direction * _speed * Time.deltaTime, Space.World);
+            }
         }
     }
 }
