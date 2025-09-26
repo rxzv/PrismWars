@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using _PrismWars._Scripts;
-using _PrismWars._Scripts.Player;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
@@ -17,9 +16,6 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     [Header("Prefabs")]
     [SerializeField] Transform _playerPrefab;
     [SerializeField] CinemachineCamera _cameraPrefab;
-    
-    [Header("Configs")]
-    [SerializeField] PlayerConfig _playerConfig;
     
     List<IDisposable> _disposables = new();
 
@@ -41,7 +37,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
 
     async void Init() {
         await WaitForInstanceAsync();
-        _playerSpawnService.Initialize(_playerPrefab, _playerConfig);
+        _playerSpawnService.Initialize(_playerPrefab);
         _inputService.Initialize();
         _cameraSpawnService.Initialize(_cameraPrefab);
         Debug.Log("Service initialized");

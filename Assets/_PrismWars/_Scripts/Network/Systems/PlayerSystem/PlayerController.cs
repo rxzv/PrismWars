@@ -5,9 +5,10 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Player
 {
-    public class PlayerController : NetworkBehaviour, IInitializable<PlayerConfig> {
+    public class PlayerController : NetworkBehaviour {
 
         [SerializeField] SliderView _healthBar;
+        [SerializeField] PlayerConfig _config;
         
         MovementController _movementController;
         JumpingController _jumpingController;
@@ -16,17 +17,11 @@ namespace _PrismWars._Scripts.Player
 
         Vector3 _direction;
         Rigidbody2D _rb;
-        
-        PlayerConfig _config;
         Health _health;
         
         public Health Health => _health;
         
-        public void Initialize(PlayerConfig config) {
-            _config = config;
-        }
-        
-        private void Start() {
+        void Start() {
             if (!IsOwner) return;
             _rb = GetComponent<Rigidbody2D>();
             

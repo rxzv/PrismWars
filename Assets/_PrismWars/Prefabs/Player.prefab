@@ -779,3 +779,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _healthBar: {fileID: 5557744051840077740}
+  _config: {fileID: 11400000, guid: e418dcfd6ea884c409cc9f190f3e5d02, type: 2}

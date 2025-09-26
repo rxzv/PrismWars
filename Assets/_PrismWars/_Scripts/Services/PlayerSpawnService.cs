@@ -5,17 +5,15 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts {
-    public class PlayerSpawnService : NetworkBehaviour, IService,IDisposable, IInitializable<Transform, PlayerConfig> {
+    public class PlayerSpawnService : NetworkBehaviour, IService,IDisposable, IInitializable<Transform> {
 
         Transform _playerPrefab;
-        PlayerConfig _playerConfig;
 
         public readonly Subject<(ulong clientId, NetworkObjectReference playerRef)> OnPlayerSpawned = new();
         readonly CompositeDisposable _disposables = new();
         
-        public void Initialize(Transform playerPrefab, PlayerConfig playerConfig) {
+        public void Initialize(Transform playerPrefab) {
             _playerPrefab = playerPrefab;
-            _playerConfig = playerConfig;
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         }
 
@@ -30,7 +28,6 @@ namespace _PrismWars._Scripts {
             if (!IsServer) return;
             
             var currentPlayer = Instantiate(_playerPrefab);
-            currentPlayer.GetComponent<PlayerController>().Initialize(_playerConfig);
             NetworkObject networkObject = currentPlayer.GetComponent<NetworkObject>();
             networkObject.SpawnWithOwnership(clientId, true);
             SpawnPlayerRpc(networkObject, clientId);
