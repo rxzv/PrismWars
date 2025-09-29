@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using _PrismWars._Scripts;
 using _PrismWars._Scripts.Player;
+using _PrismWars._Scripts.Systems;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     [SerializeField] CameraSpawnService _cameraSpawnService;
     [SerializeField] InputService _inputService;
     [SerializeField] PlayerSpawnService _playerSpawnService;    
+    [SerializeField] CursorService _cursorService;
     
     [Header("Prefabs")]
     [SerializeField] Transform _playerPrefab;
@@ -36,6 +38,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
         ServiceLocator.Current.Register(_playerSpawnService);
         ServiceLocator.Current.Register(_inputService);
         ServiceLocator.Current.Register(_cameraSpawnService);
+        ServiceLocator.Current.Register(_cursorService);
     }
 
     async void Init() {
@@ -44,6 +47,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
         _playerSpawnService.Initialize(_playerPrefab);
         _inputService.Initialize();
         _cameraSpawnService.Initialize(_cameraPrefab);
+        _cursorService.Initialize();
         
         Debug.Log("Service initialized");
     }
