@@ -1160,6 +1160,7 @@ MonoBehaviour:
   _playerSpawnService: {fileID: 2099328955}
   _playerPrefab: {fileID: 6806005377891613153, guid: b6880799619ea3940a8cddf02251057d, type: 3}
   _cameraPrefab: {fileID: 6063854705339723721, guid: f09a1e9709c9b184aac9895bd8e9e5a8, type: 3}
+  _playerConfig: {fileID: 11400000, guid: e418dcfd6ea884c409cc9f190f3e5d02, type: 2}
 --- !u!4 &847482991
 Transform:
   m_ObjectHideFlags: 0

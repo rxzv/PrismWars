@@ -1,15 +1,19 @@
+using _PrismWars._Scripts.Components;
+using _PrismWars._Scripts.Player;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthComponent : NetworkBehaviour
+public class HealthComponent : NetworkBehaviour, IDamageable, IHeal
 {
     [SerializeField] Slider _healthSlider;
-    [SerializeField] float _maxHealth = 100f;
     
+    float _maxHealth = 100f;
     NetworkVariable<float> _currentHealth = new(100f);
 
     public override void OnNetworkSpawn() {
+         _maxHealth = ServiceLocator.Current.Get<PlayerConfig>().MaxHealth;
+        
         if (IsServer) 
             _currentHealth.Value = _maxHealth;
         

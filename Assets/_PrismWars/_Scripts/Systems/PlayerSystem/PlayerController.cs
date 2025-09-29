@@ -5,7 +5,7 @@ using UnityEngine;
 namespace _PrismWars._Scripts.Player
 {
     public class PlayerController : NetworkBehaviour {
-        [SerializeField] PlayerConfig _config;
+        PlayerConfig _config;
         
         MovementController _movementController;
         JumpingController _jumpingController;
@@ -17,6 +17,8 @@ namespace _PrismWars._Scripts.Player
         
         void Start() {
             if (!IsOwner) return;
+
+            _config = ServiceLocator.Current.Get<PlayerConfig>();
             _rb = GetComponent<Rigidbody2D>();
             
             _movementController = new MovementController(transform, _config.MoveSpeed);
