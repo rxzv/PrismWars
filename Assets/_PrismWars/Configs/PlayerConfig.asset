@@ -15,7 +15,7 @@ MonoBehaviour:
   _moveSpeed: 10
   _jumpForce: 15
   _maxHealth: 100
-  _meleeAttackRange: 1
+  _meleeAttackRange: 0.5
   _meleeDamage: 10
   _enemyLayer:
     serializedVersion: 2

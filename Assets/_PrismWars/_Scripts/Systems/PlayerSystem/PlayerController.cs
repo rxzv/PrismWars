@@ -31,7 +31,7 @@ namespace _PrismWars._Scripts.Player
             
             _movementController = new MovementController(transform, _config.MoveSpeed);
             _jumpingController = new JumpingController(_rb, _config.JumpForce);
-            _flipXController = new FlipXController(_spriteRenderer);
+            _flipXController = new FlipXController(transform);
             _attackMeleeController = new AttackMeleeController(
                 _config.MeleeAttackRange, 
                 _config.EnemyLayer, 
@@ -53,7 +53,7 @@ namespace _PrismWars._Scripts.Player
 
         void OnDrawGizmosSelected() {
             _jumpingController.OnDrawGizmosSelected();
-            _attackMeleeController.OnDrawGizmosSelected();
+            _attackMeleeController.OnDrawGizmosSelected(transform);
         }
 
         public void Dispose() =>
