@@ -14,4 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 10
   _jumpForce: 15
-  _health: 100
+  _maxHealth: 100
+  _meleeAttackRange: 1
+  _meleeDamage: 10
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64

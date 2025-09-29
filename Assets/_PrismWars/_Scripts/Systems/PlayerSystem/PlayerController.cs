@@ -11,6 +11,7 @@ namespace _PrismWars._Scripts.Player
         MovementController _movementController;
         JumpingController _jumpingController;
         FlipXController _flipXController;
+        AttackMeleeController _attackMeleeController;
         
         CompositeDisposable _disposables = new();
 
@@ -18,9 +19,12 @@ namespace _PrismWars._Scripts.Player
         Rigidbody2D _rb;
         SpriteRenderer _spriteRenderer;
         
+        InputService _inputService;
+        
         void Start() {
             if (!IsOwner) return;
 
+            _inputService = ServiceLocator.Current.Get<InputService>();
             _config = ServiceLocator.Current.Get<PlayerConfig>();
             _rb = GetComponent<Rigidbody2D>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -28,16 +32,28 @@ namespace _PrismWars._Scripts.Player
             _movementController = new MovementController(transform, _config.MoveSpeed);
             _jumpingController = new JumpingController(_rb, _config.JumpForce);
             _flipXController = new FlipXController(_spriteRenderer);
+            _attackMeleeController = new AttackMeleeController(
+                _config.MeleeAttackRange, 
+                _config.EnemyLayer, 
+                _config.MeleeDamage);
             
-            ServiceLocator.Current.Get<InputService>().MoveInput
+            _inputService.MoveInput
                 .Subscribe(d => _movementController.Move(d))
                 .AddTo(_disposables);
-            ServiceLocator.Current.Get<InputService>().JumpCommand
-                .Subscribe(_ => _jumpingController.Jump())
-                .AddTo(_disposables);
-            ServiceLocator.Current.Get<InputService>().MoveInput
+            _inputService.MoveInput
                 .Subscribe(d => _flipXController.FlipX(d))
                 .AddTo(_disposables);
+            _inputService.JumpCommand
+                .Subscribe(_ => _jumpingController.Jump())
+                .AddTo(_disposables);
+            _inputService.AttackMelee
+                .Subscribe(_ => _attackMeleeController.MeleeAttack(gameObject))
+                .AddTo(_disposables);
+        }
+
+        void OnDrawGizmosSelected() {
+            _jumpingController.OnDrawGizmosSelected();
+            _attackMeleeController.OnDrawGizmosSelected();
         }
 
         public void Dispose() =>

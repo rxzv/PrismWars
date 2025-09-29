@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7179194156067630753}
   - component: {fileID: 472250953092372022}
   - component: {fileID: 3521739285786170916}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 1991511880953168884}
   - component: {fileID: 3653530435552323638}
   - component: {fileID: 4977359125409489403}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _healthSlider: {fileID: 3653530435552323638}
-  _maxHealth: 100
 --- !u!1 &2140998325166819869
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,7 +191,7 @@ GameObject:
   - component: {fileID: 7088698387794011475}
   - component: {fileID: 7772571006454080485}
   - component: {fileID: 2728543376862802027}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -293,7 +292,7 @@ GameObject:
   - component: {fileID: 8099088990716514971}
   - component: {fileID: 3852110854885355699}
   - component: {fileID: 5634706593236940455}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -367,7 +366,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2280942887208083342}
   - component: {fileID: 6022016802929220202}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: FillArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -421,7 +420,7 @@ GameObject:
   - component: {fileID: 6589015883125214522}
   - component: {fileID: -7030179918979239271}
   - component: {fileID: 3729285490185010767}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -781,7 +780,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  _config: {fileID: 11400000, guid: e418dcfd6ea884c409cc9f190f3e5d02, type: 2}
 --- !u!114 &3729285490185010767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -796,4 +794,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _healthSlider: {fileID: 3653530435552323638}
-  _maxHealth: 100

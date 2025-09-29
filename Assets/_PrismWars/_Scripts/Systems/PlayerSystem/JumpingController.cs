@@ -4,10 +4,12 @@ namespace _PrismWars._Scripts.Player {
     public class JumpingController {
         Rigidbody2D _rigidbody;
         float _jumpForce;
+        readonly string _groundLayerName = "Ground";
 
-        public JumpingController(Rigidbody2D rigidbody, float jumpForce) {
+        public JumpingController(Rigidbody2D rigidbody, float jumpForce, string groundLayerName = "Ground") {
             _rigidbody = rigidbody;
             _jumpForce = jumpForce;
+            _groundLayerName = groundLayerName;
         }
 
         public void Jump() {
@@ -16,7 +18,16 @@ namespace _PrismWars._Scripts.Player {
         }
         bool GroundCheck() {
              RaycastHit2D hit = Physics2D.Raycast(_rigidbody.transform.position, Vector2.down);
-             return hit.collider.IsTouchingLayers(LayerMask.GetMask("Ground"));
+             return hit.collider.IsTouchingLayers(LayerMask.GetMask(_groundLayerName));
+        }
+
+        public void OnDrawGizmosSelected() {
+            if (GroundCheck())
+                Gizmos.color = Color.green;
+            else
+                Gizmos.color = Color.red;
+            Gizmos.DrawRay(_rigidbody.transform.position, Vector2.down);
+            
         }
     }
 }

@@ -33,12 +33,10 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal
             _healthSlider.value = health / _maxHealth;
     }
     public void TakeDamage(float damage) {
-        if (IsOwner)
-            TakeDamageServerRpc(damage);
+        TakeDamageServerRpc(damage);
     }
     public void AddHealth(float heal) {
-        if (IsOwner)
-            AddHealthServerRpc(heal);
+        AddHealthServerRpc(heal);
     }
     
     [ServerRpc(RequireOwnership = false)]
