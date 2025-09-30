@@ -15,6 +15,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     [SerializeField] InputService _inputService;
     [SerializeField] PlayerSpawnService _playerSpawnService;    
     [SerializeField] CursorService _cursorService;
+    [SerializeField] FlyweightFactory _flyweightFactory;
     
     [Header("Prefabs")]
     [SerializeField] Transform _playerPrefab;
@@ -39,6 +40,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
         ServiceLocator.Current.Register(_inputService);
         ServiceLocator.Current.Register(_cameraSpawnService);
         ServiceLocator.Current.Register(_cursorService);
+        ServiceLocator.Current.Register(_flyweightFactory);
     }
 
     async void Init() {

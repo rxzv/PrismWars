@@ -18,6 +18,6 @@ public class Projectile : Flyweight
     IEnumerator DespawnAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        FlyweightFactory.ReturnToPool(this);
+        ServiceLocator.Current.Get<FlyweightFactory>().ReturnToPool(this);
     }
 }

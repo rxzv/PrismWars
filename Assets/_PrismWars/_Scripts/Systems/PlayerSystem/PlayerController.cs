@@ -63,7 +63,7 @@ namespace _PrismWars._Scripts.Player
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                var flyweight = FlyweightFactory.Spawn(_projectiles[0]);
+                var flyweight = ServiceLocator.Current.Get<FlyweightFactory>().Spawn(_projectiles[0]);
                 flyweight.transform.position = transform.position;
                 flyweight.transform.rotation = transform.rotation;
             }
