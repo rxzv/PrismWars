@@ -780,6 +780,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  _projectiles:
+  - {fileID: 11400000, guid: 5a70fa333443abb44b569879e36d7a65, type: 2}
 --- !u!114 &3729285490185010767
 MonoBehaviour:
   m_ObjectHideFlags: 0

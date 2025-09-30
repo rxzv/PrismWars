@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -20,6 +21,8 @@ namespace _PrismWars._Scripts.Player
         SpriteRenderer _spriteRenderer;
         
         InputService _inputService;
+        
+        [SerializeField] List<ProjectileSettings> _projectiles;  
         
         void Start() {
             if (!IsOwner) return;
@@ -54,6 +57,16 @@ namespace _PrismWars._Scripts.Player
         void OnDrawGizmosSelected() {
             _jumpingController.OnDrawGizmosSelected();
             _attackMeleeController.OnDrawGizmosSelected(transform);
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                var flyweight = FlyweightFactory.Spawn(_projectiles[0]);
+                flyweight.transform.position = transform.position;
+                flyweight.transform.rotation = transform.rotation;
+            }
         }
 
         public void Dispose() =>
