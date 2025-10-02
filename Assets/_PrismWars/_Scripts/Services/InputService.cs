@@ -8,6 +8,7 @@ public class InputService : MonoBehaviour, IService, IInitializable, IDisposable
     public Observable<Vector2> MoveInput { get; private set; }
     public readonly ReactiveCommand JumpCommand = new();
     public readonly ReactiveCommand AttackMelee = new();
+    public readonly ReactiveCommand AttackRange = new();
     
     PlayerInputActions _inputActions;
     readonly CompositeDisposable _disposables = new();
@@ -29,6 +30,11 @@ public class InputService : MonoBehaviour, IService, IInitializable, IDisposable
                 h => _inputActions.Player.AttackMelee.started += h,
                 h => _inputActions.Player.AttackMelee.started -= h)
             .Subscribe(_ => AttackMelee.Execute(Unit.Default))
+            .AddTo(_disposables);
+        Observable.FromEvent<InputAction.CallbackContext>(
+                h => _inputActions.Player.Attack.started += h,
+                h => _inputActions.Player.Attack.started -= h)
+            .Subscribe(_ => AttackRange.Execute(Unit.Default))
             .AddTo(_disposables);
     }
 

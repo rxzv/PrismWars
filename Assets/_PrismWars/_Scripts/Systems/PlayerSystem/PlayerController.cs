@@ -53,19 +53,14 @@ namespace _PrismWars._Scripts.Player
             _inputService.AttackMelee
                 .Subscribe(_ => _attackMeleeController.MeleeAttack(gameObject))
                 .AddTo(_disposables);
+            _inputService.AttackRange
+                .Subscribe(_ => SpawnProjectileRpc(transform.position, transform.right))
+                .AddTo(_disposables);
         }
 
         void OnDrawGizmosSelected() {
             _jumpingController.OnDrawGizmosSelected();
             _attackMeleeController.OnDrawGizmosSelected(transform);
-        }
-
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1) && IsOwner)
-            {
-                SpawnProjectileRpc(transform.position, transform.right);
-            }
         }
 
         [Rpc(SendTo.Server)]

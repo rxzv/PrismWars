@@ -14,7 +14,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
         
         public ProjectileType Type => _type;
 
-        void Start() {
+        public override void OnNetworkSpawn() {
             gameObject.SetActive(false);
         }
 
