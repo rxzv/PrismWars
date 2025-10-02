@@ -52,7 +52,7 @@ namespace _PrismWars._Scripts.Player
             _inputService.AttackRange
                 .Subscribe(_ => {
                     if (IsOwner)
-                        _attackRangeController.AttackRange(transform.position);
+                        _attackRangeController.AttackRange(new Vector2(transform.position.x + 1, transform.position.y));
                 })
                 .AddTo(_disposables);
         }

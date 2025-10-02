@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -32,7 +31,15 @@ namespace _PrismWars._Scripts.Components.Projectile {
             if (IsServer)
                 transform.Translate(_direction * (_speed * Time.deltaTime));
         }
-        
+
+        void OnTriggerEnter2D(Collider2D other) {
+            StopAllCoroutines();
+            if (other.gameObject.layer == LayerMask.NameToLayer("Damageable")) {
+                other.GetComponent<IDamageable>()?.TakeDamage(_damage);
+            }
+            ReturnToPoolRpc();
+        }
+
         IEnumerator DespawnAfterDelay(float delay) {
             yield return new WaitForSeconds(delay);
             ReturnToPoolRpc();

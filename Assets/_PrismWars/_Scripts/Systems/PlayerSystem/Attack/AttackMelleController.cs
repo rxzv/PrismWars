@@ -1,3 +1,4 @@
+using _PrismWars._Scripts.Components;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Player {
@@ -20,8 +21,8 @@ namespace _PrismWars._Scripts.Player {
             );
 
             foreach (Collider2D enemy in hitEnemies) {
-                HealthComponent enemyHealth = enemy.GetComponent<HealthComponent>();
-                if (enemyHealth != null && enemyHealth != go.GetComponent<HealthComponent>())
+                IDamageable enemyHealth = enemy.GetComponent<IDamageable>();
+                if (enemyHealth != null && enemyHealth != go.GetComponent<IDamageable>())
                     enemyHealth.TakeDamage(_damage);
             }
         }
