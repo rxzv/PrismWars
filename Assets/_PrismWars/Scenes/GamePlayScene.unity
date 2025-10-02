@@ -879,6 +879,7 @@ GameObject:
   m_Component:
   - component: {fileID: 375916316}
   - component: {fileID: 375916317}
+  - component: {fileID: 375916318}
   m_Layer: 0
   m_Name: FlyweightFactory
   m_TagString: Untagged
@@ -913,10 +914,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de498f510087468d958badbf64ae1bd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   _projectilePrefab: {fileID: -3951104872545338883, guid: d3429df2bee96a948acc7391d261cb00, type: 3}
   _collectionCheck: 1
   _defaultCapacity: 10
   _maxPoolSize: 100
+--- !u!114 &375916318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375916315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1315372579
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!224 &618733450 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9015123340051940185, guid: 4aca3efdd079e5e459bbeedfc4a32240, type: 3}
@@ -1208,6 +1235,7 @@ MonoBehaviour:
   _playerSpawnService: {fileID: 2099328955}
   _cursorService: {fileID: 1243236420}
   _projectileFactory: {fileID: 375916317}
+  _attackRangeController: {fileID: 1451761703}
   _playerPrefab: {fileID: 6806005377891613153, guid: b6880799619ea3940a8cddf02251057d, type: 3}
   _cameraPrefab: {fileID: 6063854705339723721, guid: f09a1e9709c9b184aac9895bd8e9e5a8, type: 3}
   _playerConfig: {fileID: 11400000, guid: e418dcfd6ea884c409cc9f190f3e5d02, type: 2}
@@ -2352,6 +2380,77 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1451761700
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1451761701}
+  - component: {fileID: 1451761702}
+  - component: {fileID: 1451761703}
+  m_Layer: 0
+  m_Name: AttackRangeController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1451761701
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451761700}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1535049281}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1451761702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451761700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3213352942
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &1451761703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451761700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 574c4b2392cf430bb42bfeba44f7eda5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1479875908
 GameObject:
   m_ObjectHideFlags: 0
@@ -2702,6 +2801,7 @@ Transform:
   - {fileID: 1933323809}
   - {fileID: 1243236419}
   - {fileID: 375916316}
+  - {fileID: 1451761701}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1587045222

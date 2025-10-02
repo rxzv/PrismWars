@@ -17,6 +17,8 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     [SerializeField] PlayerSpawnService _playerSpawnService;    
     [SerializeField] CursorService _cursorService;
     [SerializeField] ProjectileFactory _projectileFactory;
+    [SerializeField] AttackRangeController _attackRangeController;
+    
     ProjectileService _projectileService;
     
     [Header("Prefabs")]
@@ -46,6 +48,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
         ServiceLocator.Current.Register(_cursorService);
         ServiceLocator.Current.Register(_projectileFactory);
         ServiceLocator.Current.Register(_projectileService);
+        ServiceLocator.Current.Register(_attackRangeController);
     }
 
     async void Init() {
@@ -56,6 +59,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
         _cameraSpawnService.Initialize(_cameraPrefab);
         _cursorService.Initialize();
         _projectileService.Initialize();
+        _attackRangeController.Initialize();
         
         Debug.Log("Service initialized");
     }

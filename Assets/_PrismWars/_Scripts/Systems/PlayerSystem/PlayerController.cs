@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using _PrismWars._Scripts.Components.Projectile;
-using NUnit.Framework;
 using R3;
-using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -15,13 +11,13 @@ namespace _PrismWars._Scripts.Player
         MovementController _movementController;
         JumpingController _jumpingController;
         FlipXController _flipXController;
-        AttackMeleeController _attackMeleeController;
+        AttackMeleeController _attackMeleeController; 
+        AttackRangeController _attackRangeController;
         
         CompositeDisposable _disposables = new();
 
         Vector3 _direction;
         Rigidbody2D _rb;
-        SpriteRenderer _spriteRenderer;
         
         InputService _inputService;
         
@@ -31,7 +27,7 @@ namespace _PrismWars._Scripts.Player
             _inputService = ServiceLocator.Current.Get<InputService>();
             _config = ServiceLocator.Current.Get<PlayerConfig>();
             _rb = GetComponent<Rigidbody2D>();
-            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _attackRangeController = ServiceLocator.Current.Get<AttackRangeController>();
             
             _movementController = new MovementController(transform, _config.MoveSpeed);
             _jumpingController = new JumpingController(_rb, _config.JumpForce);
@@ -54,19 +50,16 @@ namespace _PrismWars._Scripts.Player
                 .Subscribe(_ => _attackMeleeController.MeleeAttack(gameObject))
                 .AddTo(_disposables);
             _inputService.AttackRange
-                .Subscribe(_ => SpawnProjectileRpc(transform.position, transform.right))
+                .Subscribe(_ => {
+                    if (IsOwner)
+                        _attackRangeController.AttackRange(transform.position, transform.right);
+                })
                 .AddTo(_disposables);
         }
 
         void OnDrawGizmosSelected() {
             _jumpingController.OnDrawGizmosSelected();
             _attackMeleeController.OnDrawGizmosSelected(transform);
-        }
-
-        [Rpc(SendTo.Server)]
-        void SpawnProjectileRpc(Vector3 position, Vector3 direction) {
-            var projectileFactory = ServiceLocator.Current.Get<ProjectileFactory>();
-            projectileFactory.Spawn(position, direction);
         }
 
         public void Dispose() =>
