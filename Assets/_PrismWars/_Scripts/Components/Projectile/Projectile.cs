@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -12,7 +13,11 @@ namespace _PrismWars._Scripts.Components.Projectile {
         Vector2 _direction;
         
         public ProjectileType Type => _type;
-        
+
+        void Start() {
+            gameObject.SetActive(false);
+        }
+
         void OnEnable() {
             StartCoroutine(DespawnAfterDelay(_despawnDelay));
         }
@@ -20,6 +25,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
         public void Initialize(Vector2 startPos, Vector2 direction) {
             _direction = direction;
             transform.position = startPos;
+            gameObject.SetActive(true);
         }
         
         void Update() {
