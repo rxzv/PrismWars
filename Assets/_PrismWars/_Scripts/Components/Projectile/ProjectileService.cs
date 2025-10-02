@@ -3,6 +3,7 @@ using System;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace _PrismWars._Scripts.Components.Projectile {
     public class ProjectileService : IService, IInitializable, IDisposable {
@@ -14,13 +15,13 @@ namespace _PrismWars._Scripts.Components.Projectile {
             ProjectileFactory projectileFactory = ServiceLocator.Current.Get<ProjectileFactory>();
             
             projectileFactory.OnGetProjectile
-                .Subscribe(p => OnGetProjectile(p))
+                .Subscribe(OnGetProjectile)
                 .AddTo(_disposables);
             projectileFactory.OnReleaseProjectile
-                .Subscribe(p => OnReleaseProjectile(p))
+                .Subscribe(OnReleaseProjectile)
                 .AddTo(_disposables);
             projectileFactory.OnDestroyPoolObjectProjectile
-                .Subscribe(p => OnDestroyPoolObjectProjectile(p))
+                .Subscribe(OnDestroyPoolObjectProjectile)
                 .AddTo(_disposables);
         }
 
@@ -43,7 +44,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
                 .Select(_ => nor.TryGet(out NetworkObject playerObject) ? playerObject : null)
                 .Where(playerObject => playerObject != null)
                 .Take(1)
-                .Subscribe(player => GameObject.Destroy(player.gameObject));
+                .Subscribe(player => Object.Destroy(player.gameObject));
         }
 
         public void Dispose() => _disposables.Dispose();

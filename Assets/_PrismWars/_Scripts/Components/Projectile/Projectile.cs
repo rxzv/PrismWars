@@ -33,15 +33,13 @@ namespace _PrismWars._Scripts.Components.Projectile {
                 transform.Translate(_direction * (_speed * Time.deltaTime));
         }
         
-        IEnumerator DespawnAfterDelay(float delay)
-        {
+        IEnumerator DespawnAfterDelay(float delay) {
             yield return new WaitForSeconds(delay);
             ReturnToPoolRpc();
         }
         
         [Rpc(SendTo.Server)]
-        void ReturnToPoolRpc()
-        {
+        void ReturnToPoolRpc() {
             ServiceLocator.Current.Get<ProjectileFactory>().ReturnToPool(this);
         }
     }

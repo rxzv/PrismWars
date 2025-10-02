@@ -11,9 +11,6 @@ namespace _PrismWars._Scripts.Components.Projectile {
         [SerializeField] private bool _collectionCheck = true;
         [SerializeField] private int _defaultCapacity = 10;
         [SerializeField] private int _maxPoolSize = 100;
-        
-        Vector3 _position;
-        Vector3 _direction;
 
         readonly Dictionary<ProjectileType, IObjectPool<Projectile>> _pools = new();
         
@@ -22,10 +19,8 @@ namespace _PrismWars._Scripts.Components.Projectile {
         public readonly Subject<NetworkObjectReference> OnDestroyPoolObjectProjectile = new();
 
         public Projectile Spawn(Vector3 position, Vector3 direction) {
-            _position = position;
-            _direction = direction;
             var projectile = GetPoolFor()?.Get();
-            projectile.Initialize(_position, _direction);
+            projectile?.Initialize(position, direction);
             return projectile;
         }
 
@@ -50,11 +45,12 @@ namespace _PrismWars._Scripts.Components.Projectile {
                 _maxPoolSize);
             _pools.Add(_projectilePrefab.Type, pool);
             return pool;
-        } 
-        
-        public Projectile Create() {
-            var projectile = Instantiate(_projectilePrefab);
-            projectile.gameObject.GetComponent<NetworkObject>().Spawn(true);
+        }
+
+        Projectile Create() {
+            Projectile projectile = Instantiate(_projectilePrefab);
+            projectile.gameObject.TryGetComponent(out NetworkObject networkObject);
+            networkObject.Spawn(true);
             
             return projectile;
         }
@@ -76,8 +72,10 @@ namespace _PrismWars._Scripts.Components.Projectile {
         
         [Rpc(SendTo.ClientsAndHost)]
         void OnGetRpc(NetworkObjectReference p) => OnGetProjectile?.OnNext(p);
+        
         [Rpc(SendTo.ClientsAndHost)]
         void OnOnReleaseRpc(NetworkObjectReference p) => OnReleaseProjectile?.OnNext(p);
+        
         [Rpc(SendTo.ClientsAndHost)]
         void OnDestroyPoolObjectRpc(NetworkObjectReference p) => OnDestroyPoolObjectProjectile?.OnNext(p);
     }
