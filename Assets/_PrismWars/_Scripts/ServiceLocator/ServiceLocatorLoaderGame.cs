@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using _PrismWars._Scripts;
+using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.Systems;
 using Unity.Cinemachine;
@@ -15,7 +16,8 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     [SerializeField] InputService _inputService;
     [SerializeField] PlayerSpawnService _playerSpawnService;    
     [SerializeField] CursorService _cursorService;
-    [SerializeField] FlyweightFactory _flyweightFactory;
+    [SerializeField] ProjectileFactory _projectileFactory;
+    ProjectileService _projectileService;
     
     [Header("Prefabs")]
     [SerializeField] Transform _playerPrefab;
@@ -35,12 +37,15 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     void RegisterServices() {
         ServiceLocator.Initialize();
         
+        _projectileService = new ProjectileService();
+        
         ServiceLocator.Current.Register(_playerConfig);
         ServiceLocator.Current.Register(_playerSpawnService);
         ServiceLocator.Current.Register(_inputService);
         ServiceLocator.Current.Register(_cameraSpawnService);
         ServiceLocator.Current.Register(_cursorService);
-        ServiceLocator.Current.Register(_flyweightFactory);
+        ServiceLocator.Current.Register(_projectileFactory);
+        ServiceLocator.Current.Register(_projectileService);
     }
 
     async void Init() {
@@ -50,6 +55,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
         _inputService.Initialize();
         _cameraSpawnService.Initialize(_cameraPrefab);
         _cursorService.Initialize();
+        _projectileService.Initialize();
         
         Debug.Log("Service initialized");
     }
@@ -58,6 +64,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
         _disposables.Add(_inputService);
         _disposables.Add(_playerSpawnService);
         _disposables.Add(_cameraSpawnService);
+        _disposables.Add(_projectileService);
     }
     private async Task WaitForInstanceAsync() {
         while (NetworkManager.Singleton == null) {

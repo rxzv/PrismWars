@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using _PrismWars._Scripts.Components.Projectile;
+using NUnit.Framework;
 using R3;
+using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -21,8 +24,6 @@ namespace _PrismWars._Scripts.Player
         SpriteRenderer _spriteRenderer;
         
         InputService _inputService;
-        
-        [SerializeField] List<ProjectileSettings> _projectiles;  
         
         void Start() {
             if (!IsOwner) return;
@@ -61,12 +62,16 @@ namespace _PrismWars._Scripts.Player
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (Input.GetKeyDown(KeyCode.Alpha1) && IsOwner)
             {
-                var flyweight = ServiceLocator.Current.Get<FlyweightFactory>().Spawn(_projectiles[0]);
-                flyweight.transform.position = transform.position;
-                flyweight.transform.rotation = transform.rotation;
+                SpawnProjectileRpc(transform.position, transform.right);
             }
+        }
+
+        [Rpc(SendTo.Server)]
+        void SpawnProjectileRpc(Vector3 position, Vector3 direction) {
+            var projectileFactory = ServiceLocator.Current.Get<ProjectileFactory>();
+            projectileFactory.Spawn(position, direction);
         }
 
         public void Dispose() =>
