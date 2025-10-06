@@ -6,6 +6,7 @@ namespace _PrismWars._Scripts.Player {
         float _attackRange;
         LayerMask _enemyLayer;
         float _damage;
+        Vector3 transformRightForPlayer;
         
         public AttackMeleeController(float attackRange, LayerMask enemyLayer, float defaultDamage = 1) {
             _attackRange = attackRange;
@@ -13,9 +14,14 @@ namespace _PrismWars._Scripts.Player {
             _damage = defaultDamage;
         }
 
-        public void MeleeAttack(GameObject go) {
+        public void MeleeAttack(GameObject go, SpriteRenderer spriteRenderer) {
+            if (spriteRenderer.flipX)
+                transformRightForPlayer = -go.transform.right;
+            else
+                transformRightForPlayer = go.transform.right;
+            
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
-                go.transform.position + go.transform.right * _attackRange,
+                go.transform.position + transformRightForPlayer * _attackRange,
                 _attackRange,
                 _enemyLayer
             );
@@ -30,7 +36,7 @@ namespace _PrismWars._Scripts.Player {
         public void OnDrawGizmosSelected(Transform transform) {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(
-                transform.position + transform.right * _attackRange, 
+                transform.position + transformRightForPlayer * _attackRange, 
                 _attackRange
             );
         }
