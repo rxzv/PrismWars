@@ -16,9 +16,9 @@ namespace _PrismWars._Scripts.Player {
         
         void Start() => _camera = Camera.main;
 
-        public void AttackRange(Vector2 position) {
+        public void AttackRange(Vector2 position, PlayerType playerType) {
             _firePoint = position;
-            SpawnProjectileRpc(position, GetShootingDirection());
+            SpawnProjectileRpc(position, GetShootingDirection(), playerType);
         }
         
         Vector2 GetShootingDirection() {
@@ -34,6 +34,6 @@ namespace _PrismWars._Scripts.Player {
         }
         
         [Rpc(SendTo.Server)]
-        void SpawnProjectileRpc(Vector3 position, Vector3 direction) => _projectileFactory.Spawn(position, direction);
+        void SpawnProjectileRpc(Vector3 position, Vector3 direction, PlayerType playerType) => _projectileFactory.Spawn(position, direction, playerType);
     }
 }

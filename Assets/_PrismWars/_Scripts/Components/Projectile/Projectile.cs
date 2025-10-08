@@ -7,11 +7,9 @@ namespace _PrismWars._Scripts.Components.Projectile {
         [SerializeField] float _speed;
         [SerializeField] float _damage;
         [SerializeField] float _despawnDelay = 5f;
-        [SerializeField] ProjectileType _type;
-
-        Vector2 _direction;
         
-        public ProjectileType Type => _type;
+        public ProjectileType Type;
+        Vector2 _direction;
 
         public override void OnNetworkSpawn() {
             gameObject.SetActive(false);
@@ -34,7 +32,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
 
         void OnTriggerEnter2D(Collider2D other) {
             StopAllCoroutines();
-            if (other.gameObject.layer == LayerMask.NameToLayer("Damageable")) {
+            if (other.gameObject.layer != LayerMask.NameToLayer(Type.ToString())) {
                 other.GetComponent<IDamageable>()?.TakeDamage(_damage);
             }
             ReturnToPoolRpc();
@@ -52,6 +50,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
     }
 
     public enum ProjectileType {
-        None
+        Fire,
+        Ice
     }
 }

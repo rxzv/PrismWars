@@ -18,7 +18,15 @@ namespace _PrismWars._Scripts.Components.Projectile {
         public readonly Subject<NetworkObjectReference> OnReleaseProjectile = new();
         public readonly Subject<NetworkObjectReference> OnDestroyPoolObjectProjectile = new();
 
-        public Projectile Spawn(Vector3 position, Vector3 direction) {
+        public Projectile Spawn(Vector3 position, Vector3 direction, PlayerType playerType) {
+            switch (playerType) {
+                case PlayerType.Fire:
+                    _projectilePrefab.Type = ProjectileType.Fire;
+                    break;
+                case PlayerType.Ice:
+                    _projectilePrefab.Type = ProjectileType.Ice;
+                    break;
+            }
             var projectile = GetPoolFor()?.Get();
             projectile?.Initialize(position, direction);
             return projectile;
