@@ -20,13 +20,8 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     [SerializeField] AttackRangeController _attackRangeController;
     
     ProjectileService _projectileService;
-    
-    [Header("Prefabs")]
-    [SerializeField] Transform _playerPrefab;
-    [SerializeField] CinemachineCamera _cameraPrefab;
-    
-    [Header("Configs")]
-    [SerializeField] PlayerConfig _playerConfig;
+    Transform _playerPrefab;
+    CinemachineCamera _cameraPrefab;
     
     List<IDisposable> _disposables = new();
 
@@ -39,9 +34,11 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     void RegisterServices() {
         ServiceLocator.Initialize();
         
+        _cameraPrefab = Resources.Load<CinemachineCamera>("Prefabs/CinemachineCamera");
+        _playerPrefab = Resources.Load<Transform>("Prefabs/Player");
+        
         _projectileService = new ProjectileService();
         
-        ServiceLocator.Current.Register(_playerConfig);
         ServiceLocator.Current.Register(_playerSpawnService);
         ServiceLocator.Current.Register(_inputService);
         ServiceLocator.Current.Register(_cameraSpawnService);

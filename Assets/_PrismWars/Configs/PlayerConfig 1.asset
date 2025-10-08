@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 069517c94ab343428d37fd65620df7e8, type: 3}
-  m_Name: PlayerConfig
+  m_Name: PlayerConfig 1
   m_EditorClassIdentifier: 
-  playerName: Casey
-  playerType: 1
-  sprite: {fileID: 6678123732569117242, guid: 681b25a452a0af344bf456cca194af09, type: 3}
+  playerName: bullet
+  playerType: 0
+  sprite: {fileID: 2065683213028753365, guid: 052435eb36cf05e4fba2a59c379608c8, type: 3}
   moveSpeed: 10
   jumpForce: 10
   maxHealth: 100
@@ -22,4 +22,4 @@ MonoBehaviour:
   meleeDamage: 1
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 256

@@ -1,15 +1,16 @@
-﻿using Unity.Netcode;
+﻿using _PrismWars._Scripts.Player;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace PrismWars.NetworkHelper {
     public class NetworkStartUI : MonoBehaviour {
-        [SerializeField] Button startHostButton;
-        [SerializeField] Button startClientButton;
+        [SerializeField] Button _startHostButton;
+        [SerializeField] Button _startClientButton;
         
         void Start() {
-            startHostButton.onClick.AddListener(StartHost);
-            startClientButton.onClick.AddListener(StartClient);
+            _startHostButton.onClick.AddListener(StartHost);
+            _startClientButton.onClick.AddListener(StartClient);
         }
         
         void StartHost() {

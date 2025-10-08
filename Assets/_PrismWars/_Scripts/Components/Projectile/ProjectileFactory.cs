@@ -8,9 +8,9 @@ namespace _PrismWars._Scripts.Components.Projectile {
     [RequireComponent(typeof(NetworkObject))]
     public class ProjectileFactory : NetworkBehaviour, IService {
         [SerializeField] Projectile _projectilePrefab;
-        [SerializeField] private bool _collectionCheck = true;
-        [SerializeField] private int _defaultCapacity = 10;
-        [SerializeField] private int _maxPoolSize = 100;
+        [SerializeField] bool _collectionCheck = true;
+        [SerializeField] int _defaultCapacity = 10;
+        [SerializeField] int _maxPoolSize = 100;
 
         readonly Dictionary<ProjectileType, IObjectPool<Projectile>> _pools = new();
         

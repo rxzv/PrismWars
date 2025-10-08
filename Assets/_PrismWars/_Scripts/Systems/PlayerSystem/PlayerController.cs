@@ -1,13 +1,13 @@
 using System;
+using System.Collections;
+using _PrismWars._Scripts.UI.Model;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Player
 {
-    public class PlayerController : NetworkBehaviour, IDisposable {
-        PlayerConfig _config;
-        
+    public class PlayerController : NetworkBehaviour, IDisposable, IInitializable<PlayerConfig> {
         MovementController _movementController;
         JumpingController _jumpingController;
         FlipXController _flipXController;
@@ -20,24 +20,40 @@ namespace _PrismWars._Scripts.Player
         Vector3 _direction;
         Rigidbody2D _rb;
         
+        PlayerConfig _config;
         InputService _inputService;
-        
+
+        bool _isInitialized = false;
+
+        public void Initialize(PlayerConfig config) {
+            _config = config;
+            _isInitialized = true;
+        }
+
+        IEnumerator WaitForInitialization() {
+            while (!_isInitialized || !_config)
+                yield return null;
+            Debug.Log("Config initialized: PlayerController");
+        }
         void Start() {
             if (!IsOwner) return;
-
+            StartCoroutine(WaitForInitialization());
+            
             _inputService = ServiceLocator.Current.Get<InputService>();
-            _config = ServiceLocator.Current.Get<PlayerConfig>();
             _rb = GetComponent<Rigidbody2D>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _attackRangeController = ServiceLocator.Current.Get<AttackRangeController>();
+
+            _spriteRenderer.sprite = _config.sprite;
+            gameObject.layer = LayerMask.NameToLayer(_config.playerType.ToString());
             
-            _movementController = new MovementController(transform, _config.MoveSpeed);
-            _jumpingController = new JumpingController(_rb, _config.JumpForce);
+            _movementController = new MovementController(transform, _config.moveSpeed);
+            _jumpingController = new JumpingController(_rb, _config.jumpForce);
             _flipXController = new FlipXController(_spriteRenderer);
             _attackMeleeController = new AttackMeleeController(
-                _config.MeleeAttackRange, 
-                _config.EnemyLayer, 
-                _config.MeleeDamage);
+                _config.meleeAttackRange, 
+                _config.enemyLayer, 
+                _config.meleeDamage);
             
             _inputService.MoveInput
                 .Subscribe(d => _movementController.Move(d))
