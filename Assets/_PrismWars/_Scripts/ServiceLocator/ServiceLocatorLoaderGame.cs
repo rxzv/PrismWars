@@ -63,7 +63,6 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
 
     void AddDisposables() {
         _disposables.Add(_inputService);
-        _disposables.Add(_playerSpawnService);
         _disposables.Add(_cameraSpawnService);
         _disposables.Add(_projectileService);
     }

@@ -6,20 +6,29 @@ namespace _PrismWars._Scripts.UI.Command {
     {
         readonly NetworkManager _networkManager;
         readonly PlayerConfig _playerConfig;
+        readonly PlayerSpawnService _playerSpawnService;
 
-        public StartHostCommand(NetworkManager networkManager, PlayerConfig playerConfig) {
+        public StartHostCommand(NetworkManager networkManager, PlayerConfig playerConfig, PlayerSpawnService playerSpawnService) {
             _networkManager = networkManager;
             _playerConfig = playerConfig;
+            _playerSpawnService = playerSpawnService;
         }
 
         public void Execute() {
-            ServiceLocator.Current.Get<PlayerSpawnService>().SetPlayerConfig(_playerConfig);
+            _networkManager.OnServerStarted += OnHostStarted;
             _networkManager.StartHost();
         }
 
-        public void Undo() {
-            // Отмена запуска хоста (если нужно)
-            // _networkManager.StopHost();
+        void OnHostStarted() {
+            var networkConfig = _playerConfig.ToNetworkConfig();
+            _playerSpawnService.SpawnPlayerServerRpc(networkConfig);
+            _networkManager.OnServerStarted -= OnHostStarted;
+        }
+
+        public void Undo() 
+        {
+            if (_networkManager.IsListening)
+                _networkManager.Shutdown();
         }
     }
 }

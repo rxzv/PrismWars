@@ -8,10 +8,12 @@ namespace _PrismWars._Scripts.UI.Controller {
         readonly CharacterSelectionModel _model;
         readonly CharacterSelectionView _view;
         readonly CommandInvoker _commandInvoker;
+        readonly PlayerSpawnService _playerSpawnService;
 
-        public CharacterSelectionController(CharacterSelectionModel model, CharacterSelectionView view) {
+        public CharacterSelectionController(CharacterSelectionModel model, CharacterSelectionView view, PlayerSpawnService playerSpawnService) {
             _model = model;
             _view = view;
+            _playerSpawnService = playerSpawnService;
             _commandInvoker = new CommandInvoker();
 
             _model.OnCharacterSelected += OnCharacterSelected;
@@ -59,7 +61,7 @@ namespace _PrismWars._Scripts.UI.Controller {
             }
 
             var playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterIndex);
-            var command = new StartHostCommand(NetworkManager.Singleton, playerConfig);
+            var command = new StartHostCommand(NetworkManager.Singleton, playerConfig, _playerSpawnService);
             _commandInvoker.ExecuteCommand(command);
             _view.HideView();
         }
@@ -71,7 +73,7 @@ namespace _PrismWars._Scripts.UI.Controller {
             }
 
             var playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterIndex);
-            var command = new StartClientCommand(NetworkManager.Singleton, playerConfig);
+            var command = new StartClientCommand(NetworkManager.Singleton, playerConfig, _playerSpawnService);
             _commandInvoker.ExecuteCommand(command);
             _view.HideView();
         }

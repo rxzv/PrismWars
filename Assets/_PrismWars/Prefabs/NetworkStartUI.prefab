@@ -329,7 +329,6 @@ GameObject:
   - component: {fileID: 1994278329505076705}
   - component: {fileID: 683928739544516763}
   - component: {fileID: 1913244449098354434}
-  - component: {fileID: 621695436135064255}
   m_Layer: 5
   m_Name: NetworkStartUI
   m_TagString: Untagged
@@ -422,20 +421,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &621695436135064255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6206875093998293802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 759ccb31eec14c37a64155dbe831b88f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startHostButton: {fileID: 4919027681862067761}
-  startClientButton: {fileID: 1050026686985103658}
 --- !u!1 &6828133874174894679
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,7 +535,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1

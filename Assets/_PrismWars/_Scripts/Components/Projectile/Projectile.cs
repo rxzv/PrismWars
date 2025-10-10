@@ -22,6 +22,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
         public void Initialize(Vector2 startPos, Vector2 direction) {
             _direction = direction;
             transform.position = startPos;
+            gameObject.layer = LayerMask.NameToLayer(Type.ToString());
             gameObject.SetActive(true);
         }
         
@@ -32,7 +33,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
 
         void OnTriggerEnter2D(Collider2D other) {
             StopAllCoroutines();
-            if (other.gameObject.layer != LayerMask.NameToLayer(Type.ToString())) {
+            if (other.gameObject.layer != gameObject.layer) {
                 other.GetComponent<IDamageable>()?.TakeDamage(_damage);
             }
             ReturnToPoolRpc();

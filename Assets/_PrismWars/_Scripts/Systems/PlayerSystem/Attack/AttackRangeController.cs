@@ -1,4 +1,5 @@
 using _PrismWars._Scripts.Components.Projectile;
+using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -34,6 +35,7 @@ namespace _PrismWars._Scripts.Player {
         }
         
         [Rpc(SendTo.Server)]
-        void SpawnProjectileRpc(Vector3 position, Vector3 direction, PlayerType playerType) => _projectileFactory.Spawn(position, direction, playerType);
+        void SpawnProjectileRpc(Vector3 position, Vector3 direction, PlayerType playerType) => _projectileFactory.Spawn(position,
+            direction, playerType);
     }
 }
