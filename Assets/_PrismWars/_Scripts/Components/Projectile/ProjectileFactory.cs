@@ -53,7 +53,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
 
         Projectile Create() {
             Projectile projectile = Instantiate(_projectilePrefab);
-            projectile.Initialize(_currentType.Value);
+            projectile.SetType(_currentType.Value);
             
             projectile.gameObject.TryGetComponent(out NetworkObject networkObject);
             networkObject.Spawn(true);

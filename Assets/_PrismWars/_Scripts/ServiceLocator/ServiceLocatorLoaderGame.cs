@@ -51,9 +51,9 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     async void Init() {
         await WaitForInstanceAsync();
         
-        _playerSpawnService.Initialize(_playerPrefab);
+        _playerSpawnService.SetType(_playerPrefab);
         _inputService.Initialize();
-        _cameraSpawnService.Initialize(_cameraPrefab);
+        _cameraSpawnService.SetType(_cameraPrefab);
         _cursorService.Initialize();
         _projectileService.Initialize();
         _attackRangeController.Initialize();

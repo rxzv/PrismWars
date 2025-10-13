@@ -16,7 +16,7 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
 
     bool _isInitialized = false;
 
-    public void Initialize(PlayerConfig config) {
+    public void SetType(PlayerConfig config) {
         _config = config;
         _maxHealth = _config.maxHealth;
         _isInitialized = true;
