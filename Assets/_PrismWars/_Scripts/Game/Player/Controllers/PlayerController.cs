@@ -4,6 +4,7 @@ using _PrismWars._Scripts.UI.Model;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace _PrismWars._Scripts.Player
 {
@@ -16,6 +17,8 @@ namespace _PrismWars._Scripts.Player
         
         CompositeDisposable _disposables = new();
         SpriteRenderer _spriteRenderer;
+        
+        const float ATTACK_DISTANCE_FROM_PLAYER = 1f;
 
         Vector3 _direction;
         Rigidbody2D _rb;
@@ -90,10 +93,18 @@ namespace _PrismWars._Scripts.Player
             _inputService.AttackRange
                 .Subscribe(_ => {
                     _attackRangeController
-                        .AttackRange(new Vector2(transform.position.x + 1, transform.position.y),
+                        .RangeAttack(GetPositionTowardsMouse(),
                             _config.playerType);
                 })
                 .AddTo(_disposables);
+        }
+        Vector2 GetPositionTowardsMouse() {
+            Vector2 playerPosition = transform.position;
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (mousePosition - playerPosition).normalized;
+            Vector2 targetPosition = playerPosition + direction * ATTACK_DISTANCE_FROM_PLAYER;
+        
+            return targetPosition;
         }
 
         void OnDrawGizmosSelected() {

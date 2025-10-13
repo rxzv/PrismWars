@@ -17,7 +17,7 @@ namespace _PrismWars._Scripts.Player {
         
         void Start() => _camera = Camera.main;
 
-        public void AttackRange(Vector2 position, PlayerType playerType) {
+        public void RangeAttack(Vector2 position, PlayerType playerType) {
             _firePoint = position;
             SpawnProjectileRpc(position, GetShootingDirection(), playerType);
         }
