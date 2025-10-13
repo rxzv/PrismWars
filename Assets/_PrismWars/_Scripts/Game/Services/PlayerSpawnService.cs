@@ -11,7 +11,7 @@ namespace _PrismWars._Scripts {
         
         public readonly Subject<(ulong clientId, NetworkObjectReference playerRef)> OnPlayerSpawned = new();
         
-        public void SetType(Transform playerPrefab) {
+        public void Initialize(Transform playerPrefab) {
             _playerPrefab = playerPrefab;
         }
         
