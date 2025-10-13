@@ -3592,10 +3592,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterConfigs:
-  - {fileID: 11400000, guid: f2afb86ab8b9921468ef260795510a36, type: 2}
   - {fileID: 11400000, guid: aeeb0cf6ecd1cd849ac2e6c06d531825, type: 2}
   - {fileID: 11400000, guid: f8270c735668b9b4eac7742e9a365d8d, type: 2}
   - {fileID: 11400000, guid: 8f53396576d32004da2ef7dec4f66bc3, type: 2}
+  - {fileID: 11400000, guid: f2afb86ab8b9921468ef260795510a36, type: 2}
   _view: {fileID: 618733451}
 --- !u!1 &1786852912
 GameObject:
