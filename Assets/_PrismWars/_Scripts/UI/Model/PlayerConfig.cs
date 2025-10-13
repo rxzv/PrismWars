@@ -2,11 +2,9 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.UI.Model
-{
+namespace _PrismWars._Scripts.UI.Model {
     [CreateAssetMenu(fileName = "PlayerConfig", menuName = "Configs/Player Config")]
-    public class PlayerConfig : ScriptableObject
-    {
+    public class PlayerConfig : ScriptableObject {
         public string playerName;
         public PlayerType playerType = PlayerType.Fire;
         public string spriteName;
@@ -19,10 +17,8 @@ namespace _PrismWars._Scripts.UI.Model
         public LayerMask enemyLayer;
 
         // Конвертация в сетевую структуру
-        public NetworkPlayerConfig ToNetworkConfig()
-        {
-            return new NetworkPlayerConfig
-            {
+        public NetworkPlayerConfig ToNetworkConfig() {
+            return new NetworkPlayerConfig {
                 playerName = playerName,
                 playerType = playerType,
                 spriteName = spriteName,
@@ -36,8 +32,7 @@ namespace _PrismWars._Scripts.UI.Model
         }
 
         // Восстановление из сетевой структуры
-        public void FromNetworkConfig(NetworkPlayerConfig networkConfig)
-        {
+        public void FromNetworkConfig(NetworkPlayerConfig networkConfig) {
             playerName = networkConfig.playerName.ToString();
             playerType = networkConfig.playerType;
             spriteName = networkConfig.spriteName.ToString();
@@ -50,12 +45,11 @@ namespace _PrismWars._Scripts.UI.Model
             
             // Загрузка спрайта по имени
             if (!string.IsNullOrEmpty(spriteName))
-                sprite = Resources.Load<Sprite>(spriteName);
+                sprite = Resources.Load<Sprite>($"Sprites/{spriteName}");
         }
     }
     // Структура для сетевой синхронизации
-    public struct NetworkPlayerConfig : INetworkSerializable, System.IEquatable<NetworkPlayerConfig>
-    {
+    public struct NetworkPlayerConfig : INetworkSerializable, System.IEquatable<NetworkPlayerConfig> {
         public FixedString64Bytes playerName;
         public PlayerType playerType;
         public FixedString64Bytes spriteName;
@@ -66,8 +60,7 @@ namespace _PrismWars._Scripts.UI.Model
         public float meleeDamage;
         public int enemyLayerValue;
 
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
             serializer.SerializeValue(ref playerName);
             serializer.SerializeValue(ref playerType);
             serializer.SerializeValue(ref spriteName);
@@ -79,8 +72,7 @@ namespace _PrismWars._Scripts.UI.Model
             serializer.SerializeValue(ref enemyLayerValue);
         }
 
-        public bool Equals(NetworkPlayerConfig other)
-        {
+        public bool Equals(NetworkPlayerConfig other) {
             return playerName.Equals(other.playerName) &&
                    playerType == other.playerType &&
                    spriteName.Equals(other.spriteName) &&

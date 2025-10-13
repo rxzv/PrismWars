@@ -12,37 +12,32 @@ namespace _PrismWars._Scripts.Components.Projectile {
         [SerializeField] bool _collectionCheck = true;
         [SerializeField] int _defaultCapacity = 10;
         [SerializeField] int _maxPoolSize = 100;
+        
+        NetworkVariable<PlayerType> _currentType = new();
 
-        readonly Dictionary<ProjectileType, IObjectPool<Projectile>> _pools = new();
+        readonly Dictionary<PlayerType, IObjectPool<Projectile>> _pools = new();
         
         public readonly Subject<NetworkObjectReference> OnGetProjectile = new();
         public readonly Subject<NetworkObjectReference> OnReleaseProjectile = new();
         public readonly Subject<NetworkObjectReference> OnDestroyPoolObjectProjectile = new();
 
-        public Projectile Spawn(Vector3 position, Vector3 direction, PlayerType playerType) {
-            switch (playerType) {
-                case PlayerType.Fire:
-                    _projectilePrefab.Type = ProjectileType.Fire;
-                    break;
-                case PlayerType.Ice:
-                    _projectilePrefab.Type = ProjectileType.Ice;
-                    break;
-            }
-            var projectile = GetPoolFor()?.Get();
-            projectile?.Initialize(position, direction);
+        public Projectile Spawn(Vector3 position, Vector3 direction, PlayerType type) {
+            var projectile = GetPoolFor(type)?.Get();
+            projectile?.SetPosition(position, direction);
             return projectile;
         }
 
-        public void ReturnToPool(Projectile f) {
-            if (IsServer)
-                GetPoolFor()?.Release(f);
+        public void ReturnToPool(Projectile f, PlayerType type) {
+            if (!IsServer) return;
+            if(f.gameObject.activeSelf)
+                GetPoolFor(type)?.Release(f);
         }
 
-        IObjectPool<Projectile> GetPoolFor()
-        {
+        IObjectPool<Projectile> GetPoolFor(PlayerType type) {
             IObjectPool<Projectile> pool;
-
-            if (_pools.TryGetValue(_projectilePrefab.Type, out pool)) return pool;
+            _currentType.Value = type;
+            
+            if (_pools.TryGetValue(type, out pool)) return pool;
 
             pool = new ObjectPool<Projectile>(
                 Create,
@@ -52,12 +47,14 @@ namespace _PrismWars._Scripts.Components.Projectile {
                 _collectionCheck,
                 _defaultCapacity,
                 _maxPoolSize);
-            _pools.Add(_projectilePrefab.Type, pool);
+            _pools.Add(type, pool);
             return pool;
         }
 
         Projectile Create() {
             Projectile projectile = Instantiate(_projectilePrefab);
+            projectile.Initialize(_currentType.Value);
+            
             projectile.gameObject.TryGetComponent(out NetworkObject networkObject);
             networkObject.Spawn(true);
             

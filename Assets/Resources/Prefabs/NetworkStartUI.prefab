@@ -1379,7 +1379,7 @@ MonoBehaviour:
   _characterButtons:
   - button: {fileID: 7184156433533124846}
     characterImage: {fileID: 7380211794734663731}
-    backgroundImage: {fileID: 7380211794734663731}
+    backgroundImage: {fileID: 1407275678455311922}
     selectionFrame: {fileID: 5465119442782846440}
   - button: {fileID: 6742351840417764011}
     characterImage: {fileID: 1617078972024124501}
