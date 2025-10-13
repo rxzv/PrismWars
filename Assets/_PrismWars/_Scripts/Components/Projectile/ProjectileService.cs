@@ -37,6 +37,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
                 .Select(_ => nor.TryGet(out NetworkObject playerObject) ? playerObject : null)
                 .Where(playerObject => playerObject != null)
                 .Take(1)
+                .Where(p => p.gameObject.activeSelf)
                 .Subscribe(player => player.gameObject.SetActive(false));
         }
         void OnDestroyPoolObjectProjectile(NetworkObjectReference nor) {
