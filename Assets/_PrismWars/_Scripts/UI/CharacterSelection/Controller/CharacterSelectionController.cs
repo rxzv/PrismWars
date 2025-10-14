@@ -51,7 +51,7 @@ namespace _PrismWars._Scripts.UI.Controller {
         void OnCharacterHighlighted(int characterIndex) => _view.HighlightCharacter(characterIndex);
         
 
-        void OnSelectionConfirmed() => _view.ShowSelectionConfirmed();
+        void OnSelectionConfirmed(int index) => _view.ShowSelectionConfirmed(index);
         
 
         void OnStartHostClicked() {
@@ -63,12 +63,14 @@ namespace _PrismWars._Scripts.UI.Controller {
             var playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterIndex);
             var command = new StartHostCommand(NetworkManager.Singleton, playerConfig, _playerSpawnService);
             _commandInvoker.ExecuteCommand(command);
+            _model.ConfirmSelection();
             _view.HideView();
         }
 
         private void OnStartClientClicked() {
             if (_model.SelectedCharacterIndex == -1) {
                 _view.ShowNoCharacterSelectedMessage();
+                _model.ConfirmSelection();
                 return;
             }
 

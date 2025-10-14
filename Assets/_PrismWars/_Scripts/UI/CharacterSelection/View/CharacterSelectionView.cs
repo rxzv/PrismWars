@@ -15,6 +15,8 @@ namespace _PrismWars._Scripts.UI.View {
         public event Action<int> OnCharacterButtonClicked;
         public event Action OnStartHostClicked;
         public event Action OnStartClientClicked;
+        
+        CharacterSelectionManager _characterSelectionManager;
 
         void Start() {
             for (var i = 0; i < _characterButtons.Count; i++) {
@@ -35,6 +37,8 @@ namespace _PrismWars._Scripts.UI.View {
                 characterButton.backgroundImage.color = GetColorByPlayerType(config.playerType);
                 characterButton.selectionFrame.SetActive(false);
             }
+
+            _characterSelectionManager = ServiceLocator.Current.Get<CharacterSelectionManager>();
         }
 
         public void SetCharacterSelected(int characterIndex, bool selected) {
@@ -58,8 +62,9 @@ namespace _PrismWars._Scripts.UI.View {
             Debug.Log("Пожалуйста, выберите персонажа!");
         }
 
-        public void ShowSelectionConfirmed() {
+        public void ShowSelectionConfirmed(int index) {
             Debug.Log("Выбор персонажа подтвержден!");
+            _characterSelectionManager.SelectCharacter(index);
         }
 
         Color GetColorByPlayerType(PlayerType playerType) {

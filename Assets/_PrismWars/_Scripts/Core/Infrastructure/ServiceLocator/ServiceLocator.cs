@@ -11,7 +11,7 @@ public class ServiceLocator
     /// <summary>
     /// Зарегистрированные сервисы
     /// </summary>
-    private readonly Dictionary<string, IService> _services = new Dictionary<string, IService>();
+    readonly Dictionary<string, IService> _services = new Dictionary<string, IService>();
 
     public static ServiceLocator Current { get; private set; }
 
