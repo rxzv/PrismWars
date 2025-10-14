@@ -7,14 +7,12 @@ using UnityEngine.UI;
 namespace _PrismWars._Scripts.UI.View {
     public class CharacterSelectionView : MonoBehaviour {
         [SerializeField] List<CharacterButton> _characterButtons;
-        [SerializeField] Button _startHostButton;
-        [SerializeField] Button _startClientButton;
         [SerializeField] Color _fireColor = Color.red;
         [SerializeField] Color _iceColor = Color.blue;
+        [SerializeField] Button _confirmButton;
 
         public event Action<int> OnCharacterButtonClicked;
-        public event Action OnStartHostClicked;
-        public event Action OnStartClientClicked;
+        public event Action OnConfrimButtonClicked;
         
         CharacterSelectionManager _characterSelectionManager;
 
@@ -23,9 +21,7 @@ namespace _PrismWars._Scripts.UI.View {
                 var index = i;
                 _characterButtons[i].button.onClick.AddListener(() => OnCharacterButtonClicked?.Invoke(index));
             }
-
-            _startHostButton.onClick.AddListener(() => OnStartHostClicked?.Invoke());
-            _startClientButton.onClick.AddListener(() => OnStartClientClicked?.Invoke());
+            _confirmButton.onClick.AddListener(() => OnConfrimButtonClicked?.Invoke());
         }
 
         public void InitializeCharacters(List<PlayerConfig> characterConfigs) {
@@ -63,8 +59,8 @@ namespace _PrismWars._Scripts.UI.View {
         }
 
         public void ShowSelectionConfirmed(int index) {
-            Debug.Log("Выбор персонажа подтвержден!");
             _characterSelectionManager.SelectCharacter(index);
+            Debug.Log("Выбор персонажа подтвержден!");
         }
 
         Color GetColorByPlayerType(PlayerType playerType) {

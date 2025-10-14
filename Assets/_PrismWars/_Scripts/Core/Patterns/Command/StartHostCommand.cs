@@ -21,7 +21,7 @@ namespace _PrismWars._Scripts.UI.Command {
 
         void OnHostStarted() {
             var networkConfig = _playerConfig.ToNetworkConfig();
-            _playerSpawnService.SpawnPlayerServerRpc(networkConfig);
+            // _playerSpawnService.SpawnPlayerServerRpc(networkConfig);
             _networkManager.OnServerStarted -= OnHostStarted;
         }
 

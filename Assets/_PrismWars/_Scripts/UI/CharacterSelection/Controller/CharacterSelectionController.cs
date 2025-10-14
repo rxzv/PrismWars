@@ -1,19 +1,16 @@
 using _PrismWars._Scripts.UI.Command;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.UI.View;
-using Unity.Netcode;
 
 namespace _PrismWars._Scripts.UI.Controller {
     public class CharacterSelectionController {
         readonly CharacterSelectionModel _model;
         readonly CharacterSelectionView _view;
         readonly CommandInvoker _commandInvoker;
-        readonly PlayerSpawnService _playerSpawnService;
 
-        public CharacterSelectionController(CharacterSelectionModel model, CharacterSelectionView view, PlayerSpawnService playerSpawnService) {
+        public CharacterSelectionController(CharacterSelectionModel model, CharacterSelectionView view) {
             _model = model;
             _view = view;
-            _playerSpawnService = playerSpawnService;
             _commandInvoker = new CommandInvoker();
 
             _model.OnCharacterSelected += OnCharacterSelected;
@@ -21,8 +18,7 @@ namespace _PrismWars._Scripts.UI.Controller {
             _model.OnSelectionConfirmed += OnSelectionConfirmed;
 
             _view.OnCharacterButtonClicked += OnCharacterButtonClicked;
-            _view.OnStartHostClicked += OnStartHostClicked;
-            _view.OnStartClientClicked += OnStartClientClicked;
+            _view.OnConfrimButtonClicked += OnConfirmCharacterSelection;
         }
 
         void OnCharacterButtonClicked(int characterIndex) {
@@ -52,22 +48,8 @@ namespace _PrismWars._Scripts.UI.Controller {
         
 
         void OnSelectionConfirmed(int index) => _view.ShowSelectionConfirmed(index);
-        
 
-        void OnStartHostClicked() {
-            if (_model.SelectedCharacterIndex == -1) {
-                _view.ShowNoCharacterSelectedMessage();
-                return;
-            }
-
-            var playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterIndex);
-            var command = new StartHostCommand(NetworkManager.Singleton, playerConfig, _playerSpawnService);
-            _commandInvoker.ExecuteCommand(command);
-            _model.ConfirmSelection();
-            _view.HideView();
-        }
-
-        private void OnStartClientClicked() {
+        void OnConfirmCharacterSelection() {
             if (_model.SelectedCharacterIndex == -1) {
                 _view.ShowNoCharacterSelectedMessage();
                 _model.ConfirmSelection();
@@ -75,7 +57,7 @@ namespace _PrismWars._Scripts.UI.Controller {
             }
 
             var playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterIndex);
-            var command = new StartClientCommand(NetworkManager.Singleton, playerConfig, _playerSpawnService);
+            var command = new ConfirmCharacterSelected(playerConfig);
             _commandInvoker.ExecuteCommand(command);
             _view.HideView();
         }
@@ -86,8 +68,6 @@ namespace _PrismWars._Scripts.UI.Controller {
             _model.OnSelectionConfirmed -= OnSelectionConfirmed;
 
             _view.OnCharacterButtonClicked -= OnCharacterButtonClicked;
-            _view.OnStartHostClicked -= OnStartHostClicked;
-            _view.OnStartClientClicked -= OnStartClientClicked;
         }
     }
 }

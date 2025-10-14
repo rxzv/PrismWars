@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
     [RequireComponent(typeof(NetworkObject))]
-    public class CharacterSelectionManager : NetworkBehaviour, IService {
+    public class CharacterSelectionManager : NetworkBehaviour, IService, IInitializable {
         [SerializeField] List<PlayerConfig> _characterConfigs;
         [SerializeField] CharacterSelectionView _view;
         
@@ -19,12 +19,9 @@ namespace _PrismWars._Scripts.UI {
 
         CharacterSelectionModel _model;
         CharacterSelectionController _controller;
-        
-        PlayerSpawnService _playerSpawnService;
 
-        public override void OnNetworkSpawn() {
-            base.OnNetworkSpawn();
-            Initialize();
+        public void Initialize() {
+            InitializeMVC();
             _unavailableCharacters.OnListChanged += UnavailableCharactersOnOnListChanged;
         }
 
@@ -41,10 +38,9 @@ namespace _PrismWars._Scripts.UI {
             _unavailableCharacters.Add(index);
         }
 
-        void Initialize() {
-            _playerSpawnService = ServiceLocator.Current.Get<PlayerSpawnService>();
+        void InitializeMVC() {
             _model = new CharacterSelectionModel(_characterConfigs);
-            _controller = new CharacterSelectionController(_model, _view, _playerSpawnService);
+            _controller = new CharacterSelectionController(_model, _view);
         
             _view.InitializeCharacters(_characterConfigs);
         }

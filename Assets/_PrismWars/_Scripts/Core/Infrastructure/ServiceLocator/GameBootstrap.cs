@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using _PrismWars._Scripts;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Player;
@@ -10,7 +9,8 @@ using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class GameBootstrap : MonoBehaviour {
+[RequireComponent(typeof(NetworkObject))]
+public class GameBootstrap : NetworkBehaviour {
 
     [Header("Services")]
     [SerializeField] CameraSpawnService _cameraSpawnService;
@@ -28,6 +28,18 @@ public class GameBootstrap : MonoBehaviour {
     List<IDisposable> _disposables = new();
 
     void Awake() {
+        int index = PlayerPrefs.GetInt("Client");
+        switch (index) {
+            case 0:
+                NetworkManager.Singleton.StartHost();
+                break;
+            case 1:
+                NetworkManager.Singleton.StartClient();
+                break;
+        }
+    }
+
+    public override void OnNetworkSpawn() {
         RegisterServices();
         Init();
         AddDisposables();
@@ -51,16 +63,15 @@ public class GameBootstrap : MonoBehaviour {
         ServiceLocator.Current.Register(_characterSelectionManager);
     }
 
-    async void Init() {
-        await WaitForInstanceAsync();
-        
+    void Init() {
         _playerSpawnService.Initialize(_playerPrefab);
         _inputService.Initialize();
         _cameraSpawnService.Initialize(_cameraPrefab);
         _cursorService.Initialize();
         _projectileService.Initialize();
         _attackRangeController.Initialize();
-        
+        _characterSelectionManager.Initialize();
+            
         Debug.Log("Service initialized");
     }
 
@@ -68,11 +79,6 @@ public class GameBootstrap : MonoBehaviour {
         _disposables.Add(_inputService);
         _disposables.Add(_cameraSpawnService);
         _disposables.Add(_projectileService);
-    }
-    private async Task WaitForInstanceAsync() {
-        while (NetworkManager.Singleton == null) {
-            await Task.Yield();
-        }
     }
 
     void OnDestroy() {

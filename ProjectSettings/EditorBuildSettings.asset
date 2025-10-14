@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_PrismWars/Scenes/MenuScene.unity
+    guid: 26b2f4a74caa33f489c6709a6975edea
+  - enabled: 1
     path: Assets/_PrismWars/Scenes/GamePlayScene.unity
     guid: bf7e85776b33bab42b56fc13199cb775
   m_configObjects:
