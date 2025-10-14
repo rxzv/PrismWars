@@ -5,11 +5,12 @@ using _PrismWars._Scripts;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.Systems;
+using _PrismWars._Scripts.UI;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class ServiceLocatorLoaderGame : MonoBehaviour {
+public class GameBootstrap : MonoBehaviour {
 
     [Header("Services")]
     [SerializeField] CameraSpawnService _cameraSpawnService;
@@ -18,6 +19,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
     [SerializeField] CursorService _cursorService;
     [SerializeField] ProjectileFactory _projectileFactory;
     [SerializeField] AttackRangeController _attackRangeController;
+    [SerializeField] CharacterSelectionManager _characterSelectionManager;
     
     ProjectileService _projectileService;
     Transform _playerPrefab;
@@ -46,6 +48,7 @@ public class ServiceLocatorLoaderGame : MonoBehaviour {
         ServiceLocator.Current.Register(_projectileFactory);
         ServiceLocator.Current.Register(_projectileService);
         ServiceLocator.Current.Register(_attackRangeController);
+        ServiceLocator.Current.Register(_characterSelectionManager);
     }
 
     async void Init() {
