@@ -16,14 +16,14 @@ namespace _PrismWars._Scripts {
         }
         
         [ServerRpc(RequireOwnership = false)]
-        public void SpawnPlayerServerRpc(NetworkPlayerConfig config, ServerRpcParams rpcParams = default){
+        public void SpawnPlayerServerRpc(NetworkPlayerData data, ServerRpcParams rpcParams = default){
             var playerInstance = Instantiate(_playerPrefab);
             var networkPlayer = playerInstance.GetComponent<PlayerController>();
             var networkObjectReference = playerInstance.GetComponent<NetworkObject>();
             playerInstance.GetComponent<NetworkObject>().SpawnWithOwnership(
                 rpcParams.Receive.SenderClientId);
         
-            networkPlayer.PlayerConfig.Value = config;
+            networkPlayer.PlayerConfig.Value = data;
             SpawnPlayerRpc(networkObjectReference, rpcParams.Receive.SenderClientId);
         }
 

@@ -27,8 +27,8 @@ namespace _PrismWars._Scripts.Player
 
         bool _isInitialized = false;
         
-        public NetworkVariable<NetworkPlayerConfig> PlayerConfig = 
-            new NetworkVariable<NetworkPlayerConfig>(default, 
+        public NetworkVariable<NetworkPlayerData> PlayerConfig = 
+            new NetworkVariable<NetworkPlayerData>(default, 
                 NetworkVariableReadPermission.Everyone, 
                 NetworkVariableWritePermission.Server);
 
@@ -47,7 +47,7 @@ namespace _PrismWars._Scripts.Player
                 OnConfigChanged(default, PlayerConfig.Value);
             }
         }
-        void OnConfigChanged(NetworkPlayerConfig previous, NetworkPlayerConfig current) {
+        void OnConfigChanged(NetworkPlayerData previous, NetworkPlayerData current) {
             _config = ScriptableObject.CreateInstance<PlayerConfig>();
             _config.FromNetworkConfig(current);
         
