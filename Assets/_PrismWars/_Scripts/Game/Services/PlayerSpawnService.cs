@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _PrismWars._Scripts.Core.Patterns.Factory;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.UI.Model;
 using R3;
@@ -10,44 +11,43 @@ namespace _PrismWars._Scripts {
         List<Transform> _fireSpawnPoints;
         List<Transform> _iceSpawnPoints;
         
-        Transform _playerPrefab;
+        PlayerFactory _playerFactory;
         
         public readonly Subject<(ulong clientId, NetworkObjectReference playerRef)> OnPlayerSpawned = new();
         
         public void Initialize(Transform playerPrefab, List<Transform> iceSpawnPoints, List<Transform> fireSpawnPoints) {
-            _playerPrefab = playerPrefab;
             _iceSpawnPoints = iceSpawnPoints;
             _fireSpawnPoints = fireSpawnPoints;
+            _playerFactory = new PlayerFactory(playerPrefab);
         }
         
         [ServerRpc(RequireOwnership = false)]
-        public void SpawnPlayerServerRpc(NetworkPlayerData data, ServerRpcParams rpcParams = default){
+        public void SpawnPlayerServerRpc(NetworkPlayerData data, ServerRpcParams rpcParams = default) {
+            NetworkObject playerRef;
             Transform spawnPoint;
             int index;
+            
             switch (data.playerType) {
                 default:
+                    return;
                 case PlayerType.Fire:
                     index = (int)rpcParams.Receive.SenderClientId;
                     spawnPoint = _fireSpawnPoints[index];
+                    playerRef = _playerFactory.SpawnPlayer(data,  spawnPoint, rpcParams.Receive.SenderClientId);
                     break;
                 case PlayerType.Ice:
                     index = (int)rpcParams.Receive.SenderClientId;
                     spawnPoint = _iceSpawnPoints[index];
+                    playerRef = _playerFactory.SpawnPlayer(data,  spawnPoint, rpcParams.Receive.SenderClientId);
                     break;
             }
-            var playerInstance = Instantiate(_playerPrefab, spawnPoint.position, Quaternion.identity);
-            var networkPlayer = playerInstance.GetComponent<PlayerController>();
-            var networkObjectReference = playerInstance.GetComponent<NetworkObject>();
-            playerInstance.GetComponent<NetworkObject>().SpawnWithOwnership(
-                rpcParams.Receive.SenderClientId);
-        
-            networkPlayer.Initialize(data);
-            SpawnPlayerRpc(networkObjectReference, rpcParams.Receive.SenderClientId);
+            
+            SpawnPlayerRpc(playerRef, rpcParams.Receive.SenderClientId);
         }
 
         [Rpc(SendTo.ClientsAndHost)]
-        void SpawnPlayerRpc(NetworkObjectReference transform, ulong clientId) =>
-            OnPlayerSpawned?.OnNext((clientId,transform));
+        void SpawnPlayerRpc(NetworkObjectReference playerRef, ulong clientId) =>
+            OnPlayerSpawned?.OnNext((clientId,playerRef));
 
     }
 }
