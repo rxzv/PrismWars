@@ -1247,6 +1247,7 @@ MonoBehaviour:
   _cursorService: {fileID: 1243236420}
   _projectileFactory: {fileID: 375916317}
   _attackRangeController: {fileID: 1451761703}
+  _characterSelectionManager: {fileID: 0}
 --- !u!4 &847482991
 Transform:
   m_ObjectHideFlags: 0
@@ -3591,6 +3592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21d041a9b55e492d8ae523b9dde23f43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   _characterConfigs:
   - {fileID: 11400000, guid: aeeb0cf6ecd1cd849ac2e6c06d531825, type: 2}
   - {fileID: 11400000, guid: f8270c735668b9b4eac7742e9a365d8d, type: 2}
