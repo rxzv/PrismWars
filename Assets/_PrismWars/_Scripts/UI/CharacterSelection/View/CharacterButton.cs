@@ -9,5 +9,6 @@ namespace _PrismWars._Scripts.UI.View {
         public Image characterImage;
         public Image backgroundImage;
         public GameObject selectionFrame;
+        public Image selectedImageFrame;
     }
 }

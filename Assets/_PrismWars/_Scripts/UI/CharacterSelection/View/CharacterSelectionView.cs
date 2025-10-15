@@ -45,8 +45,8 @@ namespace _PrismWars._Scripts.UI.View {
         
         public void HideView() => gameObject.SetActive(false);
 
-        public void HighlightCharacter(int characterIndex) {
-            _characterButtons[characterIndex].backgroundImage.color = Color.black;
+        public void HighlightUnavaliableCharacter(int characterIndex) {
+            _characterButtons[characterIndex].selectedImageFrame.gameObject.SetActive(true);
         }
 
         public void ShowCharacterUnavailableMessage(int characterIndex) {
