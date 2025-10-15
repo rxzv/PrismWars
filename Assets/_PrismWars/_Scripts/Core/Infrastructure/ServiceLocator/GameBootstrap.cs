@@ -26,19 +26,6 @@ public class GameBootstrap : NetworkBehaviour {
     CinemachineCamera _cameraPrefab;
     
     List<IDisposable> _disposables = new();
-
-    void Awake() {
-        int index = PlayerPrefs.GetInt("Client");
-        switch (index) {
-            case 0:
-                NetworkManager.Singleton.StartHost();
-                break;
-            case 1:
-                NetworkManager.Singleton.StartClient();
-                break;
-        }
-    }
-
     public override void OnNetworkSpawn() {
         RegisterServices();
         Init();
@@ -46,8 +33,6 @@ public class GameBootstrap : NetworkBehaviour {
     }
     
     void RegisterServices() {
-        ServiceLocator.Initialize();
-        
         _cameraPrefab = Resources.Load<CinemachineCamera>("Prefabs/CinemachineCamera");
         _playerPrefab = Resources.Load<Transform>("Prefabs/Player");
         

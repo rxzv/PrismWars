@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Unity.Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ServiceLocator
+[RequireComponent(typeof(NetworkObject))]
+public class ServiceLocator : NetworkBehaviour
 {
     private ServiceLocator()
     {
@@ -15,8 +18,11 @@ public class ServiceLocator
 
     public static ServiceLocator Current { get; private set; }
 
-    public static void Initialize()
-    {
+    void Awake() {
+        Current = this;
+    }
+
+    public static void Initialize() {
         Current = new ServiceLocator();
     }
 
