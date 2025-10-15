@@ -7,7 +7,7 @@ namespace _PrismWars._Scripts.UI.Command {
 
         public ConfirmCharacterSelected(PlayerConfig playerConfig) {
             _playerConfig = playerConfig;
-            _playerSpawnService = ServiceLocator.Current.Get<PlayerSpawnService>();
+            _playerSpawnService = ServiceLocator.Singleton.Get<PlayerSpawnService>();
         }
 
         public void Execute() {

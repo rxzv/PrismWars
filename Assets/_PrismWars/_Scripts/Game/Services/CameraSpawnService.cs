@@ -13,7 +13,7 @@ public class CameraSpawnService : MonoBehaviour, IService, IDisposable, IInitial
     
     public void Initialize(CinemachineCamera camera) {
         _camera = camera;
-        ServiceLocator.Current.Get<PlayerSpawnService>().OnPlayerSpawned
+        ServiceLocator.Singleton.Get<PlayerSpawnService>().OnPlayerSpawned
             .Where(tuple => tuple.clientId == NetworkManager.Singleton.LocalClientId)
             .Subscribe(tuple => SpawnCamera(tuple.playerRef))
             .AddTo(_disposables);

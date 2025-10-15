@@ -12,7 +12,7 @@ namespace _PrismWars._Scripts.Player {
         Vector2 _firePoint;
 
         public void Initialize() {
-            _projectileFactory = ServiceLocator.Current.Get<ProjectileFactory>();
+            _projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
         }
         
         void Start() => _camera = Camera.main;

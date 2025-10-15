@@ -34,7 +34,7 @@ namespace _PrismWars._Scripts.UI.View {
                 characterButton.selectionFrame.SetActive(false);
             }
 
-            _characterSelectionManager = ServiceLocator.Current.Get<CharacterSelectionManager>();
+            _characterSelectionManager = ServiceLocator.Singleton.Get<CharacterSelectionManager>();
         }
 
         public void SetCharacterSelected(int characterIndex, bool selected) {

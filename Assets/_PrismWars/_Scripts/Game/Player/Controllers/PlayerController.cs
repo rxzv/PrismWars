@@ -66,8 +66,8 @@ namespace _PrismWars._Scripts.Player
             _disposables?.Dispose();
             _disposables = new CompositeDisposable();
             
-            _inputService = ServiceLocator.Current.Get<InputService>();
-            _attackRangeController = ServiceLocator.Current.Get<AttackRangeController>();
+            _inputService = ServiceLocator.Singleton.Get<InputService>();
+            _attackRangeController = ServiceLocator.Singleton.Get<AttackRangeController>();
             
             _movementController = new MovementController(transform, _config.moveSpeed);
             _jumpingController = new JumpingController(_rb, _config.jumpForce);

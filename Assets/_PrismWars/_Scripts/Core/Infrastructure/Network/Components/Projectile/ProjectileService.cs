@@ -12,7 +12,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
         readonly CompositeDisposable _disposables = new();
         
         public void Initialize() {
-            ProjectileFactory projectileFactory = ServiceLocator.Current.Get<ProjectileFactory>();
+            ProjectileFactory projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
             
             projectileFactory.OnGetProjectile
                 .Subscribe(OnGetProjectile)

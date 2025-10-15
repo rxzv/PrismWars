@@ -38,14 +38,14 @@ public class GameBootstrap : NetworkBehaviour {
         
         _projectileService = new ProjectileService();
         
-        ServiceLocator.Current.Register(_playerSpawnService);
-        ServiceLocator.Current.Register(_inputService);
-        ServiceLocator.Current.Register(_cameraSpawnService);
-        ServiceLocator.Current.Register(_cursorService);
-        ServiceLocator.Current.Register(_projectileFactory);
-        ServiceLocator.Current.Register(_projectileService);
-        ServiceLocator.Current.Register(_attackRangeController);
-        ServiceLocator.Current.Register(_characterSelectionManager);
+        ServiceLocator.Singleton.Register(_playerSpawnService);
+        ServiceLocator.Singleton.Register(_inputService);
+        ServiceLocator.Singleton.Register(_cameraSpawnService);
+        ServiceLocator.Singleton.Register(_cursorService);
+        ServiceLocator.Singleton.Register(_projectileFactory);
+        ServiceLocator.Singleton.Register(_projectileService);
+        ServiceLocator.Singleton.Register(_attackRangeController);
+        ServiceLocator.Singleton.Register(_characterSelectionManager);
     }
 
     void Init() {
