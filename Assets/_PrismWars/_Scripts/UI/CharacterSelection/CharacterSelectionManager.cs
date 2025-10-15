@@ -29,12 +29,8 @@ namespace _PrismWars._Scripts.UI {
             _model.SelectedCharacterUpdate(changeEvent.Value);
         }
 
-        public void SelectCharacter(int index) {
-            SelectCharacterRpc(index);
-        }
-
-        [Rpc(SendTo.Server)]
-        void SelectCharacterRpc(int index) {
+        [ServerRpc(RequireOwnership = false)]
+        public void SelectCharacterServerRpc(int index) {
             _unavailableCharacters.Add(index);
         }
 

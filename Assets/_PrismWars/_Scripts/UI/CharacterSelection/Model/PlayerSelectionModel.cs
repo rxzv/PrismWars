@@ -20,6 +20,7 @@ namespace _PrismWars._Scripts.UI.Model {
 
         public void SelectedCharacterUpdate(int unavailableIndex) {
             _selectedCharacters.Add(unavailableIndex);
+            HighlightCharacter(unavailableIndex);
         }
 
         public void SelectCharacter(int index) {

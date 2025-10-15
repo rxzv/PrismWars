@@ -46,7 +46,7 @@ namespace _PrismWars._Scripts.UI.View {
         public void HideView() => gameObject.SetActive(false);
 
         public void HighlightCharacter(int characterIndex) {
-            // Реализация подсветки при наведении (опционально)
+            _characterButtons[characterIndex].backgroundImage.color = Color.black;
         }
 
         public void ShowCharacterUnavailableMessage(int characterIndex) {
@@ -59,8 +59,8 @@ namespace _PrismWars._Scripts.UI.View {
         }
 
         public void ShowSelectionConfirmed(int index) {
-            _characterSelectionManager.SelectCharacter(index);
             Debug.Log("Выбор персонажа подтвержден!");
+            _characterSelectionManager.SelectCharacterServerRpc(index);
         }
 
         Color GetColorByPlayerType(PlayerType playerType) {
