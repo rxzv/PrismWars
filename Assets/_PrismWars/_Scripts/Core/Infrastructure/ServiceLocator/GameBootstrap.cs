@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts;
 using _PrismWars._Scripts.Components.Projectile;
+using _PrismWars._Scripts.Core.Patterns.Factory;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.Systems;
 using _PrismWars._Scripts.UI;
@@ -25,6 +26,9 @@ public class GameBootstrap : NetworkBehaviour {
     [SerializeField] List<Transform> _fireSpawnPoints;
     [SerializeField] List<Transform> _iceSpawnPoints;
     
+    PlayerFireFactory _playerFireFactory;
+    PlayerIceFactory _playerIceFactory;
+    
     ProjectileService _projectileService;
     Transform _playerPrefab;
     CinemachineCamera _cameraPrefab;
@@ -44,6 +48,9 @@ public class GameBootstrap : NetworkBehaviour {
         
         _projectileService = new ProjectileService();
         
+        _playerFireFactory = new PlayerFireFactory(_playerPrefab, _fireSpawnPoints);
+        _playerIceFactory = new PlayerIceFactory(_playerPrefab, _iceSpawnPoints);
+        
         ServiceLocator.Singleton.Register(_playerSpawnService);
         ServiceLocator.Singleton.Register(_inputService);
         ServiceLocator.Singleton.Register(_cameraSpawnService);
@@ -55,7 +62,7 @@ public class GameBootstrap : NetworkBehaviour {
     }
 
     void Init() {
-        _playerSpawnService.Initialize(_playerPrefab, _iceSpawnPoints, _fireSpawnPoints);
+        _playerSpawnService.Initialize(_playerFireFactory, _playerIceFactory);
         _inputService.Initialize();
         _cameraSpawnService.Initialize(_cameraPrefab);
         _cursorService.Initialize();
