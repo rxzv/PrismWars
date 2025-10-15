@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 
 namespace _PrismWars._Scripts.UI.Model {
-    public class CharacterSelectionModel
-    {
+    public class CharacterSelectionModel {
         public event Action<int> OnCharacterSelected;
         public event Action<int> OnCharacterHighlighted;
-        public event Action OnSelectionConfirmed;
+        public event Action<int> OnSelectionConfirmed;
 
         readonly List<PlayerConfig> _availableCharacters;
         readonly HashSet<int> _selectedCharacters;
@@ -17,6 +16,10 @@ namespace _PrismWars._Scripts.UI.Model {
         public CharacterSelectionModel(List<PlayerConfig> characters) {
             _availableCharacters = characters;
             _selectedCharacters = new HashSet<int>();
+        }
+
+        public void SelectedCharacterUpdate(int unavailableIndex) {
+            _selectedCharacters.Add(unavailableIndex);
         }
 
         public void SelectCharacter(int index) {
@@ -39,8 +42,7 @@ namespace _PrismWars._Scripts.UI.Model {
         public void ConfirmSelection() {
             if (SelectedCharacterIndex == -1) return;
             
-            _selectedCharacters.Add(SelectedCharacterIndex);
-            OnSelectionConfirmed?.Invoke();
+            OnSelectionConfirmed?.Invoke(SelectedCharacterIndex);
         }
 
         public void ReleaseCharacter(int index) {

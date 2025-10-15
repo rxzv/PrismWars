@@ -1327,10 +1327,9 @@ MonoBehaviour:
     characterImage: {fileID: 1606446649354328101}
     backgroundImage: {fileID: 1934387530555626384}
     selectionFrame: {fileID: 2391096413943704466}
-  _startHostButton: {fileID: 4919027681862067761}
-  _startClientButton: {fileID: 1050026686985103658}
   _fireColor: {r: 1, g: 0, b: 0, a: 1}
   _iceColor: {r: 0, g: 0, b: 1, a: 1}
+  _confirmButton: {fileID: 0}
 --- !u!1 &6828133874174894679
 GameObject:
   m_ObjectHideFlags: 0
