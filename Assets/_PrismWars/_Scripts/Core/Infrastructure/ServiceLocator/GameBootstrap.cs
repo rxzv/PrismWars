@@ -21,6 +21,10 @@ public class GameBootstrap : NetworkBehaviour {
     [SerializeField] AttackRangeController _attackRangeController;
     [SerializeField] CharacterSelectionManager _characterSelectionManager;
     
+    [Header("SceneComponents")]
+    [SerializeField] List<Transform> _fireSpawnPoints;
+    [SerializeField] List<Transform> _iceSpawnPoints;
+    
     ProjectileService _projectileService;
     Transform _playerPrefab;
     CinemachineCamera _cameraPrefab;
@@ -51,7 +55,7 @@ public class GameBootstrap : NetworkBehaviour {
     }
 
     void Init() {
-        _playerSpawnService.Initialize(_playerPrefab);
+        _playerSpawnService.Initialize(_playerPrefab, _iceSpawnPoints, _fireSpawnPoints);
         _inputService.Initialize();
         _cameraSpawnService.Initialize(_cameraPrefab);
         _cursorService.Initialize();
