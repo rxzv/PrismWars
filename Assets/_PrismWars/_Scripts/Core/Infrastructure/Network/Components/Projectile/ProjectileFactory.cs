@@ -7,20 +7,25 @@ using UnityEngine.Pool;
 
 namespace _PrismWars._Scripts.Components.Projectile {
     [RequireComponent(typeof(NetworkObject))]
-    public class ProjectileFactory : NetworkBehaviour, IService {
-        [SerializeField] Projectile _projectilePrefab;
+    public class ProjectileFactory : NetworkBehaviour, IService, IInitializable<Projectile> {
         [SerializeField] bool _collectionCheck = true;
         [SerializeField] int _defaultCapacity = 10;
         [SerializeField] int _maxPoolSize = 100;
         
         NetworkVariable<PlayerType> _currentType = new();
+        Projectile _projectilePrefab;
 
         readonly Dictionary<PlayerType, IObjectPool<Projectile>> _pools = new();
         
         public readonly Subject<NetworkObjectReference> OnGetProjectile = new();
         public readonly Subject<NetworkObjectReference> OnReleaseProjectile = new();
         public readonly Subject<NetworkObjectReference> OnDestroyPoolObjectProjectile = new();
+        private IInitializable<Projectile> _initializableImplementation;
 
+        public void Initialize(Projectile projectilePrefab) {
+            _projectilePrefab = projectilePrefab;
+        }
+        
         public Projectile Spawn(Vector3 position, Vector3 direction, PlayerType type) {
             var projectile = GetPoolFor(type)?.Get();
             projectile?.SetPosition(position, direction);
@@ -84,5 +89,6 @@ namespace _PrismWars._Scripts.Components.Projectile {
         
         [Rpc(SendTo.ClientsAndHost)]
         void OnDestroyPoolObjectRpc(NetworkObjectReference p) => OnDestroyPoolObjectProjectile?.OnNext(p);
+
     }
 }

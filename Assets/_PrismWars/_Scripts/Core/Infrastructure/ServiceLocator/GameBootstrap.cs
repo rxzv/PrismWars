@@ -24,6 +24,7 @@ public class GameBootstrap : NetworkBehaviour {
     ProjectileService _projectileService;
     Transform _playerPrefab;
     CinemachineCamera _cameraPrefab;
+    Projectile _projectilePrefab;
     
     List<IDisposable> _disposables = new();
     public override void OnNetworkSpawn() {
@@ -35,6 +36,7 @@ public class GameBootstrap : NetworkBehaviour {
     void RegisterServices() {
         _cameraPrefab = Resources.Load<CinemachineCamera>("Prefabs/CinemachineCamera");
         _playerPrefab = Resources.Load<Transform>("Prefabs/Player");
+        _projectilePrefab = Resources.Load<Projectile>("Prefabs/Projectile");
         
         _projectileService = new ProjectileService();
         
@@ -53,6 +55,7 @@ public class GameBootstrap : NetworkBehaviour {
         _inputService.Initialize();
         _cameraSpawnService.Initialize(_cameraPrefab);
         _cursorService.Initialize();
+        _projectileFactory.Initialize(_projectilePrefab);
         _projectileService.Initialize();
         _attackRangeController.Initialize();
         _characterSelectionManager.Initialize();
