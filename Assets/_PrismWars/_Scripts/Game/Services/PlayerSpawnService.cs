@@ -23,7 +23,7 @@ namespace _PrismWars._Scripts {
             playerInstance.GetComponent<NetworkObject>().SpawnWithOwnership(
                 rpcParams.Receive.SenderClientId);
         
-            networkPlayer.PlayerConfig.Value = data;
+            networkPlayer.Initialize(data);
             SpawnPlayerRpc(networkObjectReference, rpcParams.Receive.SenderClientId);
         }
 

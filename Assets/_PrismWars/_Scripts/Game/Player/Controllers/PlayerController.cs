@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 namespace _PrismWars._Scripts.Player
 {
-    public class PlayerController : NetworkBehaviour, IDisposable {
+    public class PlayerController : NetworkBehaviour, IDisposable, IInitializable<NetworkPlayerData> {
         MovementController _movementController;
         JumpingController _jumpingController;
         FlipXController _flipXController;
@@ -27,7 +27,7 @@ namespace _PrismWars._Scripts.Player
 
         bool _isInitialized = false;
         
-        public NetworkVariable<NetworkPlayerData> PlayerConfig = 
+        NetworkVariable<NetworkPlayerData> _playerData = 
             new NetworkVariable<NetworkPlayerData>(default, 
                 NetworkVariableReadPermission.Everyone, 
                 NetworkVariableWritePermission.Server);
@@ -38,13 +38,17 @@ namespace _PrismWars._Scripts.Player
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rb = GetComponent<Rigidbody2D>();
         }
+
+        public void Initialize(NetworkPlayerData playerConfig) {
+            _playerData.Value = playerConfig;
+        }
         
         public override void OnNetworkSpawn() {
             base.OnNetworkSpawn();
-            PlayerConfig.OnValueChanged += OnConfigChanged;
+            _playerData.OnValueChanged += OnConfigChanged;
         
-            if (PlayerConfig.Value.playerName.Length > 0) {
-                OnConfigChanged(default, PlayerConfig.Value);
+            if (_playerData.Value.playerName.Length > 0) {
+                OnConfigChanged(default, _playerData.Value);
             }
         }
         void OnConfigChanged(NetworkPlayerData previous, NetworkPlayerData current) {
