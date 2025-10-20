@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3474596546
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 2872184933
+  InScenePlacedSourceGlobalObjectIdHash: 3859894718
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
@@ -71,9 +71,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  _characterConfigs:
-  - {fileID: 11400000, guid: aeeb0cf6ecd1cd849ac2e6c06d531825, type: 2}
-  - {fileID: 11400000, guid: f8270c735668b9b4eac7742e9a365d8d, type: 2}
-  - {fileID: 11400000, guid: 8f53396576d32004da2ef7dec4f66bc3, type: 2}
-  - {fileID: 11400000, guid: f2afb86ab8b9921468ef260795510a36, type: 2}
-  _view: {fileID: 0}

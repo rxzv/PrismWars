@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using _PrismWars._Scripts.UI.Controller;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.UI.View;
@@ -7,34 +7,32 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
-    [RequireComponent(typeof(NetworkObject))]
-    public class CharacterSelectionManager : NetworkBehaviour, IService, IInitializable {
+    public class CharacterClientSelectionManager : MonoBehaviour, IService {
         [SerializeField] List<PlayerConfig> _characterConfigs;
         [SerializeField] CharacterSelectionView _view;
-        
-        NetworkList<int> _unavailableCharacters = new NetworkList<int>(
-            null,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server);
 
         CharacterSelectionModel _model;
         CharacterSelectionController _controller;
 
-        public void Initialize() {
-            InitializeMVC();
-            _unavailableCharacters.OnListChanged += UnavailableCharactersOnOnListChanged;
+        void Start() {
+            InitializeMvc();
+            ServiceLocator.Singleton.Get<CharacterServerSelectionManager>().UnavailableCharacters.OnListChanged += UnavailableCharactersOnOnListChanged;
         }
 
         void UnavailableCharactersOnOnListChanged(NetworkListEvent<int> changeEvent) {
             _model.SelectedCharacterUpdate(changeEvent.Value);
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        public void SelectCharacterServerRpc(int index) {
-            _unavailableCharacters.Add(index);
+        void RemoveUnnecessaryConfigs() {
+            var playerType = NetworkManager.Singleton.LocalClientId % 2 == 0 ? PlayerType.Fire : PlayerType.Ice;
+            foreach (var config in _characterConfigs.ToList()) {
+                if (config.playerType != playerType) {
+                    _characterConfigs?.Remove(config);
+                }
+            }
         }
-
-        void InitializeMVC() {
+        void InitializeMvc() {
+            RemoveUnnecessaryConfigs();
             _model = new CharacterSelectionModel(_characterConfigs);
             _controller = new CharacterSelectionController(_model, _view);
         
@@ -43,7 +41,7 @@ namespace _PrismWars._Scripts.UI {
 
         void OnDestroy() {
             _controller?.Cleanup();
-            _unavailableCharacters.OnListChanged -= UnavailableCharactersOnOnListChanged;
+            ServiceLocator.Singleton.Get<CharacterServerSelectionManager>().UnavailableCharacters.OnListChanged -= UnavailableCharactersOnOnListChanged;
         }
     }
 }
