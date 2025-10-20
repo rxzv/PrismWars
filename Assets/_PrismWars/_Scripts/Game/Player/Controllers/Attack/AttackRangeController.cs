@@ -5,21 +5,31 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace _PrismWars._Scripts.Player {
-    [RequireComponent(typeof(NetworkObject))]
-    public class AttackRangeController : NetworkBehaviour, IService, IInitializable {
-        ProjectileFactory _projectileFactory;
+    public class AttackRangeController{
+        const float ATTACK_DISTANCE_FROM_PLAYER = 1f;
+        
         Camera _camera;
         Vector2 _firePoint;
+        PlayerType _playerType;
+        PlayerController _playerController;
 
-        public void Initialize() {
-            _projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
+        public AttackRangeController(PlayerType playerType, Camera camera, PlayerController playerController) {
+            _playerType = playerType;
+            _camera = camera;
+            _playerController = playerController;
         }
-        
-        void Start() => _camera = Camera.main;
 
-        public void RangeAttack(Vector2 position, PlayerType playerType) {
-            _firePoint = position;
-            SpawnProjectileRpc(position, GetShootingDirection(), playerType);
+        public void RangeAttack(Transform transform) {
+            _firePoint = GetPositionTowardsMouse(transform, _camera);
+            _playerController.SpawnProjectile(_firePoint, GetShootingDirection(), _playerType);
+        }
+        Vector2 GetPositionTowardsMouse(Transform transform, Camera camera) {
+            Vector2 playerPosition = transform.position;
+            Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (mousePosition - playerPosition).normalized;
+            Vector2 targetPosition = playerPosition + direction * ATTACK_DISTANCE_FROM_PLAYER;
+        
+            return targetPosition;
         }
         
         Vector2 GetShootingDirection() {
@@ -33,9 +43,5 @@ namespace _PrismWars._Scripts.Player {
             Vector2 direction = (worldPosition - _firePoint).normalized;
             return direction;
         }
-        
-        [Rpc(SendTo.Server)]
-        void SpawnProjectileRpc(Vector3 position, Vector3 direction, PlayerType playerType) => _projectileFactory.Spawn(position,
-            direction, playerType);
     }
 }

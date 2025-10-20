@@ -19,7 +19,6 @@ public class GameBootstrap : NetworkBehaviour {
     [SerializeField] PlayerSpawnService _playerSpawnService;    
     [SerializeField] CursorService _cursorService;
     [SerializeField] ProjectileFactory _projectileFactory;
-    [SerializeField] AttackRangeController _attackRangeController;
     [SerializeField] CharacterSelectionManager _characterSelectionManager;
     
     [Header("SceneComponents")]
@@ -57,7 +56,6 @@ public class GameBootstrap : NetworkBehaviour {
         ServiceLocator.Singleton.Register(_cursorService);
         ServiceLocator.Singleton.Register(_projectileFactory);
         ServiceLocator.Singleton.Register(_projectileService);
-        ServiceLocator.Singleton.Register(_attackRangeController);
         ServiceLocator.Singleton.Register(_characterSelectionManager);
     }
 
@@ -68,7 +66,6 @@ public class GameBootstrap : NetworkBehaviour {
         _cursorService.Initialize();
         _projectileFactory.Initialize(_projectilePrefab);
         _projectileService.Initialize();
-        _attackRangeController.Initialize();
         _characterSelectionManager.Initialize();
             
         Debug.Log("Service initialized");

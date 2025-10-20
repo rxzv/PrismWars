@@ -1,13 +1,11 @@
 using System;
-using System.Collections;
+using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.UI.Model;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-namespace _PrismWars._Scripts.Player
-{
+namespace _PrismWars._Scripts.Player {
     public class PlayerController : NetworkBehaviour, IDisposable, IInitializable<NetworkPlayerData> {
         MovementController _movementController;
         JumpingController _jumpingController;
@@ -17,14 +15,13 @@ namespace _PrismWars._Scripts.Player
         
         CompositeDisposable _disposables = new();
         SpriteRenderer _spriteRenderer;
-        
-        const float ATTACK_DISTANCE_FROM_PLAYER = 1f;
 
         Vector3 _direction;
         Rigidbody2D _rb;
         
         InputService _inputService;
-
+        ProjectileFactory _projectileFactory;
+        
         bool _isInitialized = false;
         
         NetworkVariable<NetworkPlayerData> _playerData = 
@@ -56,9 +53,8 @@ namespace _PrismWars._Scripts.Player
             _config.FromNetworkConfig(current);
         
             ApplyConfig(_config); 
-            if (IsOwner) {
-                InitializeControllersAndInput();
-            }
+            
+            InitializeControllersAndInput();
         }
 
         void ApplyConfig(PlayerConfig config) {
@@ -71,7 +67,8 @@ namespace _PrismWars._Scripts.Player
             _disposables = new CompositeDisposable();
             
             _inputService = ServiceLocator.Singleton.Get<InputService>();
-            _attackRangeController = ServiceLocator.Singleton.Get<AttackRangeController>();
+            _projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
+            _attackRangeController = new AttackRangeController(_config.playerType, Camera.main, this);
             
             _movementController = new MovementController(transform, _config.moveSpeed);
             _jumpingController = new JumpingController(_rb, _config.jumpForce);
@@ -97,26 +94,27 @@ namespace _PrismWars._Scripts.Player
             _inputService.AttackRange
                 .Subscribe(_ => {
                     _attackRangeController
-                        .RangeAttack(GetPositionTowardsMouse(),
-                            _config.playerType);
+                        .RangeAttack(transform);
                 })
                 .AddTo(_disposables);
         }
-        Vector2 GetPositionTowardsMouse() {
-            Vector2 playerPosition = transform.position;
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 direction = (mousePosition - playerPosition).normalized;
-            Vector2 targetPosition = playerPosition + direction * ATTACK_DISTANCE_FROM_PLAYER;
         
-            return targetPosition;
-        }
-
         void OnDrawGizmosSelected() {
             if (!IsOwner) return;
             _jumpingController.OnDrawGizmosSelected();
             _attackMeleeController.OnDrawGizmosSelected(transform);
         }
 
+        public void SpawnProjectile(Vector3 position, Vector3 direction, PlayerType playerType) {
+            if (!IsOwner)return; 
+            SpawnProjectileRpc(position, direction, playerType);
+            
+        }
+        
+        [Rpc(SendTo.Server)]
+        void SpawnProjectileRpc(Vector3 position, Vector3 direction, PlayerType playerType) => 
+            _projectileFactory.Spawn(position, direction, playerType);
+        
         public void Dispose() =>
             _disposables?.Dispose();
     }
