@@ -5,7 +5,6 @@ using UnityEngine;
 namespace _PrismWars._Scripts.Game.GameManager {
     [RequireComponent(typeof(NetworkObject))]
     public class ServerGameManager : NetworkBehaviour, IService, IInitializable {
-        
         public event Action OnGameStarted;
         public event Action OnSelectCharacter;
 

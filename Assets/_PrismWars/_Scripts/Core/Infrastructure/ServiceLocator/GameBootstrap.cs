@@ -19,7 +19,6 @@ public class GameBootstrap : NetworkBehaviour {
     [SerializeField] PlayerSpawnService _playerSpawnService;    
     [SerializeField] CursorService _cursorService;
     [SerializeField] ProjectileFactory _projectileFactory;
-    [SerializeField] CinemachineVirtualCamera virtualCamera;
     [SerializeField] ServerGameManager _gameManager;
     [Header("UI Services")]
     [SerializeField] CharacterServerSelectionManager _characterServerSelectionManager;
