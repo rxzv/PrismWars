@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _PrismWars._Scripts.UI.Controller;
@@ -14,6 +15,8 @@ namespace _PrismWars._Scripts.UI {
         CharacterSelectionModel _model;
         CharacterSelectionController _controller;
         CharacterServerSelectionManager _serverSelectionManager;
+        
+        public CharacterSelectionView View => _view;
 
         public void Initialize() {
             InitializeMvc();

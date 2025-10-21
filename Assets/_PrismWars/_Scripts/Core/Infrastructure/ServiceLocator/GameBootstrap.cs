@@ -65,13 +65,14 @@ public class GameBootstrap : NetworkBehaviour {
     }
 
     void Init() {
-        _gameManager.Initialize();
         _playerSpawnService.Initialize(_playerFireFactory, _playerIceFactory);
         _inputService.Initialize();
         _cameraSpawnService.Initialize(_cameraPrefab);
         _cursorService.Initialize();
         _projectileFactory.Initialize(_projectilePrefab);
         _projectileService.Initialize();
+        _uiManager.Initialize();
+        _gameManager.Initialize();
             
         Debug.Log("Service initialized");
     }

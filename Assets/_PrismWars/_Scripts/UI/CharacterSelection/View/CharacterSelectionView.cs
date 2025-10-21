@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.UI.Model;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ namespace _PrismWars._Scripts.UI.View {
         [SerializeField] Color _fireColor = Color.red;
         [SerializeField] Color _iceColor = Color.blue;
         [SerializeField] Button _confirmButton;
+        [SerializeField] TextMeshProUGUI _confirmButtonText;
         public event Action<int> OnCharacterButtonClicked;
         public event Action OnConfrimButtonClicked;
         public event Action OnGameReady;
@@ -25,9 +27,12 @@ namespace _PrismWars._Scripts.UI.View {
         }
 
         public void ConfirmButtonClicked() {
+            foreach (var characterButton in _characterButtons)
+                characterButton.button.onClick.RemoveAllListeners();
+
             _confirmButton.onClick.RemoveAllListeners();
             _confirmButton.gameObject.GetComponent<Image>().color = Color.red;
-            _confirmButton.GetComponentInChildren<Text>().text = "Ready";
+            _confirmButtonText.text = "Ready";
             OnGameReady?.Invoke();
         }
 
@@ -51,6 +56,7 @@ namespace _PrismWars._Scripts.UI.View {
         }
         
         public void HideView() => gameObject.SetActive(false);
+        public void ShowView() => gameObject.SetActive(true);
 
         public void HighlightUnavaliableCharacter(int characterIndex) {
             _characterButtons[characterIndex].selectedImageFrame.gameObject.SetActive(true);

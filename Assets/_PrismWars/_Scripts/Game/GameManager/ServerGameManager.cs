@@ -9,6 +9,7 @@ namespace _PrismWars._Scripts.Game.GameManager {
         public event Action OnSelectCharacter;
 
         public void Initialize() {
+            OnSelectCharacter?.Invoke();
         }
         
         void GameStarted() {

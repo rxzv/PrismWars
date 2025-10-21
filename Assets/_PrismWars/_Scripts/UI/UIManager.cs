@@ -5,7 +5,7 @@ using UnityEngine;
 namespace _PrismWars._Scripts.UI {
     public class UIManager : MonoBehaviour, IService, IInitializable {
 
-        [SerializeField] GameUIManager _gameUIManager;
+        [SerializeField] GameUIView _gameUIView;
         [SerializeField] CharacterClientSelectionManager _characterClientSelectionManager;
         
         public event Action OnCharacterSelectionConfirmed;
@@ -14,22 +14,22 @@ namespace _PrismWars._Scripts.UI {
 
         public void Initialize() {
             _serverGameManager = ServiceLocator.Singleton.Get<ServerGameManager>();
-            _serverGameManager.OnGameStarted += OnGameStarted;
             _serverGameManager.OnSelectCharacter += OnSelectCharacter;
+            _serverGameManager.OnGameStarted += OnGameStarted;
         }
         void Awake() {
-            _characterClientSelectionManager.gameObject.SetActive(false);
-            _gameUIManager.gameObject.SetActive(false);
+            _characterClientSelectionManager.View.HideView();
+            _gameUIView.HideView();
         }
 
         void OnSelectCharacter() {
-            _characterClientSelectionManager.gameObject.SetActive(true);
             _characterClientSelectionManager.Initialize();
+            _characterClientSelectionManager.View.ShowView();
         }
         
         void OnGameStarted() {
             OnCharacterSelectionConfirmed?.Invoke();
-            _gameUIManager.gameObject.SetActive(true);
+            _gameUIView.ShowView();
         }
 
         void OnDestroy() {
