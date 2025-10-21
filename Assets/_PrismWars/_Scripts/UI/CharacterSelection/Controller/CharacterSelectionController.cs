@@ -55,8 +55,12 @@ namespace _PrismWars._Scripts.UI.Controller {
                 _view.ShowNoCharacterSelectedMessage();
                 return;
             }
-
             _model.ConfirmSelection();
+
+            _view.ConfirmButtonClicked();
+        }
+
+        void OnConfirmCharacterSelectedExecute() {
             var playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterButtonIndex);
             var command = new ConfirmCharacterSelected(playerConfig);
             _commandInvoker.ExecuteCommand(command);

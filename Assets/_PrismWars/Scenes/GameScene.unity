@@ -2036,6 +2036,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterSelectionView
       objectReference: {fileID: 0}
+    - target: {fileID: 6224635143541493862, guid: 1a73481db997d7f45ba26e9aeb313886, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6224635143541493862, guid: 1a73481db997d7f45ba26e9aeb313886, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6224635143541493862, guid: 1a73481db997d7f45ba26e9aeb313886, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -300
+      objectReference: {fileID: 0}
     - target: {fileID: 6424675554875981418, guid: 1a73481db997d7f45ba26e9aeb313886, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2183,6 +2195,18 @@ PrefabInstance:
     - target: {fileID: 9015123340051940185, guid: 1a73481db997d7f45ba26e9aeb313886, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9196602588760104642, guid: 1a73481db997d7f45ba26e9aeb313886, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9196602588760104642, guid: 1a73481db997d7f45ba26e9aeb313886, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9196602588760104642, guid: 1a73481db997d7f45ba26e9aeb313886, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 791
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

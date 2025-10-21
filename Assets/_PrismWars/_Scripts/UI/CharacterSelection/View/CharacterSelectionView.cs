@@ -13,6 +13,7 @@ namespace _PrismWars._Scripts.UI.View {
 
         public event Action<int> OnCharacterButtonClicked;
         public event Action OnConfrimButtonClicked;
+        public event Action OnGameReady;
         
         CharacterServerSelectionManager _characterServerSelectionManager;
 
@@ -22,6 +23,13 @@ namespace _PrismWars._Scripts.UI.View {
                 _characterButtons[i].button.onClick.AddListener(() => OnCharacterButtonClicked?.Invoke(index));
             }
             _confirmButton.onClick.AddListener(() => OnConfrimButtonClicked?.Invoke());
+        }
+
+        public void ConfirmButtonClicked() {
+            _confirmButton.onClick.RemoveAllListeners();
+            _confirmButton.gameObject.GetComponent<Image>().color = Color.red;
+            _confirmButton.GetComponentInChildren<Text>().text = "Ready";
+            OnGameReady?.Invoke();
         }
 
         public void InitializeCharacters(List<PlayerConfig> characterConfigs) {
