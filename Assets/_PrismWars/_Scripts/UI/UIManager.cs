@@ -1,10 +1,12 @@
 using System;
 using _PrismWars._Scripts.Game.GameManager;
+using TMPro;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
     public class UIManager : MonoBehaviour, IService, IInitializable {
 
+        [SerializeField] TextMeshProUGUI _timer;
         [SerializeField] GameUIView _gameUIView;
         [SerializeField] CharacterClientSelectionManager _characterClientSelectionManager;
         
@@ -20,6 +22,7 @@ namespace _PrismWars._Scripts.UI {
         void Awake() {
             _characterClientSelectionManager.View.HideView();
             _gameUIView.HideView();
+            _timer.text = "0";
         }
 
         void OnSelectCharacter() {

@@ -426,14 +426,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 203193575}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 982336282}
   - {fileID: 1310783036}
-  m_Father: {fileID: 548786350}
+  m_Father: {fileID: 1726361970}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -878,52 +878,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &346728172
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 346728174}
-  - component: {fileID: 346728173}
-  m_Layer: 0
-  m_Name: UIManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &346728173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 346728172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca5058b5392d4cb384172116f77ab5a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gameUIView: {fileID: 0}
-  _characterClientSelectionManager: {fileID: 1490966231}
---- !u!4 &346728174
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 346728172}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1535049281}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &353033704
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,8 +966,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 203193576}
+  m_Children: []
   m_Father: {fileID: 1726361970}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2513,7 +2466,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 180
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3190,7 +3143,6 @@ Transform:
   - {fileID: 1865278871}
   - {fileID: 1490966230}
   - {fileID: 185143119}
-  - {fileID: 346728174}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1560737636
@@ -3968,6 +3920,7 @@ GameObject:
   - component: {fileID: 1726361973}
   - component: {fileID: 1726361972}
   - component: {fileID: 1726361971}
+  - component: {fileID: 1726361974}
   m_Layer: 0
   m_Name: ---UI---
   m_TagString: Untagged
@@ -3989,6 +3942,7 @@ RectTransform:
   m_Children:
   - {fileID: 618733450}
   - {fileID: 548786350}
+  - {fileID: 203193576}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4059,6 +4013,21 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1726361974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1726361969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca5058b5392d4cb384172116f77ab5a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timer: {fileID: 1310783037}
+  _gameUIView: {fileID: 548786351}
+  _characterClientSelectionManager: {fileID: 1490966231}
 --- !u!1 &1786852912
 GameObject:
   m_ObjectHideFlags: 0
@@ -5371,7 +5340,7 @@ PrefabInstance:
     - target: {fileID: 1746674926255520335, guid: 5c89c7283dcbadc4facc21518f72d26e, type: 3}
       propertyPath: _uiManager
       value: 
-      objectReference: {fileID: 346728173}
+      objectReference: {fileID: 1726361974}
     - target: {fileID: 1746674926255520335, guid: 5c89c7283dcbadc4facc21518f72d26e, type: 3}
       propertyPath: _gameManager
       value: 
