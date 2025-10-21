@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 069517c94ab343428d37fd65620df7e8, type: 3}
   m_Name: PlayerConfig 2
   m_EditorClassIdentifier: 
+  configId: 2
   playerName: molly
-  playerType: 0
+  playerElement: 0
   spriteName: molly
   sprite: {fileID: 5703955485395271798, guid: 63ad04826efc8614699f4d80f8c90c50, type: 3}
   moveSpeed: 20

@@ -21,42 +21,43 @@ namespace _PrismWars._Scripts.UI.Controller {
             _view.OnConfrimButtonClicked += OnConfirmCharacterSelection;
         }
 
-        void OnCharacterButtonClicked(int characterIndex) {
-            if (!_model.IsCharacterAvailable(characterIndex)) {
-                _view.ShowCharacterUnavailableMessage(characterIndex);
+        void OnCharacterButtonClicked(int index) {
+            if (!_model.IsCharacterAvailable(index)) {
+                _view.ShowCharacterUnavailableMessage(index);
                 return;
             }
 
-            var command = new SelectCharacterCommand(this, characterIndex);
+            var command = new SelectCharacterCommand(this, index);
             _commandInvoker.ExecuteCommand(command);
         }
 
         public void SelectCharacter(int characterIndex) => _model.SelectCharacter(characterIndex);
 
-        public int GetSelectedCharacterIndex() => _model.SelectedCharacterIndex;
+        public int GetSelectedCharacterIndex() => _model.SelectedCharacterButtonIndex;
         
 
         void OnCharacterSelected(int previousSelection) {
             if (previousSelection != -1)
                 _view.SetCharacterSelected(previousSelection, false);
 
-            if (_model.SelectedCharacterIndex != -1)
-                _view.SetCharacterSelected(_model.SelectedCharacterIndex, true);
+            if (_model.SelectedCharacterButtonIndex != -1)
+                _view.SetCharacterSelected(_model.SelectedCharacterButtonIndex, true);
         }
 
-        void OnCharacterUnavaliableHighlighted(int characterIndex) => _view.HighlightUnavaliableCharacter(characterIndex);
+        void OnCharacterUnavaliableHighlighted(int index) => 
+            _view.HighlightUnavaliableCharacter(index);
         
 
-        void OnSelectionConfirmed(int index) => _view.ShowSelectionConfirmed(index);
+        void OnSelectionConfirmed(int id) => _view.ShowSelectionConfirmed(id);
 
         void OnConfirmCharacterSelection() {
-            if (_model.SelectedCharacterIndex == -1) {
+            if (_model.SelectedCharacterButtonIndex == -1) {
                 _view.ShowNoCharacterSelectedMessage();
                 return;
             }
 
             _model.ConfirmSelection();
-            var playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterIndex);
+            var playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterButtonIndex);
             var command = new ConfirmCharacterSelected(playerConfig);
             _commandInvoker.ExecuteCommand(command);
             _view.HideView();

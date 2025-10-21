@@ -30,7 +30,7 @@ namespace _PrismWars._Scripts.UI.View {
                 CharacterButton characterButton = _characterButtons[i];
 
                 characterButton.characterImage.sprite = config.sprite;
-                characterButton.backgroundImage.color = GetColorByPlayerType(config.playerElement);
+                characterButton.backgroundImage.color = GetColorByPlayerElement(config.playerElement);
                 characterButton.selectionFrame.SetActive(false);
             }
 
@@ -58,12 +58,12 @@ namespace _PrismWars._Scripts.UI.View {
             Debug.Log("Пожалуйста, выберите персонажа!");
         }
 
-        public void ShowSelectionConfirmed(int index) {
+        public void ShowSelectionConfirmed(int id) {
             Debug.Log("Выбор персонажа подтвержден!");
-            _characterServerSelectionManager.SelectCharacterServerRpc(index);
+            _characterServerSelectionManager.SelectCharacterServerRpc(id);
         }
 
-        Color GetColorByPlayerType(PlayerElement playerElement) {
+        Color GetColorByPlayerElement(PlayerElement playerElement) {
             return playerElement switch {
                 PlayerElement.Fire => _fireColor,
                 PlayerElement.Ice => _iceColor,

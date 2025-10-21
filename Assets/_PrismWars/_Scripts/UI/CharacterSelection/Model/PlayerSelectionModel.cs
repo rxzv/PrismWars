@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace _PrismWars._Scripts.UI.Model {
     public class CharacterSelectionModel {
@@ -8,48 +9,51 @@ namespace _PrismWars._Scripts.UI.Model {
         public event Action<int> OnSelectionConfirmed;
 
         readonly List<PlayerConfig> _availableCharacters;
-        readonly HashSet<int> _selectedCharacters;
+        readonly HashSet<int> _selectedCharactersId;
         
-        public int SelectedCharacterIndex { get; private set; } = -1;
+        public int SelectedCharacterButtonIndex { get; private set; } = -1;
         public int HighlightedCharacterIndex { get; private set; } = -1;
 
         public CharacterSelectionModel(List<PlayerConfig> characters) {
             _availableCharacters = characters;
-            _selectedCharacters = new HashSet<int>();
+            _selectedCharactersId = new HashSet<int>();
         }
 
-        public void SelectedCharacterUpdate(int unavailableIndex) {
-            _selectedCharacters.Add(unavailableIndex);
-            HighlightUnavailableCharacter(unavailableIndex);
+        public void SelectedCharacterUpdate(int id) {
+            _selectedCharactersId.Add(id);
+            HighlightUnavailableCharacter(id);
         }
 
         public void SelectCharacter(int index) {
             if (index < 0 || index >= _availableCharacters.Count) return;
-            if (_selectedCharacters.Contains(index)) return;
+            if (_selectedCharactersId.Contains(_availableCharacters[index].configId)) return;
 
-            var previousSelection = SelectedCharacterIndex;
-            SelectedCharacterIndex = index;
+            var previousSelection = SelectedCharacterButtonIndex;
+            SelectedCharacterButtonIndex = index;
             
             OnCharacterSelected?.Invoke(previousSelection);
         }
 
-        public void HighlightUnavailableCharacter(int index) {
-            if (index < 0 || index >= _availableCharacters.Count) return;
+        public void HighlightUnavailableCharacter(int id) {
+            if (id < 0 || id >= _availableCharacters.Count) return;
             
-            HighlightedCharacterIndex = index;
-            OnCharacterUnavaliableHighlighted?.Invoke(index);
+            PlayerConfig config = _availableCharacters.FirstOrDefault(p => p.configId == id);
+            if (config == null) return;
+            
+            HighlightedCharacterIndex = _availableCharacters.IndexOf(config);
+            OnCharacterUnavaliableHighlighted?.Invoke(HighlightedCharacterIndex);
         }
 
         public void ConfirmSelection() {
-            if (SelectedCharacterIndex == -1) return;
+            if (SelectedCharacterButtonIndex == -1) return;
             
-            OnSelectionConfirmed?.Invoke(SelectedCharacterIndex);
+            OnSelectionConfirmed?.Invoke(_availableCharacters[SelectedCharacterButtonIndex].configId);
         }
 
         public void ReleaseCharacter(int index) {
-            _selectedCharacters.Remove(index);
-            if (SelectedCharacterIndex == index) {
-                SelectedCharacterIndex = -1;
+            _selectedCharactersId.Remove(index);
+            if (SelectedCharacterButtonIndex == index) {
+                SelectedCharacterButtonIndex = -1;
             }
         }
 
@@ -58,7 +62,7 @@ namespace _PrismWars._Scripts.UI.Model {
         }
 
         public bool IsCharacterAvailable(int index) {
-            return !_selectedCharacters.Contains(index);
+            return !_selectedCharactersId.Contains(_availableCharacters[index].configId);
         }
 
         public List<PlayerConfig> GetAvailableCharacters() => _availableCharacters;

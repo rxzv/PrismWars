@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 069517c94ab343428d37fd65620df7e8, type: 3}
   m_Name: PlayerConfig 1
   m_EditorClassIdentifier: 
+  configId: 1
   playerName: casey
-  playerType: 0
+  playerElement: 0
   spriteName: casey
   sprite: {fileID: 6678123732569117242, guid: 48b4602faad1e7946ab61c36c32e6648, type: 3}
   moveSpeed: 10

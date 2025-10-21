@@ -12,8 +12,14 @@ namespace _PrismWars._Scripts.UI {
             NetworkVariableWritePermission.Server);
 
         [ServerRpc(RequireOwnership = false)]
-        public void SelectCharacterServerRpc(int index) {
-            UnavailableCharacters.Add(index);
+        public void SelectCharacterServerRpc(int configId) {
+            if (!UnavailableCharacters.Contains(configId) && configId >= 0) 
+                UnavailableCharacters.Add(configId);
+            else if(configId < 0)
+                Debug.LogError($"Character configId {configId} is defective");
+            else 
+                Debug.LogError($"Character configId {configId} already exists");
+            
         }
     }
 }
