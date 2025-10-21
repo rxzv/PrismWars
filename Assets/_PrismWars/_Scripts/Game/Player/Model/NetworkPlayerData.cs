@@ -4,8 +4,10 @@ using Unity.Netcode;
 namespace _PrismWars._Scripts.UI.Model {
     // Структура для сетевой синхронизации
     public struct NetworkPlayerData : INetworkSerializable, System.IEquatable<NetworkPlayerData> {
+
+        public int configId;
         public FixedString64Bytes playerName;
-        public PlayerType playerType;
+        public PlayerElement PlayerElement;
         public FixedString64Bytes spriteName;
         public float moveSpeed;
         public float jumpForce;
@@ -15,8 +17,9 @@ namespace _PrismWars._Scripts.UI.Model {
         public int enemyLayerValue;
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
+            serializer.SerializeValue(ref configId);
             serializer.SerializeValue(ref playerName);
-            serializer.SerializeValue(ref playerType);
+            serializer.SerializeValue(ref PlayerElement);
             serializer.SerializeValue(ref spriteName);
             serializer.SerializeValue(ref moveSpeed);
             serializer.SerializeValue(ref jumpForce);
@@ -27,8 +30,9 @@ namespace _PrismWars._Scripts.UI.Model {
         }
 
         public bool Equals(NetworkPlayerData other) {
-            return playerName.Equals(other.playerName) &&
-                   playerType == other.playerType &&
+            return configId.Equals(other.configId) &&
+                   playerName.Equals(other.playerName) &&
+                   PlayerElement == other.PlayerElement &&
                    spriteName.Equals(other.spriteName) &&
                    moveSpeed.Equals(other.moveSpeed) &&
                    jumpForce.Equals(other.jumpForce) &&

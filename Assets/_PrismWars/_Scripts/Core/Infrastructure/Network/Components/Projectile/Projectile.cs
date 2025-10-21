@@ -11,8 +11,8 @@ namespace _PrismWars._Scripts.Components.Projectile {
         
         SpriteRenderer _spriteRenderer;
         
-        NetworkVariable<PlayerType> _type = new();
-        public PlayerType Type => _type.Value;
+        NetworkVariable<PlayerElement> _type = new();
+        public PlayerElement Element => _type.Value;
         
         Vector2 _direction;
 
@@ -26,15 +26,15 @@ namespace _PrismWars._Scripts.Components.Projectile {
             StartCoroutine(DespawnAfterDelay(_despawnDelay));
         }
 
-        public void SetType(PlayerType type) {
-            _type.Value = type;
+        public void SetType(PlayerElement element) {
+            _type.Value = element;
             Initialize();
         }
 
         void Initialize() {
-            gameObject.layer = LayerMask.NameToLayer(Type.ToString());
+            gameObject.layer = LayerMask.NameToLayer(Element.ToString());
             _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-            _spriteRenderer.material = GetMaterialByPlayerType(Type);
+            _spriteRenderer.material = GetMaterialByPlayerType(Element);
         }
 
         public void SetPosition(Vector2 startPos, Vector2 direction) {
@@ -52,23 +52,23 @@ namespace _PrismWars._Scripts.Components.Projectile {
             if (other.gameObject.layer != gameObject.layer) {
                 other.GetComponent<IDamageable>()?.TakeDamage(_damage);
             }
-            ReturnToPoolRpc(Type);
+            ReturnToPoolRpc(Element);
         }
 
         IEnumerator DespawnAfterDelay(float delay) {
             yield return new WaitForSeconds(delay);
-            ReturnToPoolRpc(Type);
+            ReturnToPoolRpc(Element);
         }
         
         [Rpc(SendTo.Server)]
-        void ReturnToPoolRpc(PlayerType type) {
-            ServiceLocator.Singleton.Get<ProjectileFactory>().ReturnToPool(this, type);
+        void ReturnToPoolRpc(PlayerElement element) {
+            ServiceLocator.Singleton.Get<ProjectileFactory>().ReturnToPool(this, element);
         }
 
-        Material GetMaterialByPlayerType(PlayerType playerType) {
-            return playerType switch {
-                PlayerType.Fire => Resources.Load<Material>($"Materials/FireColorMaterial"),
-                PlayerType.Ice => Resources.Load<Material>($"Materials/IceColorMaterial"),
+        Material GetMaterialByPlayerType(PlayerElement playerElement) {
+            return playerElement switch {
+                PlayerElement.Fire => Resources.Load<Material>($"Materials/FireColorMaterial"),
+                PlayerElement.Ice => Resources.Load<Material>($"Materials/IceColorMaterial"),
                 _ => default
             };
         }

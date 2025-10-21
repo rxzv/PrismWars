@@ -30,7 +30,7 @@ namespace _PrismWars._Scripts.UI.View {
                 CharacterButton characterButton = _characterButtons[i];
 
                 characterButton.characterImage.sprite = config.sprite;
-                characterButton.backgroundImage.color = GetColorByPlayerType(config.playerType);
+                characterButton.backgroundImage.color = GetColorByPlayerType(config.playerElement);
                 characterButton.selectionFrame.SetActive(false);
             }
 
@@ -63,10 +63,10 @@ namespace _PrismWars._Scripts.UI.View {
             _characterServerSelectionManager.SelectCharacterServerRpc(index);
         }
 
-        Color GetColorByPlayerType(PlayerType playerType) {
-            return playerType switch {
-                PlayerType.Fire => _fireColor,
-                PlayerType.Ice => _iceColor,
+        Color GetColorByPlayerType(PlayerElement playerElement) {
+            return playerElement switch {
+                PlayerElement.Fire => _fireColor,
+                PlayerElement.Ice => _iceColor,
                 _ => Color.white
             };
         }

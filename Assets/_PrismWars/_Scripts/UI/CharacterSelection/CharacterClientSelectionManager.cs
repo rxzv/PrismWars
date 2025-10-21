@@ -24,9 +24,9 @@ namespace _PrismWars._Scripts.UI {
         }
 
         void RemoveUnnecessaryConfigs() {
-            var playerType = NetworkManager.Singleton.LocalClientId % 2 == 0 ? PlayerType.Fire : PlayerType.Ice;
+            var playerType = NetworkManager.Singleton.LocalClientId % 2 == 0 ? PlayerElement.Fire : PlayerElement.Ice;
             foreach (var config in _characterConfigs.ToList()) {
-                if (config.playerType != playerType) {
+                if (config.playerElement != playerType) {
                     _characterConfigs?.Remove(config);
                 }
             }

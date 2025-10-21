@@ -59,7 +59,7 @@ namespace _PrismWars._Scripts.Player {
 
         void ApplyConfig(PlayerConfig config) {
             _spriteRenderer.sprite = config.sprite;
-            gameObject.layer = LayerMask.NameToLayer(_config.playerType.ToString());
+            gameObject.layer = LayerMask.NameToLayer(_config.playerElement.ToString());
         }
         
         void InitializeControllersAndInput() {
@@ -68,7 +68,7 @@ namespace _PrismWars._Scripts.Player {
             
             _inputService = ServiceLocator.Singleton.Get<InputService>();
             _projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
-            _attackRangeController = new AttackRangeController(_config.playerType, Camera.main, this);
+            _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
             
             _movementController = new MovementController(transform, _config.moveSpeed);
             _jumpingController = new JumpingController(_rb, _config.jumpForce);
@@ -105,15 +105,15 @@ namespace _PrismWars._Scripts.Player {
             _attackMeleeController.OnDrawGizmosSelected(transform);
         }
 
-        public void SpawnProjectile(Vector3 position, Vector3 direction, PlayerType playerType) {
+        public void SpawnProjectile(Vector3 position, Vector3 direction, PlayerElement playerElement) {
             if (!IsOwner)return; 
-            SpawnProjectileRpc(position, direction, playerType);
+            SpawnProjectileRpc(position, direction, playerElement);
             
         }
         
         [Rpc(SendTo.Server)]
-        void SpawnProjectileRpc(Vector3 position, Vector3 direction, PlayerType playerType) => 
-            _projectileFactory.Spawn(position, direction, playerType);
+        void SpawnProjectileRpc(Vector3 position, Vector3 direction, PlayerElement playerElement) => 
+            _projectileFactory.Spawn(position, direction, playerElement);
         
         public void Dispose() =>
             _disposables?.Dispose();

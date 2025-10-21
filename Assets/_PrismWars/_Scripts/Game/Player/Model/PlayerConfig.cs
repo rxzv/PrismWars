@@ -3,8 +3,9 @@ using UnityEngine;
 namespace _PrismWars._Scripts.UI.Model {
     [CreateAssetMenu(fileName = "PlayerConfig", menuName = "Configs/Player Config")]
     public class PlayerConfig : ScriptableObject {
+        public int configId;
         public string playerName;
-        public PlayerType playerType = PlayerType.Fire;
+        public PlayerElement playerElement = PlayerElement.Fire;
         public string spriteName;
         public Sprite sprite;
         public float moveSpeed = 10f;
@@ -17,8 +18,9 @@ namespace _PrismWars._Scripts.UI.Model {
         // Конвертация в сетевую структуру
         public NetworkPlayerData ToNetworkConfig() {
             return new NetworkPlayerData {
+                configId = configId,
                 playerName = playerName,
-                playerType = playerType,
+                PlayerElement = playerElement,
                 spriteName = spriteName,
                 moveSpeed = moveSpeed,
                 jumpForce = jumpForce,
@@ -31,8 +33,9 @@ namespace _PrismWars._Scripts.UI.Model {
 
         // Восстановление из сетевой структуры
         public void FromNetworkConfig(NetworkPlayerData networkData) {
+            configId = networkData.configId;
             playerName = networkData.playerName.ToString();
-            playerType = networkData.playerType;
+            playerElement = networkData.PlayerElement;
             spriteName = networkData.spriteName.ToString();
             moveSpeed = networkData.moveSpeed;
             jumpForce = networkData.jumpForce;
@@ -47,7 +50,7 @@ namespace _PrismWars._Scripts.UI.Model {
         }
     }
 
-    public enum PlayerType {
+    public enum PlayerElement {
         Fire,
         Ice
     }

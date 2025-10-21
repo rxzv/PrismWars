@@ -12,10 +12,10 @@ namespace _PrismWars._Scripts.Components.Projectile {
         [SerializeField] int _defaultCapacity = 10;
         [SerializeField] int _maxPoolSize = 100;
         
-        NetworkVariable<PlayerType> _currentType = new();
+        NetworkVariable<PlayerElement> _currentType = new();
         Projectile _projectilePrefab;
 
-        readonly Dictionary<PlayerType, IObjectPool<Projectile>> _pools = new();
+        readonly Dictionary<PlayerElement, IObjectPool<Projectile>> _pools = new();
         
         public readonly Subject<NetworkObjectReference> OnGetProjectile = new();
         public readonly Subject<NetworkObjectReference> OnReleaseProjectile = new();
@@ -26,23 +26,23 @@ namespace _PrismWars._Scripts.Components.Projectile {
             _projectilePrefab = projectilePrefab;
         }
         
-        public Projectile Spawn(Vector3 position, Vector3 direction, PlayerType type) {
-            var projectile = GetPoolFor(type)?.Get();
+        public Projectile Spawn(Vector3 position, Vector3 direction, PlayerElement element) {
+            var projectile = GetPoolFor(element)?.Get();
             projectile?.SetPosition(position, direction);
             return projectile;
         }
 
-        public void ReturnToPool(Projectile f, PlayerType type) {
+        public void ReturnToPool(Projectile f, PlayerElement element) {
             if (!IsServer) return;
             if(f.gameObject.activeSelf)
-                GetPoolFor(type)?.Release(f);
+                GetPoolFor(element)?.Release(f);
         }
 
-        IObjectPool<Projectile> GetPoolFor(PlayerType type) {
+        IObjectPool<Projectile> GetPoolFor(PlayerElement element) {
             IObjectPool<Projectile> pool;
-            _currentType.Value = type;
+            _currentType.Value = element;
             
-            if (_pools.TryGetValue(type, out pool)) return pool;
+            if (_pools.TryGetValue(element, out pool)) return pool;
 
             pool = new ObjectPool<Projectile>(
                 Create,
@@ -52,7 +52,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
                 _collectionCheck,
                 _defaultCapacity,
                 _maxPoolSize);
-            _pools.Add(type, pool);
+            _pools.Add(element, pool);
             return pool;
         }
 

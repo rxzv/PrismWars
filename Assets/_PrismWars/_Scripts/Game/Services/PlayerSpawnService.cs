@@ -20,14 +20,14 @@ namespace _PrismWars._Scripts {
         public void SpawnPlayerServerRpc(NetworkPlayerData data, ServerRpcParams rpcParams = default) {
             NetworkObject playerRef;
             
-            switch (data.playerType) {
+            switch (data.PlayerElement) {
                 default:
                     Debug.LogError("Invalid player type");
                     return;
-                case PlayerType.Fire:
+                case PlayerElement.Fire:
                     playerRef = _fireFactory.SpawnPlayer(data, rpcParams.Receive.SenderClientId);
                     break;
-                case PlayerType.Ice:
+                case PlayerElement.Ice:
                     playerRef = _iceFactory.SpawnPlayer(data, rpcParams.Receive.SenderClientId);
                     break;
             }

@@ -10,18 +10,18 @@ namespace _PrismWars._Scripts.Player {
         
         Camera _camera;
         Vector2 _firePoint;
-        PlayerType _playerType;
+        PlayerElement _playerElement;
         PlayerController _playerController;
 
-        public AttackRangeController(PlayerType playerType, Camera camera, PlayerController playerController) {
-            _playerType = playerType;
+        public AttackRangeController(PlayerElement playerElement, Camera camera, PlayerController playerController) {
+            _playerElement = playerElement;
             _camera = camera;
             _playerController = playerController;
         }
 
         public void RangeAttack(Transform transform) {
             _firePoint = GetPositionTowardsMouse(transform, _camera);
-            _playerController.SpawnProjectile(_firePoint, GetShootingDirection(), _playerType);
+            _playerController.SpawnProjectile(_firePoint, GetShootingDirection(), _playerElement);
         }
         Vector2 GetPositionTowardsMouse(Transform transform, Camera camera) {
             Vector2 playerPosition = transform.position;
