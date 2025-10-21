@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using _PrismWars._Scripts;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Patterns.Factory;
-using _PrismWars._Scripts.Player;
+using _PrismWars._Scripts.Game.GameManager;
 using _PrismWars._Scripts.Systems;
 using _PrismWars._Scripts.UI;
 using Unity.Cinemachine;
@@ -19,8 +19,11 @@ public class GameBootstrap : NetworkBehaviour {
     [SerializeField] PlayerSpawnService _playerSpawnService;    
     [SerializeField] CursorService _cursorService;
     [SerializeField] ProjectileFactory _projectileFactory;
+    [SerializeField] CinemachineVirtualCamera virtualCamera;
+    [SerializeField] ServerGameManager _gameManager;
+    [Header("UI Services")]
     [SerializeField] CharacterServerSelectionManager _characterServerSelectionManager;
-    [SerializeField] CharacterClientSelectionManager _characterClientSelectionManager;
+    [SerializeField] UIManager _uiManager;
     
     [Header("SceneComponents")]
     [SerializeField] List<Transform> _fireSpawnPoints;
@@ -51,6 +54,7 @@ public class GameBootstrap : NetworkBehaviour {
         _playerFireFactory = new PlayerFireFactory(_playerPrefab, _fireSpawnPoints);
         _playerIceFactory = new PlayerIceFactory(_playerPrefab, _iceSpawnPoints);
         
+        ServiceLocator.Singleton.Register(_gameManager);
         ServiceLocator.Singleton.Register(_playerSpawnService);
         ServiceLocator.Singleton.Register(_inputService);
         ServiceLocator.Singleton.Register(_cameraSpawnService);
@@ -58,10 +62,11 @@ public class GameBootstrap : NetworkBehaviour {
         ServiceLocator.Singleton.Register(_projectileFactory);
         ServiceLocator.Singleton.Register(_projectileService);
         ServiceLocator.Singleton.Register(_characterServerSelectionManager);
-        ServiceLocator.Singleton.Register(_characterClientSelectionManager);
+        ServiceLocator.Singleton.Register(_uiManager);
     }
 
     void Init() {
+        _gameManager.Initialize();
         _playerSpawnService.Initialize(_playerFireFactory, _playerIceFactory);
         _inputService.Initialize();
         _cameraSpawnService.Initialize(_cameraPrefab);

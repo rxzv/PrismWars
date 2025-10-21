@@ -60,6 +60,14 @@ namespace _PrismWars._Scripts.UI.Model {
         public PlayerConfig GetCharacterConfig(int index) {
             return index >= 0 && index < _availableCharacters.Count ? _availableCharacters[index] : null;
         }
+        public PlayerConfig GetRandomCharacterConfig() {
+            var rand = new Random();
+            while (true) {
+                int randId = rand.Next(0, _availableCharacters.Count);
+                if(IsCharacterAvailable(randId))
+                    return GetCharacterConfig(randId);
+            }
+        }
 
         public bool IsCharacterAvailable(int index) {
             return !_selectedCharactersId.Contains(_availableCharacters[index].configId);

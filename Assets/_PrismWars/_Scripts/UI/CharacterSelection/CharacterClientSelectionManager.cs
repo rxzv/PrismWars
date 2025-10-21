@@ -7,7 +7,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
-    public class CharacterClientSelectionManager : MonoBehaviour, IService {
+    public class CharacterClientSelectionManager : MonoBehaviour, IInitializable {
         [SerializeField] List<PlayerConfig> _characterConfigs;
         [SerializeField] CharacterSelectionView _view;
 
@@ -15,7 +15,7 @@ namespace _PrismWars._Scripts.UI {
         CharacterSelectionController _controller;
         CharacterServerSelectionManager _serverSelectionManager;
 
-        void Start() {
+        public void Initialize() {
             InitializeMvc();
             _serverSelectionManager = ServiceLocator.Singleton.Get<CharacterServerSelectionManager>();
             _serverSelectionManager.UnavailableCharacters.OnListChanged += UnavailableCharactersOnOnListChanged;

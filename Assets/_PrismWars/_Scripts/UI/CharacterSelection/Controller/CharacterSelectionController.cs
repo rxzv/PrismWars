@@ -7,12 +7,16 @@ namespace _PrismWars._Scripts.UI.Controller {
         readonly CharacterSelectionModel _model;
         readonly CharacterSelectionView _view;
         readonly CommandInvoker _commandInvoker;
+        readonly UIManager _uiManager;
 
         public CharacterSelectionController(CharacterSelectionModel model, CharacterSelectionView view) {
+            _uiManager = ServiceLocator.Singleton.Get<UIManager>();
             _model = model;
             _view = view;
             _commandInvoker = new CommandInvoker();
 
+            _uiManager.OnCharacterSelectionConfirmed += OnConfirmCharacterSelectedExecute;
+            
             _model.OnCharacterSelected += OnCharacterSelected;
             _model.OnCharacterUnavaliableHighlighted += OnCharacterUnavaliableHighlighted;
             _model.OnSelectionConfirmed += OnSelectionConfirmed;
@@ -61,13 +65,21 @@ namespace _PrismWars._Scripts.UI.Controller {
         }
 
         void OnConfirmCharacterSelectedExecute() {
-            var playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterButtonIndex);
+            PlayerConfig playerConfig;
+            
+            if (_model.SelectedCharacterButtonIndex == -1) 
+                playerConfig = _model.GetRandomCharacterConfig();
+            else 
+                playerConfig = _model.GetCharacterConfig(_model.SelectedCharacterButtonIndex);;
+            
             var command = new ConfirmCharacterSelected(playerConfig);
             _commandInvoker.ExecuteCommand(command);
             _view.HideView();
         }
 
         public void Cleanup() {
+            _uiManager.OnCharacterSelectionConfirmed += OnConfirmCharacterSelectedExecute;
+            
             _model.OnCharacterSelected -= OnCharacterSelected;
             _model.OnCharacterUnavaliableHighlighted -= OnCharacterUnavaliableHighlighted;
             _model.OnSelectionConfirmed -= OnSelectionConfirmed;

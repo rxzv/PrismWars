@@ -10,7 +10,6 @@ namespace _PrismWars._Scripts.UI.View {
         [SerializeField] Color _fireColor = Color.red;
         [SerializeField] Color _iceColor = Color.blue;
         [SerializeField] Button _confirmButton;
-
         public event Action<int> OnCharacterButtonClicked;
         public event Action OnConfrimButtonClicked;
         public event Action OnGameReady;
