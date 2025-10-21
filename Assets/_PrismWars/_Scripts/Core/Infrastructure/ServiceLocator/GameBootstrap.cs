@@ -6,6 +6,7 @@ using _PrismWars._Scripts.Core.Patterns.Factory;
 using _PrismWars._Scripts.Game.GameManager;
 using _PrismWars._Scripts.Systems;
 using _PrismWars._Scripts.UI;
+using _PrismWars._Scripts.Utils;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
@@ -20,9 +21,13 @@ public class GameBootstrap : NetworkBehaviour {
     [SerializeField] CursorService _cursorService;
     [SerializeField] ProjectileFactory _projectileFactory;
     [SerializeField] ServerGameManager _gameManager;
+    
     [Header("UI Services")]
     [SerializeField] CharacterServerSelectionManager _characterServerSelectionManager;
     [SerializeField] UIManager _uiManager;
+    
+    [Header("Utils")]
+    [SerializeField] NetworkTimer _networkTimer;
     
     [Header("SceneComponents")]
     [SerializeField] List<Transform> _fireSpawnPoints;
@@ -53,6 +58,7 @@ public class GameBootstrap : NetworkBehaviour {
         _playerFireFactory = new PlayerFireFactory(_playerPrefab, _fireSpawnPoints);
         _playerIceFactory = new PlayerIceFactory(_playerPrefab, _iceSpawnPoints);
         
+        ServiceLocator.Singleton.Register(_networkTimer);
         ServiceLocator.Singleton.Register(_gameManager);
         ServiceLocator.Singleton.Register(_playerSpawnService);
         ServiceLocator.Singleton.Register(_inputService);
