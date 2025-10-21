@@ -27,13 +27,23 @@ namespace _PrismWars._Scripts.UI.View {
         }
 
         public void ConfirmButtonClicked() {
-            foreach (var characterButton in _characterButtons)
-                characterButton.button.onClick.RemoveAllListeners();
+            DisableCharacterButtons();
+            DisableSelectButton();
+            OnGameReady?.Invoke();
+        }
 
+        void DisableSelectButton() {
             _confirmButton.onClick.RemoveAllListeners();
             _confirmButton.gameObject.GetComponent<Image>().color = Color.red;
+            _confirmButton.enabled = false;
             _confirmButtonText.text = "Ready";
-            OnGameReady?.Invoke();
+        }
+
+        void DisableCharacterButtons() {
+            foreach (var characterButton in _characterButtons) {
+                characterButton.button.onClick.RemoveAllListeners();
+                characterButton.button.interactable = false;
+            }
         }
 
         public void InitializeCharacters(List<PlayerConfig> characterConfigs) {
