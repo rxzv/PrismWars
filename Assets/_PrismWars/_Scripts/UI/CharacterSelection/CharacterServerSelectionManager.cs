@@ -1,5 +1,3 @@
-using _PrismWars._Scripts.UI.Controller;
-using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 

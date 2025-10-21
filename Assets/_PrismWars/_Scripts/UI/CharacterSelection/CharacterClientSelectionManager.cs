@@ -13,16 +13,19 @@ namespace _PrismWars._Scripts.UI {
 
         CharacterSelectionModel _model;
         CharacterSelectionController _controller;
+        CharacterServerSelectionManager _serverSelectionManager;
 
         void Start() {
             InitializeMvc();
-            ServiceLocator.Singleton.Get<CharacterServerSelectionManager>().UnavailableCharacters.OnListChanged += UnavailableCharactersOnOnListChanged;
+            _serverSelectionManager = ServiceLocator.Singleton.Get<CharacterServerSelectionManager>();
+            _serverSelectionManager.UnavailableCharacters.OnListChanged += UnavailableCharactersOnOnListChanged;
         }
 
-        void UnavailableCharactersOnOnListChanged(NetworkListEvent<int> changeEvent) {
+        void UnavailableCharactersOnOnListChanged(NetworkListEvent<int> changeEvent) =>
             _model.SelectedCharacterUpdate(changeEvent.Value);
-        }
+        
 
+        // TODO: перенести в гейм менеджер, чтобы сервер решал какой элемент у пользователя
         void RemoveUnnecessaryConfigs() {
             var playerType = NetworkManager.Singleton.LocalClientId % 2 == 0 ? PlayerElement.Fire : PlayerElement.Ice;
             foreach (var config in _characterConfigs.ToList()) {
@@ -41,7 +44,7 @@ namespace _PrismWars._Scripts.UI {
 
         void OnDestroy() {
             _controller?.Cleanup();
-            ServiceLocator.Singleton.Get<CharacterServerSelectionManager>().UnavailableCharacters.OnListChanged -= UnavailableCharactersOnOnListChanged;
+            _serverSelectionManager.UnavailableCharacters.OnListChanged -= UnavailableCharactersOnOnListChanged;
         }
     }
 }
