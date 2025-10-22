@@ -2,10 +2,12 @@ using System;
 using _PrismWars._Scripts.Game.GameManager;
 using _PrismWars._Scripts.Utils;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
-    public class UIManager : MonoBehaviour, IService, IInitializable {
+    [RequireComponent(typeof(NetworkObject))]
+    public class UIManager : NetworkBehaviour, IService {
 
         [SerializeField] TextMeshProUGUI _timer;
         [SerializeField] GameUIView _gameUIView;
@@ -15,7 +17,7 @@ namespace _PrismWars._Scripts.UI {
         ServerGameManager _serverGameManager;
         NetworkTimer _networkTimer;
 
-        public void Initialize() {
+        public override void OnNetworkSpawn() {
             _serverGameManager = ServiceLocator.Singleton.Get<ServerGameManager>();
             _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
             _serverGameManager.OnSelectCharacter += OnSelectCharacter;

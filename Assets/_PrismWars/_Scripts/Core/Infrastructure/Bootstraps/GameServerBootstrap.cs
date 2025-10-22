@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
     [RequireComponent(typeof(NetworkObject))]
-    public class GameServerBootstrap : NetworkBehaviour{
+    public class GameServerBootstrap : NetworkBehaviour {
         [Header("SceneComponents")]
         [SerializeField] UIManager _uiManager;
         [SerializeField] List<Transform> _fireSpawnPoints;
@@ -21,9 +21,11 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
 
         public override void OnNetworkSpawn() {
             if (IsServer) {
+                Debug.Log("GameServerBootstrap.OnNetworkSpawn");
                 ServerServiceInstantiate();
                 ServerServiceInitialize();
             }
+            ServiceLocator.Singleton.Register(_uiManager);
         }
         void ServerServiceInstantiate() {
             _playerPrefab = Resources.Load<Transform>("Prefabs/Player");
@@ -36,11 +38,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             _playerSpawnService = serviceGo1.GetComponent<PlayerSpawnService>();
             ServiceLocator.Singleton.Register(_playerSpawnService);
             
-            ServiceLocator.Singleton.Register(_uiManager);
         }
         void ServerServiceInitialize() {
             _playerSpawnService.Initialize(_playerFireFactory, _playerIceFactory);
-            _uiManager.Initialize();
         }
     }
 }
