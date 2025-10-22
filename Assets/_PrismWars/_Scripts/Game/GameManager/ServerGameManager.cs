@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
@@ -15,13 +14,14 @@ namespace _PrismWars._Scripts.Game.GameManager {
         public event Action OnGameStarted;
 
         public void Initialize() {
-            if(IsServer)
+            if (IsServer) {
                 _gameState.Value = GameState.Init;
             
-            _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
+                _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
 
-            OnGameState();
-            _networkTimer.OnTimerComplete += OnGameState;
+                OnGameState();
+                _networkTimer.OnTimerComplete += OnGameState;
+            }
         }
         
         void OnGameState() {

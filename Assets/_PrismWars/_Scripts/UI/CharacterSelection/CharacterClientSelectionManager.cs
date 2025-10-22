@@ -14,14 +14,14 @@ namespace _PrismWars._Scripts.UI {
 
         CharacterSelectionModel _model;
         CharacterSelectionController _controller;
-        CharacterServerSelectionManager _serverSelectionManager;
+        CharacterSelectionManager _selectionManager;
         
         public CharacterSelectionView View => _view;
 
         public void Initialize() {
             InitializeMvc();
-            _serverSelectionManager = ServiceLocator.Singleton.Get<CharacterServerSelectionManager>();
-            _serverSelectionManager.UnavailableCharacters.OnListChanged += UnavailableCharactersOnOnListChanged;
+            _selectionManager = ServiceLocator.Singleton.Get<CharacterSelectionManager>();
+            _selectionManager.UnavailableCharacters.OnListChanged += UnavailableCharactersOnOnListChanged;
         }
 
         void UnavailableCharactersOnOnListChanged(NetworkListEvent<int> changeEvent) =>
@@ -47,7 +47,7 @@ namespace _PrismWars._Scripts.UI {
 
         void OnDestroy() {
             _controller?.Cleanup();
-            _serverSelectionManager.UnavailableCharacters.OnListChanged -= UnavailableCharactersOnOnListChanged;
+            _selectionManager.UnavailableCharacters.OnListChanged -= UnavailableCharactersOnOnListChanged;
         }
     }
 }

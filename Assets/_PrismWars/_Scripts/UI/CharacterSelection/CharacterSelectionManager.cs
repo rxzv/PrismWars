@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
     [RequireComponent(typeof(NetworkObject))]
-    public class CharacterServerSelectionManager : NetworkBehaviour, IService {
+    public class CharacterSelectionManager : NetworkBehaviour, IService {
         public NetworkList<int> UnavailableCharacters { get; private set; } = new NetworkList<int>(
             null,
             NetworkVariableReadPermission.Everyone,
