@@ -1,18 +1,16 @@
-
 using System;
 using R3;
 using Unity.Netcode;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace _PrismWars._Scripts.Components.Projectile {
-    public class ProjectileService : IService, IInitializable, IDisposable {
+    public class ProjectileServerService : IServerService, IInitializable, IDisposable {
         NetworkObjectReference _networkObject;
         
         readonly CompositeDisposable _disposables = new();
         
         public void Initialize() {
-            ProjectileFactory projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
+            ProjectileFactory projectileFactory = ServerServiceLocator.Singleton.Get<ProjectileFactory>();
             
             projectileFactory.OnGetProjectile
                 .Subscribe(OnGetProjectile)

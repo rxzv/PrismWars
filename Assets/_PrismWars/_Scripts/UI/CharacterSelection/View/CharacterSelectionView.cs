@@ -16,7 +16,7 @@ namespace _PrismWars._Scripts.UI.View {
         public event Action OnConfrimButtonClicked;
         public event Action OnGameReady;
         
-        CharacterSelectionManager _characterSelectionManager;
+        NetworkCharacterSelectionManager _networkCharacterSelectionManager;
 
         void Start() {
             for (var i = 0; i < _characterButtons.Count; i++) {
@@ -56,7 +56,7 @@ namespace _PrismWars._Scripts.UI.View {
                 characterButton.selectionFrame.SetActive(false);
             }
 
-            _characterSelectionManager = ServiceLocator.Singleton.Get<CharacterSelectionManager>();
+            _networkCharacterSelectionManager = ClientServiceLocator.Singleton.Get<NetworkCharacterSelectionManager>();
         }
 
         public void SetCharacterSelected(int characterIndex, bool selected) {
@@ -83,7 +83,7 @@ namespace _PrismWars._Scripts.UI.View {
 
         public void ShowSelectionConfirmed(int id) {
             Debug.Log("Выбор персонажа подтвержден!");
-            _characterSelectionManager.SelectCharacterServerRpc(id);
+            _networkCharacterSelectionManager.SelectCharacterServerRpc(id);
         }
 
         Color GetColorByPlayerElement(PlayerElement playerElement) {

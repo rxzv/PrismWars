@@ -6,12 +6,12 @@ namespace _PrismWars._Scripts.UI.Command {
     public class StartClientCommand : ICommand {
         readonly NetworkManager _networkManager;
         readonly PlayerConfig _playerConfig;
-        readonly PlayerSpawnService _playerSpawnService;
+        readonly NetworkPlayerSpawnService _networkPlayerSpawnService;
 
-        public StartClientCommand(NetworkManager networkManager, PlayerConfig playerConfig, PlayerSpawnService playerSpawnService) {
+        public StartClientCommand(NetworkManager networkManager, PlayerConfig playerConfig, NetworkPlayerSpawnService _networkPlayerSpawnService) {
             _networkManager = networkManager;
             _playerConfig = playerConfig;
-            _playerSpawnService = playerSpawnService;
+            this._networkPlayerSpawnService = _networkPlayerSpawnService;
         }
 
         public void Execute() {
@@ -22,7 +22,7 @@ namespace _PrismWars._Scripts.UI.Command {
         void OnClientConnected(ulong clientId) {
             if (clientId == _networkManager.LocalClientId) {
                 var networkConfig = _playerConfig.ToNetworkConfig();
-                _playerSpawnService.SpawnPlayerServerRpc(networkConfig);
+                _networkPlayerSpawnService.SpawnPlayerServerRpc(networkConfig);
             }
             _networkManager.OnClientConnectedCallback -= OnClientConnected;
         }

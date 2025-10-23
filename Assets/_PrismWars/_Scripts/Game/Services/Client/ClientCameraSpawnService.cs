@@ -5,7 +5,7 @@ using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public class CameraSpawnService : MonoBehaviour, IService, IDisposable, IInitializable<CinemachineCamera> {
+public class ClientCameraSpawnService : MonoBehaviour, IClientService, IDisposable, IInitializable<CinemachineCamera> {
     
     CinemachineCamera _camera;
     
@@ -13,7 +13,8 @@ public class CameraSpawnService : MonoBehaviour, IService, IDisposable, IInitial
     
     public void Initialize(CinemachineCamera camera) {
         _camera = camera;
-        ServiceLocator.Singleton.Get<PlayerSpawnService>().OnPlayerSpawned
+        var networkPlayerSpawnService = ClientServiceLocator.Singleton.Get<NetworkPlayerSpawnService>();
+        networkPlayerSpawnService.OnPlayerSpawned
             .Where(tuple => tuple.clientId == NetworkManager.Singleton.LocalClientId)
             .Subscribe(tuple => SpawnCamera(tuple.playerRef))
             .AddTo(_disposables);

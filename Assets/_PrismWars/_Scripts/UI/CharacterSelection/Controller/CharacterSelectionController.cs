@@ -7,15 +7,15 @@ namespace _PrismWars._Scripts.UI.Controller {
         readonly CharacterSelectionModel _model;
         readonly CharacterSelectionView _view;
         readonly CommandInvoker _commandInvoker;
-        readonly UIManager _uiManager;
+        readonly NetworkUIManager _networkUIManager;
 
         public CharacterSelectionController(CharacterSelectionModel model, CharacterSelectionView view) {
-            _uiManager = ServiceLocator.Singleton.Get<UIManager>();
+            _networkUIManager = ClientServiceLocator.Singleton.Get<NetworkUIManager>();
             _model = model;
             _view = view;
             _commandInvoker = new CommandInvoker();
 
-            _uiManager.OnCharacterSelectionConfirmed += OnConfirmCharacterSelectedExecute;
+            _networkUIManager.OnCharacterSelectionConfirmed += OnConfirmCharacterSelectedExecute;
             
             _model.OnCharacterSelected += OnCharacterSelected;
             _model.OnCharacterUnavaliableHighlighted += OnCharacterUnavaliableHighlighted;
@@ -78,7 +78,7 @@ namespace _PrismWars._Scripts.UI.Controller {
         }
 
         public void Cleanup() {
-            _uiManager.OnCharacterSelectionConfirmed += OnConfirmCharacterSelectedExecute;
+            _networkUIManager.OnCharacterSelectionConfirmed += OnConfirmCharacterSelectedExecute;
             
             _model.OnCharacterSelected -= OnCharacterSelected;
             _model.OnCharacterUnavaliableHighlighted -= OnCharacterUnavaliableHighlighted;

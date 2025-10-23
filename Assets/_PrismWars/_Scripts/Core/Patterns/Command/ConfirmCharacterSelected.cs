@@ -3,16 +3,16 @@ using _PrismWars._Scripts.UI.Model;
 namespace _PrismWars._Scripts.UI.Command {
     public class ConfirmCharacterSelected : ICommand {
         readonly PlayerConfig _playerConfig;
-        readonly PlayerSpawnService _playerSpawnService;
+        readonly NetworkPlayerSpawnService _networkPlayerSpawnService;
 
         public ConfirmCharacterSelected(PlayerConfig playerConfig) {
             _playerConfig = playerConfig;
-            _playerSpawnService = ServiceLocator.Singleton.Get<PlayerSpawnService>();
+            _networkPlayerSpawnService = ClientServiceLocator.Singleton.Get<NetworkPlayerSpawnService>();
         }
 
         public void Execute() {
             NetworkPlayerData networkPlayerData = _playerConfig.ToNetworkConfig();
-            _playerSpawnService.SpawnPlayerServerRpc(networkPlayerData);
+            _networkPlayerSpawnService.SpawnPlayerServerRpc(networkPlayerData);
         }
 
         public void Undo() {

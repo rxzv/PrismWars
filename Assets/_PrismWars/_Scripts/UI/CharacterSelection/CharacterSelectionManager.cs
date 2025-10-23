@@ -1,23 +1,53 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using _PrismWars._Scripts.UI.Controller;
+using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.UI.View;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
-    [RequireComponent(typeof(NetworkObject))]
-    public class CharacterSelectionManager : NetworkBehaviour, IService {
-        public NetworkList<int> UnavailableCharacters { get; private set; } = new NetworkList<int>(
-            null,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server);
+    public class CharacterSelectionManager : MonoBehaviour, IInitializable, IClientService {
+        [SerializeField] List<PlayerConfig> _characterConfigs;
+        [SerializeField] CharacterSelectionView _view;
 
-        [ServerRpc(RequireOwnership = false)]
-        public void SelectCharacterServerRpc(int configId) {
-            if (!UnavailableCharacters.Contains(configId) && configId >= 0) 
-                UnavailableCharacters.Add(configId);
-            else if(configId < 0)
-                Debug.LogError($"Character configId {configId} is defective");
-            else 
-                Debug.LogError($"Character configId {configId} already exists");
-            
+        CharacterSelectionModel _model;
+        CharacterSelectionController _controller;
+        NetworkCharacterSelectionManager _selectionManager;
+        
+        public CharacterSelectionView View => _view;
+
+        public void Initialize() {
+            InitializeMvc();
+            _selectionManager = ClientServiceLocator.Singleton.Get<NetworkCharacterSelectionManager>();
+            _selectionManager.UnavailableCharacters.OnListChanged += UnavailableCharactersOnOnListChanged;
+        }
+
+        void UnavailableCharactersOnOnListChanged(NetworkListEvent<int> changeEvent) =>
+            _model.SelectedCharacterUpdate(changeEvent.Value);
+        
+
+        // TODO: перенести в гейм менеджер, чтобы сервер решал какой элемент у пользователя
+        void RemoveUnnecessaryConfigs() {
+            var playerType = NetworkManager.Singleton.LocalClientId % 2 == 0 ? PlayerElement.Fire : PlayerElement.Ice;
+            foreach (var config in _characterConfigs.ToList()) {
+                if (config.playerElement != playerType) {
+                    _characterConfigs?.Remove(config);
+                }
+            }
+        }
+        void InitializeMvc() {
+            RemoveUnnecessaryConfigs();
+            _model = new CharacterSelectionModel(_characterConfigs);
+            _controller = new CharacterSelectionController(_model, _view);
+        
+            _view.InitializeCharacters(_characterConfigs);
+        }
+
+        void OnDestroy() {
+            _controller?.Cleanup();
+            _selectionManager.UnavailableCharacters.OnListChanged -= UnavailableCharactersOnOnListChanged;
         }
     }
 }

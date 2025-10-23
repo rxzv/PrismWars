@@ -1,0 +1,41 @@
+using System;
+using _PrismWars._Scripts.Utils;
+using TMPro;
+using Unity.Netcode;
+using UnityEngine;
+
+namespace _PrismWars._Scripts.UI {
+    [RequireComponent(typeof(NetworkObject))]
+    public class NetworkUIManager : NetworkBehaviour, IClientService, IInitializable {
+        [SerializeField] TextMeshProUGUI _timer;
+        [SerializeField] GameUIView _gameUIView;
+        [SerializeField] CharacterSelectionManager _characterSelectionManager;
+        public event Action OnCharacterSelectionConfirmed;
+        
+        NetworkTimer _networkTimer;
+
+        public void Initialize() {
+            _networkTimer = ClientServiceLocator.Singleton.Get<NetworkTimer>();
+        }
+
+        public void OnSelectCharacter() {
+            _characterSelectionManager.Initialize();
+            _characterSelectionManager.View.ShowView();
+        }
+        public void OnGameStarted() {
+            OnCharacterSelectionConfirmed?.Invoke();
+            _gameUIView.ShowView();
+        }
+        
+        void Awake() {
+            _characterSelectionManager.View.HideView();
+            _gameUIView.HideView();
+            _timer.text = "0";
+        }
+
+        void Update() {
+            var time = (int)_networkTimer.GetRemainingTime();
+            _timer.text = time.ToString();
+        }
+    }
+}

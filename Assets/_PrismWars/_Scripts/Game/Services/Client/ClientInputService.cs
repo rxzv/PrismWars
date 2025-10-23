@@ -3,7 +3,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputService : MonoBehaviour, IService, IInitializable, IDisposable
+public class ClientInputService : MonoBehaviour, IClientService, IInitializable, IDisposable
 {
     public Observable<Vector2> MoveInput { get; private set; }
     public readonly ReactiveCommand JumpCommand = new();
@@ -13,8 +13,7 @@ public class InputService : MonoBehaviour, IService, IInitializable, IDisposable
     PlayerInputActions _inputActions;
     readonly CompositeDisposable _disposables = new();
 
-    public void Initialize()
-    {
+    public void Initialize() {
         _inputActions = new PlayerInputActions();
         _inputActions.Player.Enable();
 

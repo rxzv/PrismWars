@@ -7,7 +7,7 @@ using UnityEngine.Pool;
 
 namespace _PrismWars._Scripts.Components.Projectile {
     [RequireComponent(typeof(NetworkObject))]
-    public class ProjectileFactory : NetworkBehaviour, IService, IInitializable<Projectile> {
+    public class ProjectileFactory : NetworkBehaviour, IServerService, IInitializable<Projectile> {
         [SerializeField] bool _collectionCheck = true;
         [SerializeField] int _defaultCapacity = 10;
         [SerializeField] int _maxPoolSize = 100;

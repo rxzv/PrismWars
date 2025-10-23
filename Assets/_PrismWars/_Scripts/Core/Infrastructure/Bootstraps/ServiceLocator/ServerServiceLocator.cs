@@ -4,41 +4,41 @@ using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
-public class ServiceLocator : NetworkBehaviour {
-    readonly Dictionary<string, IService> _services = new();
+public class ServerServiceLocator : NetworkBehaviour {
+    readonly Dictionary<string, IServerService> _services = new();
 
-    public static ServiceLocator Singleton { get; private set; }
+    public static ServerServiceLocator Singleton { get; private set; }
 
     void Awake() {
         if (Singleton != null && Singleton != this) {
             Destroy(gameObject);
-            Debug.LogError("Singleton already exists, destroying singleton");
+            Debug.LogError("ServerServiceLocator: Singleton already exists, destroying singleton");
         }
         Singleton = this;
         DontDestroyOnLoad(Singleton);
     }
-    public T Get<T>() where T : IService {
+    public T Get<T>() where T : IServerService {
         string key = typeof(T).Name;
         if (!_services.ContainsKey(key)) {
-            Debug.LogError($"{key} not registered with {GetType().Name}");
+            Debug.LogError($"ServerServiceLocator: {key} not registered with {GetType().Name}");
             throw new InvalidOperationException();
         }
         return (T)_services[key];
     }
-    public void Register<T>(T service) where T : IService {
+    public void Register<T>(T service) where T : IServerService {
         string key = typeof(T).Name;
         if (_services.ContainsKey(key)) {
             Debug.LogError(
-                $"Attempted to register service of type {key} which is already registered with the {GetType().Name}.");
+                $"ServerServiceLocator: Attempted to register service of type {key} which is already registered with the {GetType().Name}.");
             return;
         }
         _services.Add(key, service);
     }
-    public void Unregister<T>() where T : IService {
+    public void Unregister<T>() where T : IServerService {
         string key = typeof(T).Name;
         if (!_services.ContainsKey(key)) {
             Debug.LogError(
-                $"Attempted to unregister service of type {key} which is not registered with the {GetType().Name}.");
+                $"ServerServiceLocator: Attempted to unregister service of type {key} which is not registered with the {GetType().Name}.");
             return;
         }
 

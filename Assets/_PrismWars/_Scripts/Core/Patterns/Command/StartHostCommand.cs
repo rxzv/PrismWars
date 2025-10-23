@@ -6,12 +6,12 @@ namespace _PrismWars._Scripts.UI.Command {
     {
         readonly NetworkManager _networkManager;
         readonly PlayerConfig _playerConfig;
-        readonly PlayerSpawnService _playerSpawnService;
+        readonly NetworkPlayerSpawnService _networkPlayerSpawnService;
 
-        public StartHostCommand(NetworkManager networkManager, PlayerConfig playerConfig, PlayerSpawnService playerSpawnService) {
+        public StartHostCommand(NetworkManager networkManager, PlayerConfig playerConfig, NetworkPlayerSpawnService _networkPlayerSpawnService) {
             _networkManager = networkManager;
             _playerConfig = playerConfig;
-            _playerSpawnService = playerSpawnService;
+            this._networkPlayerSpawnService = _networkPlayerSpawnService;
         }
 
         public void Execute() {
