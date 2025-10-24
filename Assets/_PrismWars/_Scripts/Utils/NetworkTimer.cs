@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 namespace _PrismWars._Scripts.Utils { 
-    public class NetworkTimer : NetworkBehaviour, IClientService {
+    public class NetworkTimer : NetworkBehaviour, IService {
         float _timerDuration = 0f;
  
         NetworkVariable<float> _endTime = new NetworkVariable<float>();

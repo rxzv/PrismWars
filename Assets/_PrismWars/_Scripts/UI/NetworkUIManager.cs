@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
     [RequireComponent(typeof(NetworkObject))]
-    public class NetworkUIManager : NetworkBehaviour, IClientService, IInitializable {
+    public class NetworkUIManager : NetworkBehaviour, IService, IInitializable {
         [SerializeField] TextMeshProUGUI _timer;
         [SerializeField] GameUIView _gameUIView;
         [SerializeField] CharacterSelectionManager _characterSelectionManager;
@@ -15,7 +15,7 @@ namespace _PrismWars._Scripts.UI {
         NetworkTimer _networkTimer;
 
         public void Initialize() {
-            _networkTimer = ClientServiceLocator.Singleton.Get<NetworkTimer>();
+            _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
         }
 
         public void OnSelectCharacter() {

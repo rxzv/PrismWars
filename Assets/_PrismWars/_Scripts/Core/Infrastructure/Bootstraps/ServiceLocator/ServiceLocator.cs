@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClientServiceLocator : MonoBehaviour {
-    readonly Dictionary<string, IClientService> _services = new();
+public class ServiceLocator : MonoBehaviour {
+    readonly Dictionary<string, IService> _services = new();
 
-    public static ClientServiceLocator Singleton { get; private set; }
+    public static ServiceLocator Singleton { get; private set; }
 
     void Awake() {
         if (Singleton != null && Singleton != this) {
@@ -15,7 +15,7 @@ public class ClientServiceLocator : MonoBehaviour {
         Singleton = this;
         DontDestroyOnLoad(Singleton);
     }
-    public T Get<T>() where T : IClientService {
+    public T Get<T>() where T : IService {
         string key = typeof(T).Name;
         if (!_services.ContainsKey(key)) {
             Debug.LogError($"ClientServiceLocator: {key} not registered with {GetType().Name}");
@@ -23,7 +23,7 @@ public class ClientServiceLocator : MonoBehaviour {
         }
         return (T)_services[key];
     }
-    public void Register<T>(T service) where T : IClientService {
+    public void Register<T>(T service) where T : IService {
         string key = typeof(T).Name;
         if (_services.ContainsKey(key)) {
             Debug.LogError(
@@ -32,7 +32,7 @@ public class ClientServiceLocator : MonoBehaviour {
         }
         _services.Add(key, service);
     }
-    public void Unregister<T>() where T : IClientService {
+    public void Unregister<T>() where T : IService {
         string key = typeof(T).Name;
         if (!_services.ContainsKey(key)) {
             Debug.LogError(

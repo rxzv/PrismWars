@@ -1,9 +1,10 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
     [RequireComponent(typeof(NetworkObject))]
-    public class NetworkCharacterSelectionManager : NetworkBehaviour, IClientService {
+    public class NetworkCharacterSelectionManager : NetworkBehaviour, IService {
         public NetworkList<int> UnavailableCharacters { get; private set; } = new NetworkList<int>(
             null,
             NetworkVariableReadPermission.Everyone,

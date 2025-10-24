@@ -62,7 +62,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
         
         [Rpc(SendTo.Server)]
         void ReturnToPoolRpc(PlayerElement element) {
-            ServerServiceLocator.Singleton.Get<ProjectileFactory>().ReturnToPool(this, element);
+            ServiceLocator.Singleton.Get<ProjectileFactory>().ReturnToPool(this, element);
         }
 
         Material GetMaterialByPlayerType(PlayerElement playerElement) {

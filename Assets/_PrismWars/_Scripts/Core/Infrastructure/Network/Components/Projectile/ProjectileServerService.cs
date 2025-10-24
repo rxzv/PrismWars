@@ -4,13 +4,13 @@ using Unity.Netcode;
 using Object = UnityEngine.Object;
 
 namespace _PrismWars._Scripts.Components.Projectile {
-    public class ProjectileServerService : IServerService, IInitializable, IDisposable {
+    public class ProjectileServerService : IService, IInitializable, IDisposable {
         NetworkObjectReference _networkObject;
         
         readonly CompositeDisposable _disposables = new();
         
         public void Initialize() {
-            ProjectileFactory projectileFactory = ServerServiceLocator.Singleton.Get<ProjectileFactory>();
+            ProjectileFactory projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
             
             projectileFactory.OnGetProjectile
                 .Subscribe(OnGetProjectile)

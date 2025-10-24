@@ -10,7 +10,7 @@ namespace _PrismWars._Scripts.UI.Controller {
         readonly NetworkUIManager _networkUIManager;
 
         public CharacterSelectionController(CharacterSelectionModel model, CharacterSelectionView view) {
-            _networkUIManager = ClientServiceLocator.Singleton.Get<NetworkUIManager>();
+            _networkUIManager = ServiceLocator.Singleton.Get<NetworkUIManager>();
             _model = model;
             _view = view;
             _commandInvoker = new CommandInvoker();

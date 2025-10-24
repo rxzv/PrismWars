@@ -19,7 +19,7 @@ namespace _PrismWars._Scripts.Player {
         Vector3 _direction;
         Rigidbody2D _rb;
         
-        ClientInputService _clientInputService;
+        InputService _inputService;
         ProjectileFactory _projectileFactory;
         
         bool _isInitialized = false;
@@ -66,8 +66,8 @@ namespace _PrismWars._Scripts.Player {
             _disposables?.Dispose();
             _disposables = new CompositeDisposable();
             
-            _clientInputService = ClientServiceLocator.Singleton.Get<ClientInputService>();
-            _projectileFactory = ServerServiceLocator.Singleton.Get<ProjectileFactory>();
+            _inputService = ServiceLocator.Singleton.Get<InputService>();
+            _projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
             _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
             
             _movementController = new MovementController(transform, _config.moveSpeed);
@@ -79,19 +79,19 @@ namespace _PrismWars._Scripts.Player {
                 _config.meleeDamage);
             
             
-            _clientInputService.MoveInput
+            _inputService.MoveInput
                 .Subscribe(d => _movementController.Move(d))
                 .AddTo(_disposables);
-            _clientInputService.MoveInput
+            _inputService.MoveInput
                 .Subscribe(d => _flipXController.FlipX(d))
                 .AddTo(_disposables);
-            _clientInputService.JumpCommand
+            _inputService.JumpCommand
                 .Subscribe(_ => _jumpingController.Jump())
                 .AddTo(_disposables);
-            _clientInputService.AttackMelee
+            _inputService.AttackMelee
                 .Subscribe(_ => _attackMeleeController.MeleeAttack(gameObject, _spriteRenderer))
                 .AddTo(_disposables);
-            _clientInputService.AttackRange
+            _inputService.AttackRange
                 .Subscribe(_ => {
                     _attackRangeController
                         .RangeAttack(transform);

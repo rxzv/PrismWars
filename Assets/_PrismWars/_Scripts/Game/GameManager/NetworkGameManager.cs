@@ -5,26 +5,27 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Game.GameManager {
     [RequireComponent(typeof(NetworkObject))]
-    public class NetworkGameManager : NetworkBehaviour, IClientService, IInitializable {
+    public class NetworkGameManager : NetworkBehaviour, IService, IInitializable {
         NetworkVariable<GameState> _gameState = new();
         
         NetworkTimer _networkTimer;
         NetworkUIManager _networkUIManager;
+        
+        public void Initialize() {
+            _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
+            _networkTimer.OnTimerComplete += OnTimerComplete;
+            StartGameRpc();
+        }
 
-        protected override void OnNetworkPostSpawn() {
-            base.OnNetworkPostSpawn();
+        [Rpc(SendTo.Server)]
+        void StartGameRpc() {
             if (IsServer) {
                 _gameState.Value = GameState.Init;
-
+        
                 OnChangeGameStateRpc();
             }
         }
-
-        public void Initialize() {
-            _networkTimer = ClientServiceLocator.Singleton.Get<NetworkTimer>();
-            _networkTimer.OnTimerComplete += OnTimerComplete;
-        }
-
+        
         void OnTimerComplete() {
             OnChangeGameStateRpc();
         }
@@ -47,17 +48,17 @@ namespace _PrismWars._Scripts.Game.GameManager {
 
         [Rpc(SendTo.ClientsAndHost)]
         void StartTimerRpc(float time) {
-            _networkTimer = ClientServiceLocator.Singleton.Get<NetworkTimer>();
+            _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
             _networkTimer.StartTimerServerRpc(time);
         }
         [Rpc(SendTo.ClientsAndHost)]
         void SelectCharacterRpc() {
-            _networkUIManager = ClientServiceLocator.Singleton.Get<NetworkUIManager>();
+            _networkUIManager = ServiceLocator.Singleton.Get<NetworkUIManager>();
             _networkUIManager.OnSelectCharacter();
         }
         [Rpc(SendTo.ClientsAndHost)]
         void GameStartedRpc() {
-            _networkUIManager = ClientServiceLocator.Singleton.Get<NetworkUIManager>();
+            _networkUIManager = ServiceLocator.Singleton.Get<NetworkUIManager>();
             _networkUIManager.OnGameStarted();
         }
         

@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts {
-    public class NetworkPlayerSpawnService : NetworkBehaviour, IClientService, IInitializable<PlayerFireFactory, PlayerIceFactory> {
+    public class NetworkPlayerSpawnService : NetworkBehaviour, IService, IInitializable<PlayerFireFactory, PlayerIceFactory> {
         PlayerFireFactory _fireFactory;
         PlayerIceFactory _iceFactory;
         
