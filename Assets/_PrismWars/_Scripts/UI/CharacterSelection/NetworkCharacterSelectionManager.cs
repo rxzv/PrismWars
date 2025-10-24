@@ -10,8 +10,10 @@ namespace _PrismWars._Scripts.UI {
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server);
 
-        [ServerRpc(RequireOwnership = false)]
-        public void SelectCharacterServerRpc(int configId) {
+        [Rpc(SendTo.Server)]
+        public void SelectCharacterRpc(int configId) {
+            if(!IsServer) return;
+            
             if (!UnavailableCharacters.Contains(configId) && configId >= 0) 
                 UnavailableCharacters.Add(configId);
             else if(configId < 0)

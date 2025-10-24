@@ -16,8 +16,9 @@ namespace _PrismWars._Scripts {
             _iceFactory = iceFactory;
         }
         
-        [ServerRpc(RequireOwnership = false)]
-        public void SpawnPlayerServerRpc(NetworkPlayerData data, ServerRpcParams rpcParams = default) {
+        [Rpc(SendTo.Server)]
+        public void SpawnPlayerRpc(NetworkPlayerData data, ulong clientId) {
+            if(!IsServer) return;
             NetworkObject playerRef;
             
             switch (data.PlayerElement) {
@@ -25,14 +26,14 @@ namespace _PrismWars._Scripts {
                     Debug.LogError("Invalid player type");
                     return;
                 case PlayerElement.Fire:
-                    playerRef = _fireFactory.SpawnPlayer(data, rpcParams.Receive.SenderClientId);
+                    playerRef = _fireFactory.SpawnPlayer(data, clientId);
                     break;
                 case PlayerElement.Ice:
-                    playerRef = _iceFactory.SpawnPlayer(data, rpcParams.Receive.SenderClientId);
+                    playerRef = _iceFactory.SpawnPlayer(data, clientId);
                     break;
             }
             
-            SpawnPlayerRpc(playerRef, rpcParams.Receive.SenderClientId);
+            SpawnPlayerRpc(playerRef, clientId);
         }
 
         [Rpc(SendTo.ClientsAndHost)]

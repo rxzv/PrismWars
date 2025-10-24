@@ -22,7 +22,7 @@ namespace _PrismWars._Scripts.UI.Command {
         void OnClientConnected(ulong clientId) {
             if (clientId == _networkManager.LocalClientId) {
                 var networkConfig = _playerConfig.ToNetworkConfig();
-                _networkPlayerSpawnService.SpawnPlayerServerRpc(networkConfig);
+                _networkPlayerSpawnService.SpawnPlayerRpc(networkConfig, clientId);
             }
             _networkManager.OnClientConnectedCallback -= OnClientConnected;
         }

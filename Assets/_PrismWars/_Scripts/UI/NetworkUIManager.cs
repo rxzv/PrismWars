@@ -18,13 +18,19 @@ namespace _PrismWars._Scripts.UI {
             _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
         }
 
-        public void OnSelectCharacter() {
-            _characterSelectionManager.Initialize();
-            _characterSelectionManager.View.ShowView();
+        [ClientRpc]
+        public void OnSelectCharacterClientRpc() {
+            if (IsClient) {
+                _characterSelectionManager.Initialize();
+                _characterSelectionManager.View.ShowView();
+            }
         }
-        public void OnGameStarted() {
-            OnCharacterSelectionConfirmed?.Invoke();
-            _gameUIView.ShowView();
+        [ClientRpc]
+        public void OnGameStartedClientRpc() {
+            if (IsClient) {
+                OnCharacterSelectionConfirmed?.Invoke();
+                _gameUIView.ShowView();
+            }
         }
         
         void Awake() {

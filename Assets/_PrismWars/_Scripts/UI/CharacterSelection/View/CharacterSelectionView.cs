@@ -83,7 +83,7 @@ namespace _PrismWars._Scripts.UI.View {
 
         public void ShowSelectionConfirmed(int id) {
             Debug.Log("Выбор персонажа подтвержден!");
-            _networkCharacterSelectionManager.SelectCharacterServerRpc(id);
+            _networkCharacterSelectionManager.SelectCharacterRpc(id);
         }
 
         Color GetColorByPlayerElement(PlayerElement playerElement) {

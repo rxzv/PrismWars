@@ -1,4 +1,5 @@
 using _PrismWars._Scripts.UI.Model;
+using Unity.Netcode;
 
 namespace _PrismWars._Scripts.UI.Command {
     public class ConfirmCharacterSelected : ICommand {
@@ -12,7 +13,7 @@ namespace _PrismWars._Scripts.UI.Command {
 
         public void Execute() {
             NetworkPlayerData networkPlayerData = _playerConfig.ToNetworkConfig();
-            _networkPlayerSpawnService.SpawnPlayerServerRpc(networkPlayerData);
+            _networkPlayerSpawnService.SpawnPlayerRpc(networkPlayerData, NetworkManager.Singleton.LocalClientId);
         }
 
         public void Undo() {

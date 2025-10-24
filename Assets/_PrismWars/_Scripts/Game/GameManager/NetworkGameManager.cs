@@ -5,61 +5,62 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Game.GameManager {
     [RequireComponent(typeof(NetworkObject))]
-    public class NetworkGameManager : NetworkBehaviour, IService, IInitializable {
+    public class NetworkGameManager : NetworkBehaviour {
         NetworkVariable<GameState> _gameState = new();
         
         NetworkTimer _networkTimer;
         NetworkUIManager _networkUIManager;
-        
-        public void Initialize() {
+
+        public override void OnNetworkSpawn() {
             _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
             _networkTimer.OnTimerComplete += OnTimerComplete;
-            StartGameRpc();
+            
+            if (IsServer) {
+                StartGame();
+            }
+            base.OnNetworkSpawn();
         }
 
-        [Rpc(SendTo.Server)]
-        void StartGameRpc() {
+        void StartGame() {
             if (IsServer) {
                 _gameState.Value = GameState.Init;
-        
-                OnChangeGameStateRpc();
+                _networkTimer.StartTimerServerRpc(0f);
             }
         }
         
         void OnTimerComplete() {
-            OnChangeGameStateRpc();
-        }
+            if (IsServer) {
+                switch (_gameState.Value) {
+                    case GameState.Init:
+                        _gameState.Value = GameState.SelectCharacter;
+                        _networkTimer.StartTimerServerRpc(10f);
+                        break;
+                    case GameState.SelectCharacter:
+                        _gameState.Value = GameState.GameStart;
+                        _networkTimer.StartTimerServerRpc(180f);
+                        break;
+                } 
+            }
 
-        [Rpc(SendTo.Server)]
-        void OnChangeGameStateRpc() {
-            switch (_gameState.Value) {
-                case GameState.Init:
-                    StartTimerRpc(10f);
-                    SelectCharacterRpc();
-                    _gameState.Value = GameState.SelectCharacter;
-                    break;
-                case GameState.SelectCharacter:
-                    StartTimerRpc(180f);
-                    GameStartedRpc();
-                    _gameState.Value = GameState.GameStart;
-                    break;
+            if (IsClient) {
+                switch (_gameState.Value) {
+                    case GameState.SelectCharacter:
+                        SelectCharacter();
+                        break;
+                    case GameState.GameStart:
+                        GameStarted();
+                        break;
+                }
             }
         }
 
-        [Rpc(SendTo.ClientsAndHost)]
-        void StartTimerRpc(float time) {
-            _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
-            _networkTimer.StartTimerServerRpc(time);
-        }
-        [Rpc(SendTo.ClientsAndHost)]
-        void SelectCharacterRpc() {
+        void SelectCharacter() {
             _networkUIManager = ServiceLocator.Singleton.Get<NetworkUIManager>();
-            _networkUIManager.OnSelectCharacter();
+            _networkUIManager.OnSelectCharacterClientRpc();
         }
-        [Rpc(SendTo.ClientsAndHost)]
-        void GameStartedRpc() {
+        void GameStarted() {
             _networkUIManager = ServiceLocator.Singleton.Get<NetworkUIManager>();
-            _networkUIManager.OnGameStarted();
+            _networkUIManager.OnGameStartedClientRpc();
         }
         
         enum GameState {
