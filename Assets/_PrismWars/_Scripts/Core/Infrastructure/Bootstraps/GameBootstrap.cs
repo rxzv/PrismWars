@@ -59,8 +59,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
         }
 
         void AddDisposables() {
+            var inputService = ServiceLocator.Singleton.Get<InputService>();
             _disposables.Add(_projectileServerService);
             _disposables.Add(_cameraSpawnService);
+            _disposables.Add(inputService);
         }
         
         void OnDestroy() {

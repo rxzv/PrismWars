@@ -21,7 +21,6 @@ public class Bootstrap : MonoBehaviour {
     void Start() {
         RegisterServices();
         InitializeServices();
-        AddDisposables();
     }
     
     void RegisterServices() {
@@ -48,14 +47,5 @@ public class Bootstrap : MonoBehaviour {
         
         SceneLoader.LoadNetwork("Game");
         Debug.Log("BootstrapScene Services initialize");
-    }
-    void AddDisposables() {
-        _disposables.Add(_inputService);
-    }
-
-    void OnDestroy() {
-        foreach (var disposable in _disposables) {
-            disposable.Dispose();
-        }
     }
 }
