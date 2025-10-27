@@ -12,6 +12,7 @@ namespace _PrismWars._Scripts.Player {
         FlipXController _flipXController;
         AttackMeleeController _attackMeleeController; 
         AttackRangeController _attackRangeController;
+        HealthComponent _healthComponent;
         
         CompositeDisposable _disposables = new();
         SpriteRenderer _spriteRenderer;
@@ -21,8 +22,6 @@ namespace _PrismWars._Scripts.Player {
         
         InputService _inputService;
         ProjectileFactory _projectileFactory;
-        
-        bool _isInitialized = false;
         
         NetworkVariable<NetworkPlayerData> _playerData = 
             new NetworkVariable<NetworkPlayerData>(default, 
@@ -38,23 +37,26 @@ namespace _PrismWars._Scripts.Player {
 
         public void Initialize(NetworkPlayerData playerConfig) {
             _playerData.Value = playerConfig;
+            _projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
         }
         
         public override void OnNetworkSpawn() {
-            base.OnNetworkSpawn();
             _playerData.OnValueChanged += OnConfigChanged;
         
             if (_playerData.Value.playerName.Length > 0) {
                 OnConfigChanged(default, _playerData.Value);
             }
+            base.OnNetworkSpawn();
         }
         void OnConfigChanged(NetworkPlayerData previous, NetworkPlayerData current) {
             _config = ScriptableObject.CreateInstance<PlayerConfig>();
             _config.FromNetworkConfig(current);
         
-            ApplyConfig(_config); 
-            
-            InitializeControllersAndInput();
+            ApplyConfig(_config);
+
+            if (IsOwner) {
+                InitializeControllersAndInput();
+            }
         }
 
         void ApplyConfig(PlayerConfig config) {
@@ -67,7 +69,6 @@ namespace _PrismWars._Scripts.Player {
             _disposables = new CompositeDisposable();
             
             _inputService = ServiceLocator.Singleton.Get<InputService>();
-            _projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
             _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
             
             _movementController = new MovementController(transform, _config.moveSpeed);
@@ -77,6 +78,8 @@ namespace _PrismWars._Scripts.Player {
                 _config.meleeAttackRange, 
                 _config.enemyLayer,
                 _config.meleeDamage);
+            _healthComponent = GetComponent<HealthComponent>();
+            _healthComponent.Initialize(_playerData.Value);
             
             
             _inputService.MoveInput
@@ -106,9 +109,7 @@ namespace _PrismWars._Scripts.Player {
         }
 
         public void SpawnProjectile(Vector3 position, Vector3 direction, PlayerElement playerElement) {
-            if (!IsOwner)return; 
             SpawnProjectileRpc(position, direction, playerElement);
-            
         }
         
         [Rpc(SendTo.Server)]

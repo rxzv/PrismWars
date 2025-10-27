@@ -8,10 +8,11 @@ namespace _PrismWars._Scripts.UI {
     [RequireComponent(typeof(NetworkObject))]
     public class NetworkUIManager : NetworkBehaviour, IService, IInitializable {
         [SerializeField] TextMeshProUGUI _timer;
-        [SerializeField] GameUIView _gameUIView;
         [SerializeField] CharacterSelectionManager _characterSelectionManager;
         [SerializeField] GameObject _waitingUI;
         [SerializeField] GameObject _timerUI;
+        [SerializeField] GameUIViewService _gameUIViewService;
+        
         public event Action OnCharacterSelectionConfirmed;
         
         NetworkTimer _networkTimer;
@@ -32,8 +33,9 @@ namespace _PrismWars._Scripts.UI {
         [ClientRpc]
         public void OnGameStartedClientRpc() {
             if (IsClient) {
+                _gameUIViewService.ShowView();
+                ServiceLocator.Singleton.Register(_gameUIViewService);
                 OnCharacterSelectionConfirmed?.Invoke();
-                _gameUIView.ShowView();
             }
         }
         
@@ -41,7 +43,7 @@ namespace _PrismWars._Scripts.UI {
             _timerUI.gameObject.SetActive(false);
             _waitingUI.gameObject.SetActive(true);
             _characterSelectionManager.View.HideView();
-            _gameUIView.HideView();
+            _gameUIViewService.HideView();
             _timer.text = "0";
             
             _timerUI.gameObject.SetActive(false);
