@@ -13,10 +13,10 @@ public class Bootstrap : MonoBehaviour {
     [SerializeField] CursorService _cursorService;
     
     [Header("Network Services")] 
-    [SerializeField] NetworkTimer _networkTimer;
+    [SerializeField] NetworkGameTimer _networkGameTimer;
     [SerializeField] NetworkCharacterSelectionManager _networkCharacterSelectionManager;
     [SerializeField] ProjectileFactory _projectileFactory;
-    [SerializeField] PlayerRespawnService _playerRespawnService;
+    [SerializeField] NetworkRespawnTimer _networkRespawnTimer;
     
     List<IDisposable> _disposables = new();
     
@@ -29,16 +29,16 @@ public class Bootstrap : MonoBehaviour {
         ServiceLocator.Singleton.Register(_inputService);
         ServiceLocator.Singleton.Register(_cursorService);
         ServiceLocator.Singleton.Register(_networkCharacterSelectionManager);
-        ServiceLocator.Singleton.Register(_networkTimer);
+        ServiceLocator.Singleton.Register(_networkGameTimer);
         ServiceLocator.Singleton.Register(_projectileFactory);
-        ServiceLocator.Singleton.Register(_playerRespawnService);
+        ServiceLocator.Singleton.Register(_networkRespawnTimer);
         
         DontDestroyOnLoad(_inputService);
         DontDestroyOnLoad(_cursorService);
         DontDestroyOnLoad(_projectileFactory);
         DontDestroyOnLoad(_networkCharacterSelectionManager);
-        DontDestroyOnLoad(_networkTimer);
-        DontDestroyOnLoad(_playerRespawnService);
+        DontDestroyOnLoad(_networkGameTimer);
+        DontDestroyOnLoad(_networkRespawnTimer);
         
         Debug.Log("BootstrapScene Services registered");
     }

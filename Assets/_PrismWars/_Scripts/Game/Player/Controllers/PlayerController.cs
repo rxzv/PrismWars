@@ -29,6 +29,8 @@ namespace _PrismWars._Scripts.Player {
                 NetworkVariableWritePermission.Server);
 
         PlayerConfig _config;
+        
+        public NetworkVariable<PlayerElement> PlayerElement { get; private set; } =  new NetworkVariable<PlayerElement>();
 
         void Awake() {
             _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -60,6 +62,7 @@ namespace _PrismWars._Scripts.Player {
         }
 
         void ApplyConfig(PlayerConfig config) {
+            PlayerElement.Value = config.playerElement;
             _spriteRenderer.sprite = config.sprite;
             gameObject.layer = LayerMask.NameToLayer(_config.playerElement.ToString());
         }

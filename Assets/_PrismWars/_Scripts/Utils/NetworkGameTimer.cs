@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 namespace _PrismWars._Scripts.Utils { 
-    public class NetworkTimer : NetworkBehaviour, IService {
+    public class NetworkGameTimer : NetworkBehaviour, IService {
         float _timerDuration = 0f;
  
         NetworkVariable<float> _endTime = new NetworkVariable<float>();
@@ -51,6 +51,12 @@ namespace _PrismWars._Scripts.Utils {
                         OnTimerComplete?.Invoke();
                         Debug.Log("Timer completed on server.");
                     }
+                }
+            }
+            else {
+                // For clients, just display the remaining time
+                if (_isTimerRunning.Value) {
+                    float remainingTime = GetRemainingTime();
                 }
             }
         }

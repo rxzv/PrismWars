@@ -15,10 +15,10 @@ namespace _PrismWars._Scripts.UI {
         
         public event Action OnCharacterSelectionConfirmed;
         
-        NetworkTimer _networkTimer;
+        NetworkGameTimer _networkGameTimer;
 
         public void Initialize() {
-            _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
+            _networkGameTimer = ServiceLocator.Singleton.Get<NetworkGameTimer>();
         }
 
         [ClientRpc]
@@ -50,7 +50,7 @@ namespace _PrismWars._Scripts.UI {
         }
 
         void Update() {
-            var time = (int)_networkTimer.GetRemainingTime();
+            var time = (int)_networkGameTimer.GetRemainingTime();
             _timer.text = time.ToString();
         }
     }
