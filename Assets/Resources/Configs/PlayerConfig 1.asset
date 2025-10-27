@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: PlayerConfig 1
   m_EditorClassIdentifier: 
   configId: 1
-  playerName: casey
-  playerElement: 0
-  spriteName: casey
-  sprite: {fileID: 6678123732569117242, guid: 48b4602faad1e7946ab61c36c32e6648, type: 3}
+  playerName: cornea
+  playerElement: 1
+  spriteName: cornea
+  sprite: {fileID: 21300000, guid: 8ce517a575f280f4986aafb87018d19c, type: 3}
   moveSpeed: 10
   jumpForce: 20
   maxHealth: 100
-  meleeAttackRange: 1
+  meleeAttackRange: 4
   meleeDamage: 1
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 256
