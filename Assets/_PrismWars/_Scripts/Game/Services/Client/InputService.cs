@@ -13,9 +13,16 @@ public class InputService : MonoBehaviour, IService, IInitializable, IDisposable
     PlayerInputActions _inputActions;
     readonly CompositeDisposable _disposables = new();
 
+    public void InputActionEnable() {
+        _inputActions.Player.Enable();
+    }
+    public void InputActionDisable() {
+        _inputActions.Player.Disable();
+    }
+
     public void Initialize() {
         _inputActions = new PlayerInputActions();
-        _inputActions.Player.Enable();
+        InputActionEnable();
 
         MoveInput = Observable.EveryUpdate()
             .Select(_ => _inputActions.Player.Move.ReadValue<Vector2>());

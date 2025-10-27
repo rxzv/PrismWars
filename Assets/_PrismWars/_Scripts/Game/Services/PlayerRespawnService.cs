@@ -82,6 +82,7 @@ namespace _PrismWars._Scripts.Game.Services {
                 if (clientId == NetworkManager.Singleton.LocalClientId) {
                     networkPlayer.gameObject.GetComponent<PlayerController>().enabled = true;
                     ServiceLocator.Singleton.Get<NetworkUIManager>().OnPlayerRespawn();
+                    ServiceLocator.Singleton.Get<InputService>().InputActionEnable();
                 }
             } 
         }
@@ -94,6 +95,7 @@ namespace _PrismWars._Scripts.Game.Services {
                 if (clientId == NetworkManager.Singleton.LocalClientId) {
                     networkPlayer.gameObject.GetComponent<PlayerController>().enabled = false;
                     ServiceLocator.Singleton.Get<NetworkUIManager>().OnPlayerDead();
+                    ServiceLocator.Singleton.Get<InputService>().InputActionDisable();
                 }
             }
         }
