@@ -30,7 +30,11 @@ namespace _PrismWars._Scripts.Player {
 
         PlayerConfig _config;
         
-        public NetworkVariable<PlayerElement> PlayerElement { get; private set; } =  new NetworkVariable<PlayerElement>();
+        public NetworkVariable<PlayerElement> PlayerElement { get; private set; } = 
+            new NetworkVariable<PlayerElement>(
+                default,
+                NetworkVariableReadPermission.Everyone,
+                NetworkVariableWritePermission.Owner);
 
         void Awake() {
             _spriteRenderer = GetComponent<SpriteRenderer>();
