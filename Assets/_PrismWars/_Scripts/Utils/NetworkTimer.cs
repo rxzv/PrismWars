@@ -53,14 +53,6 @@ namespace _PrismWars._Scripts.Utils {
                     }
                 }
             }
-            else {
-                // For clients, just display the remaining time
-                if (_isTimerRunning.Value) {
-                    float remainingTime = GetRemainingTime();
-                    // You can update a UI Text element here to display the remaining time
-                    Debug.Log("Remaining time: " + remainingTime);
-                }
-            }
         }
     }
 }
