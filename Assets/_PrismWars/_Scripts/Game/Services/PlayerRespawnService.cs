@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.UI;
@@ -5,6 +6,7 @@ using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace _PrismWars._Scripts.Game.Services {
     public class PlayerRespawnService : NetworkBehaviour, IService, IInitializable<List<Transform>, List<Transform>> {
@@ -14,6 +16,8 @@ namespace _PrismWars._Scripts.Game.Services {
 
         List<Transform> _fireSpawnPoints;
         List<Transform> _iceSpawnPoints;
+        
+        public event Action OnPlayerRespawn;
         
         public void Initialize(List<Transform> fireSpawnPoints, List<Transform> iceSpawnPoints) {
             _fireSpawnPoints = fireSpawnPoints;
@@ -83,6 +87,7 @@ namespace _PrismWars._Scripts.Game.Services {
                     networkPlayer.gameObject.GetComponent<PlayerController>().enabled = true;
                     ServiceLocator.Singleton.Get<NetworkUIManager>().OnPlayerRespawn();
                     ServiceLocator.Singleton.Get<InputService>().InputActionEnable();
+                    OnPlayerRespawn?.Invoke();
                 }
             } 
         }

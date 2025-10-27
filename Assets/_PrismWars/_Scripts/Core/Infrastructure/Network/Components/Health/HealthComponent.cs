@@ -17,13 +17,24 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
             _playerRespawnService = ServiceLocator.Singleton.Get<PlayerRespawnService>();
             _gameUIViewService = ServiceLocator.Singleton.Get<GameUIViewService>();
             _playerData = data;
-            _maxHealth = _playerData.maxHealth;
+            _maxHealth = data.maxHealth;
             _gameUIViewService.SetMaxHealth(_maxHealth);
             _currentHealth.OnValueChanged += OnHealthChanged;
+            _playerRespawnService.OnPlayerRespawn += PlayerRespawn;
+            UpdateHealthServerRpc(data.maxHealth);
         }
-        if (IsServer) {
-            _playerData = data;
-            _currentHealth.Value = data.maxHealth;
+    }
+
+    void PlayerRespawn() {
+        if (IsOwner) {
+            UpdateHealthServerRpc(_maxHealth);
+        }
+    }
+
+    [ServerRpc]
+    void UpdateHealthServerRpc(float maxHealth) {
+        if (maxHealth > 0) {
+            _currentHealth.Value = maxHealth;
         }
     }
 
