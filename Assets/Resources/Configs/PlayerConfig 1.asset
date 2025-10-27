@@ -18,7 +18,7 @@ MonoBehaviour:
   spriteName: casey
   sprite: {fileID: 6678123732569117242, guid: 48b4602faad1e7946ab61c36c32e6648, type: 3}
   moveSpeed: 10
-  jumpForce: 10
+  jumpForce: 20
   maxHealth: 100
   meleeAttackRange: 1
   meleeDamage: 1

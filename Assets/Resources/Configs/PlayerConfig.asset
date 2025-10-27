@@ -18,7 +18,7 @@ MonoBehaviour:
   spriteName: bullet
   sprite: {fileID: 2065683213028753365, guid: 97b074d846d5f814e898e8d221f17493, type: 3}
   moveSpeed: 10
-  jumpForce: 10
+  jumpForce: 20
   maxHealth: 100
   meleeAttackRange: 1
   meleeDamage: 1
