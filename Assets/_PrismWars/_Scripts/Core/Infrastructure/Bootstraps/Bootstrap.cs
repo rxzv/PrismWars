@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Components.Projectile;
+using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.Systems;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.Utils;
@@ -15,6 +16,7 @@ public class Bootstrap : MonoBehaviour {
     [SerializeField] NetworkTimer _networkTimer;
     [SerializeField] NetworkCharacterSelectionManager _networkCharacterSelectionManager;
     [SerializeField] ProjectileFactory _projectileFactory;
+    [SerializeField] PlayerRespawnService _playerRespawnService;
     
     List<IDisposable> _disposables = new();
     
@@ -29,12 +31,14 @@ public class Bootstrap : MonoBehaviour {
         ServiceLocator.Singleton.Register(_networkCharacterSelectionManager);
         ServiceLocator.Singleton.Register(_networkTimer);
         ServiceLocator.Singleton.Register(_projectileFactory);
+        ServiceLocator.Singleton.Register(_playerRespawnService);
         
         DontDestroyOnLoad(_inputService);
         DontDestroyOnLoad(_cursorService);
         DontDestroyOnLoad(_projectileFactory);
         DontDestroyOnLoad(_networkCharacterSelectionManager);
         DontDestroyOnLoad(_networkTimer);
+        DontDestroyOnLoad(_playerRespawnService);
         
         Debug.Log("BootstrapScene Services registered");
     }

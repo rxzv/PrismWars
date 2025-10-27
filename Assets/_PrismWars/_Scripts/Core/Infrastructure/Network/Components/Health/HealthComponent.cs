@@ -1,4 +1,5 @@
 using _PrismWars._Scripts.Components;
+using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
@@ -9,9 +10,11 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
     NetworkVariable<float> _currentHealth = new(100f);
     NetworkPlayerData _playerData;
     GameUIViewService _gameUIViewService;
+    PlayerRespawnService _playerRespawnService;
     
     public void Initialize(NetworkPlayerData data) {
         if (IsOwner) {
+            _playerRespawnService = ServiceLocator.Singleton.Get<PlayerRespawnService>();
             _gameUIViewService = ServiceLocator.Singleton.Get<GameUIViewService>();
             _playerData = data;
             _maxHealth = _playerData.maxHealth;
@@ -26,9 +29,12 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
 
     void OnHealthChanged(float oldHealth, float newHealth) {
         _gameUIViewService.UpdateHealthBar(newHealth);
-        
-        if (newHealth <= 0)
+
+        if (newHealth <= 0) {
             Debug.Log("Player died!");
+            var networkObject = gameObject.GetComponent<NetworkObject>();
+            _playerRespawnService.PlayerDied(networkObject);
+        }
     }
     public void TakeDamage(float damage) {
         TakeDamageServerRpc(damage);
