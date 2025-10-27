@@ -45,19 +45,33 @@ namespace _PrismWars._Scripts.Game.Services {
             networkObject.TryGetComponent(out PlayerController playerController);
             if (playerController != null) {
                 int spawnPointId;
+                Vector3 spawnPos;
                 switch (playerController.PlayerElement.Value) {
                     default:
                     case PlayerElement.Fire:
                         spawnPointId = Random.Range(0, _fireSpawnPoints.Count);
-                        playerController.transform.position = _fireSpawnPoints[spawnPointId].position;
+                        spawnPos = _fireSpawnPoints[spawnPointId].position;
+                        PlayerUpdateSpawnPositionClientRpc(id, spawnPos, networkObject);
                         break;
                     case PlayerElement.Ice:
                         spawnPointId = Random.Range(0, _iceSpawnPoints.Count);
-                        playerController.transform.position = _iceSpawnPoints[spawnPointId].position;
+                        spawnPos = _iceSpawnPoints[spawnPointId].position;
+                        PlayerUpdateSpawnPositionClientRpc(id, spawnPos, networkObject);
                         break;
                 }
             }
             PlayerRespawnClientRpc(id, pl);
+        }
+
+        [ClientRpc(RequireOwnership = false)]
+        void PlayerUpdateSpawnPositionClientRpc(ulong clientId, Vector3 spawnPos, NetworkObjectReference player) {
+            if (clientId == NetworkManager.Singleton.LocalClientId) {
+                player.TryGet(out NetworkObject networkObject);
+                if (networkObject != null) {
+                    networkObject.TryGetComponent(out PlayerController playerController);
+                    playerController.transform.position = spawnPos;
+                }
+            }
         }
 
         [ClientRpc(RequireOwnership = false)]
