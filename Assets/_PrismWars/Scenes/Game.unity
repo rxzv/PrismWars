@@ -424,6 +424,7 @@ MonoBehaviour:
   _cameraSpawnService: {fileID: 466133815}
   _networkUIManager: {fileID: 434693307216023487}
   _networkPlayerSpawnService: {fileID: 1272801921}
+  _networkSpawner: {fileID: 124108923315628914}
   _fireSpawnPoints:
   - {fileID: 790779749}
   - {fileID: 1928003538}
@@ -5116,6 +5117,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03a086f1ee7661d4abb888e735468918, type: 3}
+--- !u!114 &124108923315628914 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5531341767825993637, guid: 03a086f1ee7661d4abb888e735468918, type: 3}
+  m_PrefabInstance: {fileID: 124108923315628913}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4b772f20c484c9ea00cc6529fa6ec8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &434693307216023486
 PrefabInstance:
   m_ObjectHideFlags: 0

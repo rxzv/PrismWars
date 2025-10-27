@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Patterns.Factory;
+using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
         [Header("Network Services")] 
         [SerializeField] NetworkUIManager _networkUIManager;
         [SerializeField] NetworkPlayerSpawnService _networkPlayerSpawnService;
+        [SerializeField] NetworkSpawner _networkSpawner;
         
         [Header("Scene Components")]
         [SerializeField] List<Transform> _fireSpawnPoints;
@@ -33,6 +35,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             ServiceLocator.Singleton.Register(_networkUIManager);
             ServiceLocator.Singleton.Register(_networkPlayerSpawnService);
             ServiceLocator.Singleton.Register(_cameraSpawnService);
+            ServiceLocator.Singleton.Register(_networkSpawner);
             
             _projectileServerService = new ProjectileServerService();
             ServiceLocator.Singleton.Register(_projectileServerService);
@@ -50,6 +53,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             _projectileServerService.Initialize();
             _cameraSpawnService.Initialize(cameraPrefab);
             
+            _networkSpawner.ClientInitialized();
             Debug.Log("GameScene Services initialized");
         }
 
