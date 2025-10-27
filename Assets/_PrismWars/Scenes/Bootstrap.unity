@@ -256,17 +256,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &399353459 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1004318920893812184, guid: 01ecbaf0dac35bd4fa746844290c46d4, type: 3}
-  m_PrefabInstance: {fileID: 6382551322017293229}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2eb733d513d46338744291d70a9c277, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &485329838
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -473,10 +462,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputService: {fileID: 1933323808}
   _cursorService: {fileID: 1243236420}
+  _respawnTimer: {fileID: 6382551322017293230}
   _networkGameTimer: {fileID: 1880840605}
   _networkCharacterSelectionManager: {fileID: 485329839}
   _projectileFactory: {fileID: 2145347370}
-  _networkRespawnTimer: {fileID: 399353459}
 --- !u!4 &1210490073
 Transform:
   m_ObjectHideFlags: 0
@@ -1107,13 +1096,13 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7212633274207973864, guid: 01ecbaf0dac35bd4fa746844290c46d4, type: 3}
       propertyPath: m_Name
-      value: NetworkRespawnTimer
+      value: RespawnTimer
       objectReference: {fileID: 0}
-    - target: {fileID: 7985864150901709409, guid: 01ecbaf0dac35bd4fa746844290c46d4, type: 3}
+    - target: {fileID: 0}
       propertyPath: GlobalObjectIdHash
       value: 837239071
       objectReference: {fileID: 0}
-    - target: {fileID: 7985864150901709409, guid: 01ecbaf0dac35bd4fa746844290c46d4, type: 3}
+    - target: {fileID: 0}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 3837911558
       objectReference: {fileID: 0}
@@ -1162,6 +1151,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01ecbaf0dac35bd4fa746844290c46d4, type: 3}
+--- !u!114 &6382551322017293230 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3731998365445007865, guid: 01ecbaf0dac35bd4fa746844290c46d4, type: 3}
+  m_PrefabInstance: {fileID: 6382551322017293229}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2eb733d513d46338744291d70a9c277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

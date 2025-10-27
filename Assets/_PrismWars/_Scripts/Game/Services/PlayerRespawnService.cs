@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using _PrismWars._Scripts.Player;
+using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Game.Services {
     public class PlayerRespawnService : NetworkBehaviour, IService, IInitializable<List<Transform>, List<Transform>> {
-        NetworkRespawnTimer _networkRespawnTimer;
+        RespawnTimer _respawnTimer;
         Queue<NetworkObjectReference> _playerToRespawn = new();
         Queue<ulong> _playerToRespawnId = new();
 
@@ -20,13 +21,20 @@ namespace _PrismWars._Scripts.Game.Services {
         }
         
         [ServerRpc(RequireOwnership = false)]
-        public void PlayerDiedServerRpc(ulong clientId, NetworkObjectReference player) {
-            PlayerDiedClientRpc(clientId, player);
+        public void PlayerDeadServerRpc(ulong clientId, NetworkObjectReference player) {
+            PlayerDeadClientRpc(clientId, player);
             _playerToRespawn.Enqueue(player);
             _playerToRespawnId.Enqueue(clientId);
-            _networkRespawnTimer = ServiceLocator.Singleton.Get<NetworkRespawnTimer>();
-            _networkRespawnTimer.OnTimerComplete += RespawnPlayerServerRpc;
-            _networkRespawnTimer.StartRespawnTimerServerRpc(5f);
+            PlayerStartRespawnTimerClientRpc(clientId);
+        }
+
+        [ClientRpc(RequireOwnership = false)]
+        void PlayerStartRespawnTimerClientRpc(ulong clientId) {
+            if (clientId == NetworkManager.Singleton.LocalClientId) {
+                _respawnTimer = ServiceLocator.Singleton.Get<RespawnTimer>();
+                _respawnTimer.OnTimerComplete += RespawnPlayerServerRpc;
+                _respawnTimer.StartRespawnTimer(5f);
+            }
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -59,17 +67,19 @@ namespace _PrismWars._Scripts.Game.Services {
                 networkPlayer.gameObject.SetActive(true);
                 if (clientId == NetworkManager.Singleton.LocalClientId) {
                     networkPlayer.gameObject.GetComponent<PlayerController>().enabled = true;
+                    ServiceLocator.Singleton.Get<NetworkUIManager>().OnPlayerRespawn();
                 }
             } 
         }
 
         [ClientRpc(RequireOwnership = false)]
-        void PlayerDiedClientRpc(ulong clientId, NetworkObjectReference player) {
+        void PlayerDeadClientRpc(ulong clientId, NetworkObjectReference player) {
             player.TryGet(out NetworkObject networkPlayer);
             if (networkPlayer != null) {
                 networkPlayer.gameObject.SetActive(false);
                 if (clientId == NetworkManager.Singleton.LocalClientId) {
                     networkPlayer.gameObject.GetComponent<PlayerController>().enabled = false;
+                    ServiceLocator.Singleton.Get<NetworkUIManager>().OnPlayerDead();
                 }
             }
         }

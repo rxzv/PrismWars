@@ -33,7 +33,7 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
         if (newHealth <= 0) {
             Debug.Log("Player died!");
             var networkObject = gameObject.GetComponent<NetworkObject>();
-            _playerRespawnService.PlayerDiedServerRpc(NetworkManager.Singleton.LocalClientId, networkObject);
+            _playerRespawnService.PlayerDeadServerRpc(NetworkManager.Singleton.LocalClientId, networkObject);
         }
     }
     public void TakeDamage(float damage) {

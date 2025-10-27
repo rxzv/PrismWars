@@ -62,7 +62,9 @@ namespace _PrismWars._Scripts.Player {
         }
 
         void ApplyConfig(PlayerConfig config) {
-            PlayerElement.Value = config.playerElement;
+            if (IsOwner) {
+                PlayerElement.Value = config.playerElement;
+            }
             _spriteRenderer.sprite = config.sprite;
             gameObject.layer = LayerMask.NameToLayer(_config.playerElement.ToString());
         }
