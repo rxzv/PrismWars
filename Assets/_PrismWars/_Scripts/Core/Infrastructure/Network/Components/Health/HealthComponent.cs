@@ -1,3 +1,4 @@
+using System;
 using _PrismWars._Scripts.Components;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI;
@@ -16,6 +17,11 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
     PlayerRespawnService _playerRespawnService;
     NetworkScoreManager _networkScoreManager;
     
+    const int VALUE_TO_DROP_SHARD = 20;
+    
+    public event Action OnDeath;
+    public event Action OnDropShard;
+    
     public void Initialize(NetworkPlayerData data) {
         if (IsOwner) {
             _playerRespawnService = ServiceLocator.Singleton.Get<PlayerRespawnService>();
@@ -23,10 +29,18 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
             _playerData = data;
             _maxHealth = data.maxHealth;
             _gameUIViewService.SetMaxHealth(_maxHealth);
-            _currentHealth.OnValueChanged += OnHealthChanged;
+            _currentHealth.OnValueChanged += HealthChanged;
             _playerRespawnService.OnPlayerRespawn += PlayerRespawn;
             UpdateHealthServerRpc(data.maxHealth);
             _networkScoreManager = ServiceLocator.Singleton.Get<NetworkScoreManager>();
+            
+            _currentHealth.OnValueChanged += CheckDropShard;
+        }
+    }
+
+    void CheckDropShard(float previousValue, float newValue) {
+        if ((int)(newValue / VALUE_TO_DROP_SHARD) < (int)(previousValue / VALUE_TO_DROP_SHARD)) {
+            OnDropShard?.Invoke();
         }
     }
 
@@ -43,11 +57,12 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
         }
     }
 
-    void OnHealthChanged(float oldHealth, float newHealth) {
+    void HealthChanged(float oldHealth, float newHealth) {
         _gameUIViewService.UpdateHealthBar(newHealth);
 
         if (newHealth <= 0) {
             Debug.Log("Player died!");
+            OnDeath?.Invoke();
             var networkObject = gameObject.GetComponent<NetworkObject>();
             _networkScoreManager.AddScoreServerRpc(_currentPlayerElementDamaged.Value, 10);
             _playerRespawnService.PlayerDeadServerRpc(NetworkManager.Singleton.LocalClientId, networkObject);

@@ -20,8 +20,8 @@ MonoBehaviour:
   moveSpeed: 10
   jumpForce: 20
   maxHealth: 100
-  meleeAttackRange: 4
-  meleeDamage: 1
+  meleeAttackRange: 1
+  meleeDamage: 4
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256

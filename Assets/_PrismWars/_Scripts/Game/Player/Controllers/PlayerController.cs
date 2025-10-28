@@ -1,5 +1,6 @@
 using System;
 using _PrismWars._Scripts.Components.Projectile;
+using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
 using _PrismWars._Scripts.UI.Model;
 using R3;
 using Unity.Netcode;
@@ -12,7 +13,9 @@ namespace _PrismWars._Scripts.Player {
         FlipXController _flipXController;
         AttackMeleeController _attackMeleeController; 
         AttackRangeController _attackRangeController;
+        
         HealthComponent _healthComponent;
+        ShardComponent _shardComponent;
         
         CompositeDisposable _disposables = new();
         SpriteRenderer _spriteRenderer;
@@ -90,6 +93,8 @@ namespace _PrismWars._Scripts.Player {
                 _config.meleeDamage);
             _healthComponent = GetComponent<HealthComponent>();
             _healthComponent.Initialize(_playerData.Value);
+            _shardComponent = GetComponent<ShardComponent>();
+            _shardComponent.Initialize(_playerData.Value.playerElement);
             
             
             _inputService.MoveInput
