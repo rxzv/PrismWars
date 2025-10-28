@@ -214,8 +214,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _despawnDelay: 5
-  _jumpForce: 1
-  _bounceFactor: 0.1
+  _jumpForce: 4
+  _bounceFactor: 0.5
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8

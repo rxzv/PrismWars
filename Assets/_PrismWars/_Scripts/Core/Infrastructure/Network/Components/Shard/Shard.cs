@@ -15,9 +15,11 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
         [SerializeField] LayerMask _groundLayer;
         [SerializeField] float _groundCheckDistance = 0.1f;
         [SerializeField] Vector2 _groundCheckSize = new Vector2(0.5f, 0.1f);
+        [SerializeField] float _bounceDecay = 0.2f;
         
         bool _isGrounded;
         Vector2 _groundCheckPosition;
+        private float _currentJumpForce;
         
         SpriteRenderer _spriteRenderer;
         
@@ -42,9 +44,12 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
         }
 
         void OnEnable() {
+            ResetBounce();
             StartCoroutine(DespawnAfterDelay(_despawnDelay));
         }
-
+        void ResetBounce() {
+            _currentJumpForce = _jumpForce;
+        }
         public void SetType(PlayerElement element) {
             _type.Value = element;
             Initialize();
@@ -87,7 +92,11 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
 
         void Jump() {
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, 0f);
-            _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
+            _rb.AddForce(Vector2.up * _currentJumpForce, ForceMode2D.Impulse);
+            CalculateNextJumpForce();
+        }
+        void CalculateNextJumpForce() {
+            _currentJumpForce *= (1f - _bounceDecay);
         }
 
         void OnCollisionEnter2D(Collision2D other) {
