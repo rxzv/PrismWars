@@ -10,7 +10,7 @@ namespace _PrismWars._Scripts.Game.Services {
         [NonSerialized]
         public NetworkVariable<int> FireScore = new();
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         public void AddScoreServerRpc(PlayerElement playerElement, int score) {
             if (score <= 0) return;
             switch(playerElement) {

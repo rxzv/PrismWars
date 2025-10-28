@@ -84,6 +84,7 @@ namespace _PrismWars._Scripts.Player {
             _jumpingController = new JumpingController(_rb, _config.jumpForce);
             _flipXController = new FlipXController(_spriteRenderer);
             _attackMeleeController = new AttackMeleeController(
+                _config.playerElement,
                 _config.meleeAttackRange, 
                 _config.enemyLayer,
                 _config.meleeDamage);

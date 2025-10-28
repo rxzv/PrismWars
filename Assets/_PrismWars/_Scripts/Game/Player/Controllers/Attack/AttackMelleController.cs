@@ -1,14 +1,17 @@
 using _PrismWars._Scripts.Components;
+using _PrismWars._Scripts.UI.Model;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Player {
     public class AttackMeleeController {
+        PlayerElement _playerElement;
         float _attackRange;
         LayerMask _enemyLayer;
         float _damage;
         Vector3 transformRightForPlayer;
         
-        public AttackMeleeController(float attackRange, LayerMask enemyLayer, float defaultDamage = 1) {
+        public AttackMeleeController(PlayerElement playerElement, float attackRange, LayerMask enemyLayer, float defaultDamage = 1) {
+            _playerElement = playerElement;
             _attackRange = attackRange;
             _enemyLayer = enemyLayer;
             _damage = defaultDamage;
@@ -29,7 +32,7 @@ namespace _PrismWars._Scripts.Player {
             foreach (Collider2D enemy in hitEnemies) {
                 IDamageable enemyHealth = enemy.GetComponent<IDamageable>();
                 if (enemyHealth != null && enemyHealth != go.GetComponent<IDamageable>())
-                    enemyHealth.TakeDamage(_damage);
+                    enemyHealth.TakeDamage(_playerElement, _damage);
             }
         }
         

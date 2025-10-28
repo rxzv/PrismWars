@@ -50,7 +50,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
         void OnTriggerEnter2D(Collider2D other) {
             StopAllCoroutines();
             if (other.gameObject.layer != gameObject.layer) {
-                other.GetComponent<IDamageable>()?.TakeDamage(_damage);
+                other.GetComponent<IDamageable>()?.TakeDamage(_type.Value, _damage);
             }
             ReturnToPoolRpc(Element);
         }

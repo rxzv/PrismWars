@@ -8,6 +8,9 @@ using UnityEngine;
 public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializable<NetworkPlayerData> {
     float _maxHealth = 100f;
     NetworkVariable<float> _currentHealth = new(100f);
+    
+    NetworkVariable<PlayerElement> _currentPlayerElementDamaged = new();
+    
     NetworkPlayerData _playerData;
     GameUIViewService _gameUIViewService;
     PlayerRespawnService _playerRespawnService;
@@ -46,21 +49,24 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
         if (newHealth <= 0) {
             Debug.Log("Player died!");
             var networkObject = gameObject.GetComponent<NetworkObject>();
-            _networkScoreManager.AddScoreServerRpc(_playerData.playerElement, 10);
+            _networkScoreManager.AddScoreServerRpc(_currentPlayerElementDamaged.Value, 10);
             _playerRespawnService.PlayerDeadServerRpc(NetworkManager.Singleton.LocalClientId, networkObject);
         }
     }
-    public void TakeDamage(float damage) {
-        TakeDamageServerRpc(damage);
+    public void TakeDamage(PlayerElement playerElement, float damage) {
+        TakeDamageServerRpc(playerElement, damage);
     }
     public void AddHealth(float heal) {
         AddHealthServerRpc(heal);
     }
     
     [ServerRpc(RequireOwnership = false)]
-    void TakeDamageServerRpc(float damage) {
-        if (_currentHealth.Value > 0)
+    void TakeDamageServerRpc(PlayerElement playerElement, float damage) {
+        if (_currentHealth.Value > 0) {
             _currentHealth.Value = Mathf.Clamp(_currentHealth.Value - damage, 0, _maxHealth);
+
+            _currentPlayerElementDamaged.Value = playerElement;
+        }
     }
     [ServerRpc(RequireOwnership = false)]
     void AddHealthServerRpc(float heal) {
