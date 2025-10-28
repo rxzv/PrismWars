@@ -42,6 +42,7 @@ namespace _PrismWars._Scripts.UI {
             if (IsClient) {
                 _gameUIViewService.ShowView();
                 ServiceLocator.Singleton.Register(_gameUIViewService);
+                _gameUIViewService.Initialize();
                 OnCharacterSelectionConfirmed?.Invoke();
             }
         }

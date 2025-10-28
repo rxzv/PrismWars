@@ -11,6 +11,7 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
     NetworkPlayerData _playerData;
     GameUIViewService _gameUIViewService;
     PlayerRespawnService _playerRespawnService;
+    NetworkScoreManager _networkScoreManager;
     
     public void Initialize(NetworkPlayerData data) {
         if (IsOwner) {
@@ -22,6 +23,7 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
             _currentHealth.OnValueChanged += OnHealthChanged;
             _playerRespawnService.OnPlayerRespawn += PlayerRespawn;
             UpdateHealthServerRpc(data.maxHealth);
+            _networkScoreManager = ServiceLocator.Singleton.Get<NetworkScoreManager>();
         }
     }
 
@@ -44,6 +46,7 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
         if (newHealth <= 0) {
             Debug.Log("Player died!");
             var networkObject = gameObject.GetComponent<NetworkObject>();
+            _networkScoreManager.AddScoreServerRpc(_playerData.playerElement, 10);
             _playerRespawnService.PlayerDeadServerRpc(NetworkManager.Singleton.LocalClientId, networkObject);
         }
     }

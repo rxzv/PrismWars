@@ -20,7 +20,7 @@ namespace _PrismWars._Scripts.UI.Model {
             return new NetworkPlayerData {
                 configId = configId,
                 playerName = playerName,
-                PlayerElement = playerElement,
+                playerElement = playerElement,
                 spriteName = spriteName,
                 moveSpeed = moveSpeed,
                 jumpForce = jumpForce,
@@ -35,7 +35,7 @@ namespace _PrismWars._Scripts.UI.Model {
         public void FromNetworkConfig(NetworkPlayerData networkData) {
             configId = networkData.configId;
             playerName = networkData.playerName.ToString();
-            playerElement = networkData.PlayerElement;
+            playerElement = networkData.playerElement;
             spriteName = networkData.spriteName.ToString();
             moveSpeed = networkData.moveSpeed;
             jumpForce = networkData.jumpForce;

@@ -21,7 +21,7 @@ namespace _PrismWars._Scripts {
             if(!IsServer) return;
             NetworkObject playerRef;
             
-            switch (data.PlayerElement) {
+            switch (data.playerElement) {
                 default:
                     Debug.LogError("Invalid player type");
                     return;

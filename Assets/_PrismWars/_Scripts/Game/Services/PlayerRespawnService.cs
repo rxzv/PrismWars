@@ -84,10 +84,10 @@ namespace _PrismWars._Scripts.Game.Services {
             if (networkPlayer != null) {
                 networkPlayer.gameObject.SetActive(true);
                 if (clientId == NetworkManager.Singleton.LocalClientId) {
-                    networkPlayer.gameObject.GetComponent<PlayerController>().enabled = true;
+                    OnPlayerRespawn?.Invoke();
                     ServiceLocator.Singleton.Get<NetworkUIManager>().OnPlayerRespawn();
                     ServiceLocator.Singleton.Get<InputService>().InputActionEnable();
-                    OnPlayerRespawn?.Invoke();
+                    networkPlayer.gameObject.GetComponent<PlayerController>().enabled = true;
                 }
             } 
         }
