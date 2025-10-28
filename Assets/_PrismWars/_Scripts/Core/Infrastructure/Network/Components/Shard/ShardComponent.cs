@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
-    public class DropShardComponent : NetworkBehaviour, IInitializable<PlayerElement> {
+    public class ShardComponent : NetworkBehaviour, IInitializable<PlayerElement> {
 
         NetworkVariable<int> _countShards = new NetworkVariable<int>();
         
@@ -24,17 +24,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
             }
         }
 
-        void OnTriggerEnter2D(Collider2D other) {
-            if (other.gameObject.layer != gameObject.layer) {
-                var shard = other.GetComponent<IShard>();
-                if (shard != null) {
-                    AddShardServerRpc();
-                }
-            }
-        }
-
-        [ServerRpc]
-        void AddShardServerRpc() {
+        [ServerRpc(RequireOwnership = false)]
+        public void AddShardServerRpc() {
             _countShards.Value++;
         }
 

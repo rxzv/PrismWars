@@ -23,6 +23,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
         [SerializeField] List<Transform> _iceSpawnPoints;
         
         ProjectileServerService _projectileServerService;
+        ShardServerService _shardServerService;
         
         List<IDisposable> _disposables = new();
 
@@ -42,6 +43,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             _projectileServerService = new ProjectileServerService();
             ServiceLocator.Singleton.Register(_projectileServerService);
             
+            _shardServerService = new ShardServerService();
+            ServiceLocator.Singleton.Register(_shardServerService);
+            
             Debug.Log("GameScene Services registered");
         }
         void InitializeServices() {
@@ -53,6 +57,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             _networkPlayerSpawnService.Initialize(playerFireFactory, playerIceFactory);
             _networkUIManager.Initialize();
             _projectileServerService.Initialize();
+            _shardServerService.Initialize();
             _cameraSpawnService.Initialize(cameraPrefab);
             _playerRespawnService.Initialize(_fireSpawnPoints, _iceSpawnPoints);
             
