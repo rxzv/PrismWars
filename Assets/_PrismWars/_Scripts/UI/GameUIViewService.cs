@@ -9,6 +9,7 @@ namespace _PrismWars._Scripts.UI {
         [SerializeField] Slider _healthSlider;
         [SerializeField] TextMeshProUGUI _fireScore;
         [SerializeField] TextMeshProUGUI _iceScore;
+        [SerializeField] TextMeshProUGUI _shardCount;
         
         NetworkScoreManager _networkScoreManager;
         
@@ -39,6 +40,12 @@ namespace _PrismWars._Scripts.UI {
             if (maxHealth > 0) {
                 _maxHealth =  maxHealth;
                 UpdateHealthBar(maxHealth);
+            }
+        }
+
+        public void UpdateShardCount(int count) {
+            if (count >= 0) {
+                _shardCount.text = count.ToString();
             }
         }
         
