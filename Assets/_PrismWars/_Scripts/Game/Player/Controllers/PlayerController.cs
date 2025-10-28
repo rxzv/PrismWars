@@ -91,11 +91,11 @@ namespace _PrismWars._Scripts.Player {
                 _config.meleeAttackRange, 
                 _config.enemyLayer,
                 _config.meleeDamage);
+            
             _healthComponent = GetComponent<HealthComponent>();
             _healthComponent.Initialize(_playerData.Value);
             _shardComponent = GetComponent<ShardComponent>();
             _shardComponent.Initialize(_playerData.Value.playerElement);
-            
             
             _inputService.MoveInput
                 .Subscribe(d => _movementController.Move(d))
