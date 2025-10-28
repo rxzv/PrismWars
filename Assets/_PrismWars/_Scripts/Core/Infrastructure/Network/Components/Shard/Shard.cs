@@ -47,14 +47,14 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
         }
 
         void OnTriggerEnter2D(Collider2D other) {
-            StopAllCoroutines();
             if (other.gameObject.layer != gameObject.layer) {
+                StopAllCoroutines();
+                ReturnToPoolRpc(Element);
                 var shard = other.GetComponent<ShardComponent>();
                 if (shard != null) {
                     shard.AddShardServerRpc();
                 }
             }
-            ReturnToPoolRpc(Element);
         }
         IEnumerator DespawnAfterDelay(float delay) {
             yield return new WaitForSeconds(delay);
