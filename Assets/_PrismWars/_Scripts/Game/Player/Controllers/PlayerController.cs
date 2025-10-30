@@ -8,7 +8,22 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Player {
     public class PlayerController : NetworkBehaviour, IDisposable, IInitializable<NetworkPlayerData> {
-        MovementController _movementController;
+        //Both Client And Server Specific
+        [SerializeField] int _tickRate = 60;
+        
+        int _currentTick;
+        float _time;
+        float _tickTime;
+        
+        Animator _animator;
+        Rigidbody2D _rb;
+        
+        Vector3 _inputMoveDirection;
+        
+        //Server Specific
+        [SerializeField] float _maxPositionError = 0.5f;
+        
+        ClientMovementPrediction _moveController;
         JumpingController _jumpingController;
         FlipXController _flipXController;
         AttackMeleeController _attackMeleeController; 
@@ -19,9 +34,6 @@ namespace _PrismWars._Scripts.Player {
         
         CompositeDisposable _disposables = new();
         SpriteRenderer _spriteRenderer;
-
-        Vector3 _direction;
-        Rigidbody2D _rb;
         
         InputService _inputService;
         ProjectileFactory _projectileFactory;
@@ -32,6 +44,8 @@ namespace _PrismWars._Scripts.Player {
                 NetworkVariableWritePermission.Server);
 
         PlayerConfig _config;
+
+        bool _isInitialized = false;
         
         public NetworkVariable<PlayerElement> PlayerElement { get; private set; } = 
             new NetworkVariable<PlayerElement>(
@@ -40,8 +54,25 @@ namespace _PrismWars._Scripts.Player {
                 NetworkVariableWritePermission.Owner);
 
         void Awake() {
+            _tickTime = 1f / _tickRate;
             _spriteRenderer = GetComponent<SpriteRenderer>();
+            _animator = GetComponent<Animator>();
             _rb = GetComponent<Rigidbody2D>();
+        }
+
+        void Update() {
+            _time += Time.deltaTime;
+        }
+        void FixedUpdate() {
+            if(!_isInitialized) return;
+            if (!IsClient || !IsOwner) return;
+
+            while (_time > _tickTime) {
+                _currentTick++;
+                _time -= _tickTime;
+
+                _moveController.Move(_inputMoveDirection, _currentTick);
+            }
         }
 
         public void Initialize(NetworkPlayerData playerConfig) {
@@ -63,7 +94,7 @@ namespace _PrismWars._Scripts.Player {
         
             ApplyConfig(_config);
 
-            if (IsOwner) {
+            if (IsOwner || IsServer && !_isInitialized) {
                 InitializeControllersAndInput();
             }
         }
@@ -72,18 +103,22 @@ namespace _PrismWars._Scripts.Player {
             if (IsOwner) {
                 PlayerElement.Value = config.playerElement;
             }
-            _spriteRenderer.sprite = config.sprite;
+            _spriteRenderer.sprite = _config.sprite;
             gameObject.layer = LayerMask.NameToLayer(_config.playerElement.ToString());
         }
-        
+
         void InitializeControllersAndInput() {
             _disposables?.Dispose();
             _disposables = new CompositeDisposable();
             
-            _inputService = ServiceLocator.Singleton.Get<InputService>();
-            _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
+            _moveController = new ClientMovementPrediction(
+                transform,
+                _config.moveSpeed,
+                _animator,
+                _rb,
+                _maxPositionError
+            );
             
-            _movementController = new MovementController(transform, _config.moveSpeed);
             _jumpingController = new JumpingController(_rb, _config.jumpForce);
             _flipXController = new FlipXController(_spriteRenderer);
             _attackMeleeController = new AttackMeleeController(
@@ -97,24 +132,32 @@ namespace _PrismWars._Scripts.Player {
             _shardComponent = GetComponent<ShardComponent>();
             _shardComponent.Initialize(_playerData.Value.playerElement);
             
-            _inputService.MoveInput
-                .Subscribe(d => _movementController.Move(d))
-                .AddTo(_disposables);
-            _inputService.MoveInput
-                .Subscribe(d => _flipXController.FlipX(d))
-                .AddTo(_disposables);
-            _inputService.JumpCommand
-                .Subscribe(_ => _jumpingController.Jump())
-                .AddTo(_disposables);
-            _inputService.AttackMelee
-                .Subscribe(_ => _attackMeleeController.MeleeAttack(gameObject, _spriteRenderer))
-                .AddTo(_disposables);
-            _inputService.AttackRange
-                .Subscribe(_ => {
-                    _attackRangeController
-                        .RangeAttack(transform);
-                })
-                .AddTo(_disposables);
+            if (IsOwner) {
+                _inputService = ServiceLocator.Singleton.Get<InputService>();
+                _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
+
+                _inputService.MoveInput
+                    .Subscribe(d => _inputMoveDirection = d)
+                    .AddTo(_disposables);
+                _inputService.MoveInput
+                    .Subscribe(d => _flipXController.FlipX(d))
+                    .AddTo(_disposables);
+                _inputService.JumpCommand
+                    .Subscribe(_ => _jumpingController.Jump())
+                    .AddTo(_disposables);
+                _inputService.AttackMelee
+                    .Subscribe(_ => _attackMeleeController.MeleeAttack(gameObject, _spriteRenderer))
+                    .AddTo(_disposables);
+                _inputService.AttackRange
+                    .Subscribe(_ => {
+                            _attackRangeController
+                                .RangeAttack(transform);
+                        }
+                    )
+                    .AddTo(_disposables);
+            }
+
+            _isInitialized = true;
         }
         
         void OnDrawGizmosSelected() {
