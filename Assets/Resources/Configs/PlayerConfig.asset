@@ -18,7 +18,7 @@ MonoBehaviour:
   spriteName: rocky
   sprite: {fileID: 21300000, guid: 2e28cd1b0b74c5042a99b3f0576463d4, type: 3}
   moveSpeed: 10
-  jumpForce: 20
+  jumpForce: 10
   maxHealth: 100
   meleeAttackRange: 1
   meleeDamage: 1

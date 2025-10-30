@@ -443,6 +443,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  _tickRate: 60
+  _maxPositionError: 0.5
+  _maxJumpVelocityError: 1
 --- !u!114 &3729285490185010767
 MonoBehaviour:
   m_ObjectHideFlags: 0

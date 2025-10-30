@@ -44,8 +44,7 @@ public class ClientMovementPrediction {
     }
 
     [ServerRpc]
-    private void MoveServerRPC(MovementData currentMovementData, MovementData lastMovementData)
-    {
+    void MoveServerRPC(MovementData currentMovementData, MovementData lastMovementData) {
         float startPosition = _transform.position.x;
 
         float moveVector = lastMovementData.movementDirection * _moveSpeed;
@@ -57,23 +56,17 @@ public class ClientMovementPrediction {
         _transform.position = new Vector2(startPosition, _transform.position.y);
         Physics.simulationMode = SimulationMode.FixedUpdate;
 
-        if (Vector2.Distance(correctPosition, new Vector2(currentMovementData.positionX, _transform.position.y)) > _maxPositionError)
-        {
-            Debug.Log("Position is off");
-
+        if (Vector2.Distance(correctPosition, new Vector2(currentMovementData.positionX, _transform.position.y)) > _maxPositionError) {
             ReconciliateClientRPC(currentMovementData.tick);
-
         }
     }
 
     [ClientRpc]
-    private void ReconciliateClientRPC(int activationTick)
-    {
+    void ReconciliateClientRPC(int activationTick) {
         float correctPosition = _clientMovementDatas[(activationTick - 1) % k_buffer_size].positionX;
 
         Physics.simulationMode = SimulationMode.Script;
-        while (activationTick <= _currentTick)
-        {
+        while (activationTick <= _currentTick) {
             float moveVector = _clientMovementDatas[(activationTick - 1) % k_buffer_size].movementDirection * _moveSpeed;
             _transform.position = new Vector2(correctPosition, _transform.position.y);
             _rb.linearVelocityX = moveVector;

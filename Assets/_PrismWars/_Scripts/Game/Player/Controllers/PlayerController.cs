@@ -17,18 +17,20 @@ namespace _PrismWars._Scripts.Player {
         
         //Server Specific
         [SerializeField] float _maxPositionError = 0.5f;
+        [SerializeField] float _maxJumpVelocityError = 2f;
         
         Animator _animator;
         Rigidbody2D _rb;
         
         float _inputMoveDirection;
+        bool _isJumping = false;
         
         PlayerConfig _config;
 
         bool _isInitialized = false;
         
         ClientMovementPrediction _moveController;
-        JumpingController _jumpingController;
+        ClientJumpPrediction _jumpController;
         FlipXController _flipXController;
         AttackMeleeController _attackMeleeController; 
         AttackRangeController _attackRangeController;
@@ -73,6 +75,8 @@ namespace _PrismWars._Scripts.Player {
                 _time -= _tickTime;
 
                 _moveController.Move(_inputMoveDirection, _currentTick);
+                _jumpController.Jump(_currentTick, _isJumping);
+                _isJumping = false;
             }
         }
 
@@ -120,7 +124,13 @@ namespace _PrismWars._Scripts.Player {
                 _maxPositionError
             );
             
-            _jumpingController = new JumpingController(_rb, _config.jumpForce);
+            _jumpController = new ClientJumpPrediction(
+                transform,
+                _config.jumpForce,
+                _animator,
+                _rb,
+                _maxJumpVelocityError
+            );
             _flipXController = new FlipXController(_spriteRenderer);
             _attackMeleeController = new AttackMeleeController(
                 _config.playerElement,
@@ -147,7 +157,7 @@ namespace _PrismWars._Scripts.Player {
                     .Subscribe(d => _flipXController.FlipX(d))
                     .AddTo(_disposables);
                 _inputService.JumpCommand
-                    .Subscribe(_ => _jumpingController.Jump())
+                    .Subscribe(_ => _isJumping = true)
                     .AddTo(_disposables);
                 _inputService.AttackMelee
                     .Subscribe(_ => _attackMeleeController.MeleeAttack(gameObject, _spriteRenderer))
@@ -166,7 +176,6 @@ namespace _PrismWars._Scripts.Player {
         
         void OnDrawGizmosSelected() {
             if (!IsOwner) return;
-            _jumpingController.OnDrawGizmosSelected();
             _attackMeleeController.OnDrawGizmosSelected(transform);
         }
 
