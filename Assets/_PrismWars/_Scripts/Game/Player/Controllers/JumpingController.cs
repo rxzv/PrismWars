@@ -4,7 +4,7 @@ namespace _PrismWars._Scripts.Player {
     public class JumpingController {
         Rigidbody2D _rigidbody;
         float _jumpForce;
-        readonly string _groundLayerName = "Ground";
+        readonly string _groundLayerName;
 
         public JumpingController(Rigidbody2D rigidbody, float jumpForce, string groundLayerName = "Ground") {
             _rigidbody = rigidbody;
