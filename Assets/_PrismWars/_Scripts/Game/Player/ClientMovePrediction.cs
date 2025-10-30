@@ -22,25 +22,17 @@ public class ClientMovementPrediction {
         _transform = transform;
     }
 
-    public void Move(Vector2 direction, int currentTick) {
+    public void Move(float direction, int currentTick) {
         _currentTick = currentTick;
-
-        direction.y = 0;
         
-        Vector2 moveVector = direction.normalized * _moveSpeed;
+        float velocityX = direction * _moveSpeed;
 
-        // _animator.SetFloat("Speed", moveVector.magnitude);
-        _rb.linearVelocity = moveVector;
-
-        // if (moveVector != Vector2.zero) {
-        //     _animator.SetFloat("Horizontal", moveVector.normalized.x);
-        //     _animator.SetFloat("Vertical", moveVector.normalized.y);
-        // }
+        _rb.linearVelocityX = velocityX;
 
         _clientMovementDatas[currentTick % k_buffer_size] = new MovementData {
             tick = currentTick,
             movementDirection = direction,
-            position = _transform.position
+            positionX = _transform.position.x
         };
 
 
@@ -54,18 +46,18 @@ public class ClientMovementPrediction {
     [ServerRpc]
     private void MoveServerRPC(MovementData currentMovementData, MovementData lastMovementData)
     {
-        Vector2 startPosition = _transform.position;
+        float startPosition = _transform.position.x;
 
-        Vector2 moveVector = lastMovementData.movementDirection.normalized * _moveSpeed;
+        float moveVector = lastMovementData.movementDirection * _moveSpeed;
         Physics.simulationMode = SimulationMode.Script;
-        _transform.position = lastMovementData.position;
-        _rb.linearVelocity = moveVector;
+        _transform.position = new Vector2(lastMovementData.positionX, _transform.position.y);
+        _rb.linearVelocityX = moveVector;
         Physics.Simulate(Time.fixedDeltaTime);
         Vector2 correctPosition = _transform.position;
-        _transform.position = startPosition;
+        _transform.position = new Vector2(startPosition, _transform.position.y);
         Physics.simulationMode = SimulationMode.FixedUpdate;
 
-        if (Vector2.Distance(correctPosition, currentMovementData.position) > _maxPositionError)
+        if (Vector2.Distance(correctPosition, new Vector2(currentMovementData.positionX, _transform.position.y)) > _maxPositionError)
         {
             Debug.Log("Position is off");
 
@@ -77,21 +69,21 @@ public class ClientMovementPrediction {
     [ClientRpc]
     private void ReconciliateClientRPC(int activationTick)
     {
-        Vector2 correctPosition = _clientMovementDatas[(activationTick - 1) % k_buffer_size].position;
+        float correctPosition = _clientMovementDatas[(activationTick - 1) % k_buffer_size].positionX;
 
         Physics.simulationMode = SimulationMode.Script;
         while (activationTick <= _currentTick)
         {
-            Vector2 moveVector = _clientMovementDatas[(activationTick - 1) % k_buffer_size].movementDirection.normalized * _moveSpeed;
-            _transform.position = correctPosition;
-            _rb.linearVelocity = moveVector;
+            float moveVector = _clientMovementDatas[(activationTick - 1) % k_buffer_size].movementDirection * _moveSpeed;
+            _transform.position = new Vector2(correctPosition, _transform.position.y);
+            _rb.linearVelocityX = moveVector;
             Physics.Simulate(Time.fixedDeltaTime);
-            correctPosition = _transform.position;
-            _clientMovementDatas[activationTick % k_buffer_size].position = correctPosition;
+            correctPosition = _transform.position.x;
+            _clientMovementDatas[activationTick % k_buffer_size].positionX = correctPosition;
             activationTick++;
         }
         Physics.simulationMode = SimulationMode.FixedUpdate;
 
-        _transform.position = correctPosition;
+        _transform.position = new Vector2(correctPosition, _transform.position.y);
     }
 }

@@ -21,7 +21,7 @@ namespace _PrismWars._Scripts.Player {
         Animator _animator;
         Rigidbody2D _rb;
         
-        Vector3 _inputMoveDirection;
+        float _inputMoveDirection;
         
         PlayerConfig _config;
 
@@ -138,7 +138,10 @@ namespace _PrismWars._Scripts.Player {
                 _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
 
                 _inputService.MoveInput
-                    .Subscribe(d => _inputMoveDirection = d)
+                    .Subscribe(d => {
+                        Vector3 direction = d.normalized;
+                        _inputMoveDirection = direction.x;
+                    })
                     .AddTo(_disposables);
                 _inputService.MoveInput
                     .Subscribe(d => _flipXController.FlipX(d))
