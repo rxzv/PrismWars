@@ -15,13 +15,17 @@ namespace _PrismWars._Scripts.Player {
         float _time;
         float _tickTime;
         
+        //Server Specific
+        [SerializeField] float _maxPositionError = 0.5f;
+        
         Animator _animator;
         Rigidbody2D _rb;
         
         Vector3 _inputMoveDirection;
         
-        //Server Specific
-        [SerializeField] float _maxPositionError = 0.5f;
+        PlayerConfig _config;
+
+        bool _isInitialized = false;
         
         ClientMovementPrediction _moveController;
         JumpingController _jumpingController;
@@ -42,10 +46,6 @@ namespace _PrismWars._Scripts.Player {
             new NetworkVariable<NetworkPlayerData>(default, 
                 NetworkVariableReadPermission.Everyone, 
                 NetworkVariableWritePermission.Server);
-
-        PlayerConfig _config;
-
-        bool _isInitialized = false;
         
         public NetworkVariable<PlayerElement> PlayerElement { get; private set; } = 
             new NetworkVariable<PlayerElement>(
@@ -55,6 +55,7 @@ namespace _PrismWars._Scripts.Player {
 
         void Awake() {
             _tickTime = 1f / _tickRate;
+            
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _animator = GetComponent<Animator>();
             _rb = GetComponent<Rigidbody2D>();

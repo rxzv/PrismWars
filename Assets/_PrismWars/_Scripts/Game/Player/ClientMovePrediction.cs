@@ -24,6 +24,9 @@ public class ClientMovementPrediction {
 
     public void Move(Vector2 direction, int currentTick) {
         _currentTick = currentTick;
+
+        direction.y = 0;
+        
         Vector2 moveVector = direction.normalized * _moveSpeed;
 
         // _animator.SetFloat("Speed", moveVector.magnitude);
@@ -34,8 +37,7 @@ public class ClientMovementPrediction {
         //     _animator.SetFloat("Vertical", moveVector.normalized.y);
         // }
 
-        _clientMovementDatas[currentTick % k_buffer_size] = new MovementData
-        {
+        _clientMovementDatas[currentTick % k_buffer_size] = new MovementData {
             tick = currentTick,
             movementDirection = direction,
             position = _transform.position
@@ -44,7 +46,8 @@ public class ClientMovementPrediction {
 
         if (currentTick < 2) return;
 
-        MoveServerRPC(_clientMovementDatas[currentTick % k_buffer_size], _clientMovementDatas[(_currentTick - 1) % k_buffer_size]);
+        MoveServerRPC(_clientMovementDatas[currentTick % k_buffer_size],
+                        _clientMovementDatas[(_currentTick - 1) % k_buffer_size]);
 
     }
 
