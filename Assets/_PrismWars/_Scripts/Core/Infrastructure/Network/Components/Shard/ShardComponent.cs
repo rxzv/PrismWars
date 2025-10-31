@@ -17,20 +17,23 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
 
         public void Initialize(PlayerElement playerElement) {
             _healthComponent = GetComponent<HealthComponent>();
-            _healthComponent.OnDeath += DropAndClearShardsServerRpc;
+            _healthComponent.OnDeath += DropAndClearAllShards;
             _healthComponent.OnDropShard += DropShard;
             _playerElement = playerElement;
             _uiGameViewService = ServiceLocator.Singleton.Get<GameUIViewService>();
             _countShards.OnValueChanged += ShardsCountChanged;
         }
 
+        void DropAndClearAllShards() {
+            DropAllShardsServerRpc(transform.position, Vector3.up, _playerElement, _countShards.Value);
+            DropAndClearShardsServerRpc();
+        }
+        
         [ServerRpc(RequireOwnership = false)]
         void DropAndClearShardsServerRpc() {
             if (_countShards.Value > 0) {
                 _countShards.Value = 0;
             }
-            Debug.Log("Dropped all shards");
-            // TODO: дропать все осколки
         }
 
         void DropShard() {
@@ -40,11 +43,15 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
         [ServerRpc(RequireOwnership = false)]
         void DropShardsServerRpc(Vector3 position, Vector3 direction, PlayerElement playerElement) {
             Debug.Log("Dropped shards");
-            // TODO: дропать осколок
             _shardFactory = ServiceLocator.Singleton.Get<ShardFactory>();
             _shardFactory.Spawn(position, direction, playerElement);
         }
-        
+        [ServerRpc(RequireOwnership = false)]
+        void DropAllShardsServerRpc(Vector3 position, Vector3 direction, PlayerElement playerElement, int count) {
+            Debug.Log("Dropped all shards");
+            _shardFactory = ServiceLocator.Singleton.Get<ShardFactory>();
+            _shardFactory.SpawnAllShards(position, direction, playerElement, count);
+        }
         void ShardsCountChanged(int previousValue, int newValue) {
             if (newValue != previousValue) {
                 _uiGameViewService.UpdateShardCount(newValue);

@@ -39,7 +39,7 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
     }
 
     void CheckDropShard(float previousValue, float newValue) {
-        if ((int)(newValue / VALUE_TO_DROP_SHARD) < (int)(previousValue / VALUE_TO_DROP_SHARD)) {
+        if ((int)(newValue / VALUE_TO_DROP_SHARD) < (int)(previousValue / VALUE_TO_DROP_SHARD) && (int)newValue > 0) {
             OnDropShard?.Invoke();
         }
     }
