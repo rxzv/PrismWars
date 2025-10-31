@@ -1,6 +1,7 @@
 using System;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
+using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
 using R3;
 using Unity.Netcode;
@@ -24,6 +25,7 @@ namespace _PrismWars._Scripts.Player {
         
         float _inputMoveDirection;
         bool _isJumping = false;
+        bool _isRespawning = false;
         
         PlayerConfig _config;
 
@@ -43,6 +45,7 @@ namespace _PrismWars._Scripts.Player {
         
         InputService _inputService;
         ProjectileFactory _projectileFactory;
+        PlayerRespawnService _respawnService;
         
         NetworkVariable<NetworkPlayerData> _playerData = 
             new NetworkVariable<NetworkPlayerData>(default, 
@@ -73,7 +76,14 @@ namespace _PrismWars._Scripts.Player {
             while (_time > _tickTime) {
                 _currentTick++;
                 _time -= _tickTime;
-
+                
+                if (_isRespawning) {
+                    _jumpController.PlayerIsRespawning(_currentTick, transform.position);
+                    _moveController.PlayerIsRespawning(_currentTick, transform.position);
+                    _isRespawning = false;
+                    continue;
+                }
+                
                 _moveController.Move(_inputMoveDirection, _currentTick);
                 _jumpController.Jump(_currentTick, _isJumping);
                 _isJumping = false;
@@ -146,7 +156,11 @@ namespace _PrismWars._Scripts.Player {
                 
                 _inputService = ServiceLocator.Singleton.Get<InputService>();
                 _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
-
+                _respawnService = ServiceLocator.Singleton.Get<PlayerRespawnService>();
+                
+                _healthComponent.OnDeath += PlayerOnDead;
+                _respawnService.OnPlayerRespawn += PlayerOnRespawned;
+                // Input
                 _inputService.MoveInput
                     .Subscribe(d => {
                         Vector3 direction = d.normalized;
@@ -173,7 +187,14 @@ namespace _PrismWars._Scripts.Player {
 
             _isInitialized = true;
         }
-        
+
+        void PlayerOnDead() {
+            _isRespawning = false;
+        }
+        void PlayerOnRespawned() {
+            _isRespawning = true;
+        }
+
         void OnDrawGizmosSelected() {
             if (!IsOwner) return;
             _attackMeleeController.OnDrawGizmosSelected(transform);

@@ -21,7 +21,7 @@ public class ClientMovementPrediction {
         _maxPositionError = maxPositionError;
         _transform = transform;
     }
-
+    
     public void Move(float direction, int currentTick) {
         _currentTick = currentTick;
         
@@ -78,5 +78,26 @@ public class ClientMovementPrediction {
         Physics.simulationMode = SimulationMode.FixedUpdate;
 
         _transform.position = new Vector2(correctPosition, _transform.position.y);
+    }
+    public void PlayerIsRespawning(int currentTick, Vector3 position) {
+        _currentTick = currentTick;
+        _clientMovementDatas[currentTick % k_buffer_size] = new MovementData() {
+            tick = currentTick,
+            positionX = position.x,
+            isRespawning = true,
+        };
+        _clientMovementDatas[(_currentTick - 1) % k_buffer_size] = new MovementData {
+            tick = currentTick,
+            positionX = position.x,
+            isRespawning = true,
+        };
+        RespawnServerRPC(_clientMovementDatas[currentTick % k_buffer_size]);
+    }
+
+    [ServerRpc]
+    void RespawnServerRPC(MovementData currentMovementData) {
+        if (currentMovementData.isRespawning) {
+            _transform.position = new Vector2(currentMovementData.positionX, _transform.position.y);
+        }
     }
 }

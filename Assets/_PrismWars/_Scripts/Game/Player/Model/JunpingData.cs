@@ -7,12 +7,14 @@ namespace _PrismWars._Scripts.UI.Model {
         public float positionY;
         public bool isJumping;
         public bool isGrounded;
+        public bool isRespawning;
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
             serializer.SerializeValue(ref tick);
             serializer.SerializeValue(ref positionY);
             serializer.SerializeValue(ref isJumping);
             serializer.SerializeValue(ref isGrounded);
+            serializer.SerializeValue(ref isRespawning);
         }
     }
 }

@@ -13,7 +13,7 @@ public class ClientJumpPrediction {
     int _currentTick;
     
     const int k_buffer_size = 1024;
-    JumpingData[] _clientMovementDatas = new JumpingData[k_buffer_size];
+    JumpingData[] _clientJumpingDatas = new JumpingData[k_buffer_size];
 
     public ClientJumpPrediction(Transform transform, float jumpForce, Animator animator, Rigidbody2D rb, float maxPositionError, string groundLayerName = "Ground") {
         _animator = animator;
@@ -31,26 +31,27 @@ public class ClientJumpPrediction {
         if (isGrounded && isJumping)
             _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
 
-        _clientMovementDatas[currentTick % k_buffer_size] = new JumpingData {
+        _clientJumpingDatas[currentTick % k_buffer_size] = new JumpingData {
             tick = currentTick,
             positionY = _transform.position.y,
             isJumping = isJumping,
             isGrounded = isGrounded,
+            isRespawning = false,
         };
 
         if (currentTick < 2) return;
-
-        MoveServerRPC(_clientMovementDatas[currentTick % k_buffer_size],
-                        _clientMovementDatas[(_currentTick - 1) % k_buffer_size]);
-
+        
+        JumpServerRPC(_clientJumpingDatas[currentTick % k_buffer_size],
+            _clientJumpingDatas[(_currentTick - 1) % k_buffer_size]);
     }
+
     bool GroundCheck() {
         RaycastHit2D hit = Physics2D.Raycast(_rb.transform.position, Vector2.down);
         return hit.collider.IsTouchingLayers(LayerMask.GetMask(_groundLayerName));
     }
     
     [ServerRpc]
-    void MoveServerRPC(JumpingData currentMovementData, JumpingData lastMovementData) {
+    void JumpServerRPC(JumpingData currentMovementData, JumpingData lastMovementData) {
         float startPosition = _transform.position.y;
 
         Physics.simulationMode = SimulationMode.Script;
@@ -72,20 +73,45 @@ public class ClientJumpPrediction {
 
     [ClientRpc]
     void ReconciliateClientRPC(int activationTick) {
-        float correctPosition = _clientMovementDatas[(activationTick - 1) % k_buffer_size].positionY;
+        float correctPosition = _clientJumpingDatas[(activationTick - 1) % k_buffer_size].positionY;
 
         Physics.simulationMode = SimulationMode.Script;
         while (activationTick <= _currentTick) {
-            float jumpVector = _clientMovementDatas[(activationTick - 1) % k_buffer_size].positionY;
+            float jumpVector = _clientJumpingDatas[(activationTick - 1) % k_buffer_size].positionY;
             _transform.position = new Vector2(_transform.position.x, correctPosition);
             _rb.linearVelocityY = jumpVector;
             Physics.Simulate(Time.fixedDeltaTime);
             correctPosition = _transform.position.y;
-            _clientMovementDatas[activationTick % k_buffer_size].positionY = correctPosition;
+            _clientJumpingDatas[activationTick % k_buffer_size].positionY = correctPosition;
             activationTick++;
         }
         Physics.simulationMode = SimulationMode.FixedUpdate;
 
         _transform.position = new Vector2(_transform.position.x, correctPosition);
+    }
+    
+    public void PlayerIsRespawning(int currentTick, Vector3 position) {
+        _currentTick = currentTick;
+        _clientJumpingDatas[currentTick % k_buffer_size] = new JumpingData {
+            tick = currentTick,
+            positionY = position.y,
+            isJumping = false,
+            isGrounded = false,
+            isRespawning = true,
+        };
+        _clientJumpingDatas[(_currentTick - 1) % k_buffer_size] = new JumpingData {
+            tick = currentTick,
+            positionY = position.y,
+            isJumping = false,
+            isGrounded = false,
+            isRespawning = true,
+        };
+        RespawnServerRpc(_clientJumpingDatas[currentTick % k_buffer_size]);
+    }
+    [ServerRpc]
+    void RespawnServerRpc(JumpingData currentMovementData) {
+        if (currentMovementData.isRespawning) {
+            _transform.position = new Vector2(_transform.position.x, currentMovementData.positionY);
+        }
     }
 }
