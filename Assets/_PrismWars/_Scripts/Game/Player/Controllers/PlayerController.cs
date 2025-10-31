@@ -138,12 +138,12 @@ namespace _PrismWars._Scripts.Player {
                 _config.enemyLayer,
                 _config.meleeDamage);
             
-            _healthComponent = GetComponent<HealthComponent>();
-            _healthComponent.Initialize(_playerData.Value);
-            _shardComponent = GetComponent<ShardComponent>();
-            _shardComponent.Initialize(_playerData.Value.playerElement);
-            
             if (IsOwner) {
+                _healthComponent = GetComponent<HealthComponent>();
+                _healthComponent.Initialize(_playerData.Value);
+                _shardComponent = GetComponent<ShardComponent>();
+                _shardComponent.Initialize(_playerData.Value.playerElement);
+                
                 _inputService = ServiceLocator.Singleton.Get<InputService>();
                 _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
 
