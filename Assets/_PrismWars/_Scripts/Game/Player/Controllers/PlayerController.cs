@@ -2,6 +2,7 @@ using System;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
 using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Utils;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -32,6 +33,8 @@ namespace _PrismWars._Scripts.Player {
         PlayerConfig _config;
 
         bool _isInitialized = false;
+        
+        Timer _timer;
         
         ClientMovementPrediction _moveController;
         ClientJumpPrediction _jumpController;
@@ -69,7 +72,9 @@ namespace _PrismWars._Scripts.Player {
 
         void Update() {
             _time += Time.deltaTime;
+            _timer?.Update();
         }
+        
         void FixedUpdate() {
             if(!_isInitialized) return;
             if (!IsClient || !IsOwner) return;
@@ -136,6 +141,8 @@ namespace _PrismWars._Scripts.Player {
             _disposables?.Dispose();
             _disposables = new CompositeDisposable();
             
+            _timer = new Timer();
+            
             _moveController = new ClientMovementPrediction(
                 transform,
                 _config.moveSpeed,
@@ -160,6 +167,13 @@ namespace _PrismWars._Scripts.Player {
                 _config.enemyLayer,
                 _config.meleeDamage);
             
+            _attackRangeController = new AttackRangeController(
+                _config.playerElement, 
+                _config.maxBulletCount,
+                _timer,
+                Camera.main,
+                this);
+
             if (IsOwner) {
                 _healthComponent = GetComponent<HealthComponent>();
                 _healthComponent.Initialize(_playerData.Value);
@@ -167,7 +181,6 @@ namespace _PrismWars._Scripts.Player {
                 _shardComponent.Initialize(_playerData.Value.playerElement);
                 
                 _inputService = ServiceLocator.Singleton.Get<InputService>();
-                _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
                 
                 // Input
                 _inputService.MoveInput
@@ -185,7 +198,7 @@ namespace _PrismWars._Scripts.Player {
                 _inputService.AttackRange
                     .Subscribe(_ => {
                             _attackRangeController
-                                .RangeAttack(transform);
+                                .RangeAttack();
                         }
                     )
                     .AddTo(_disposables);

@@ -41,23 +41,22 @@ namespace _PrismWars._Scripts.UI {
                     _bulletCountGroupView.transform.position, 
                     _bulletCountGroupView.transform.rotation, 
                     _bulletCountGroupView.transform);
-                bulletImg.color = _bulletCooldownColor;
+                bulletImg.color = GetColorByPlayerElement();
                 _bullets.Add(bulletImg);
             }
         }
-        public void BulletCooldown(int count) {
-            BulletChangeColor(count, _bulletCooldownColor);
+        public void BulletCooldown(int index) {
+            BulletChangeColor(index, _bulletCooldownColor);
         }
-        public void BulletAvailable(int count) {
-            BulletChangeColor(count, GetColorByPlayerElement());
+        public void BulletAvailable(int index) {
+            BulletChangeColor(index, GetColorByPlayerElement());
         }
 
-        void BulletChangeColor(int count, Color color) {
-            if (count <= _maxBulletCount)
-                for (int i = 0; i <= count; i++)
-                    _bullets[i].color = color;
+        void BulletChangeColor(int index, Color color) {
+            if (index <= _maxBulletCount)
+                _bullets[index].color = color;
             else 
-                Debug.Log("bullet count > max bullet count");
+                Debug.Log("bullet index > max bullet count");
         }
 
         void Update() {
