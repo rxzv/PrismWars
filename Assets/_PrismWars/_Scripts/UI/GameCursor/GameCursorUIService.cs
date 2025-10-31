@@ -14,17 +14,18 @@ namespace _PrismWars._Scripts.UI {
         [SerializeField] Color _bulletAvailableIceColor;
         
         int _maxBulletCount;
-        List<Image> _bullets = new ();
+        Image[] _bullets;
         PlayerElement _playerElement;
 
         void Awake() {
-            _ultimateFillSlider.value = 0;
+            _ultimateFillSlider.value = 1;
         }
         
         public void Initialize() {
             var playerData = ServiceLocator.Singleton.Get<NetworkPlayerSpawnService>().PlayerData;
             _maxBulletCount = playerData.maxBulletCount;
             _playerElement = playerData.playerElement;
+            _bullets = new Image[_maxBulletCount];
             SpawnBulletImage();
         }
         
@@ -36,13 +37,13 @@ namespace _PrismWars._Scripts.UI {
         }
         
         void SpawnBulletImage() {
-            for (int i = 0; i <= _maxBulletCount; i++) {
+            for (int i = 0; i < _maxBulletCount; i++) {
                 var bulletImg = Instantiate(_bulletImagePrefab, 
                     _bulletCountGroupView.transform.position, 
                     _bulletCountGroupView.transform.rotation, 
                     _bulletCountGroupView.transform);
                 bulletImg.color = GetColorByPlayerElement();
-                _bullets.Add(bulletImg);
+                _bullets[i] = bulletImg;
             }
         }
         public void BulletCooldown(int index) {
@@ -53,7 +54,7 @@ namespace _PrismWars._Scripts.UI {
         }
 
         void BulletChangeColor(int index, Color color) {
-            if (index <= _maxBulletCount)
+            if (--index <= _maxBulletCount)
                 _bullets[index].color = color;
             else 
                 Debug.Log("bullet index > max bullet count");
