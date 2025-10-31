@@ -26,6 +26,9 @@ namespace _PrismWars._Scripts.UI {
         public void Initialize() {
             _respawnTimer = ServiceLocator.Singleton.Get<RespawnTimer>();
             _networkGameTimer = ServiceLocator.Singleton.Get<NetworkGameTimer>();
+            
+            ServiceLocator.Singleton.Register(_gameUIViewService);
+            _gameUIViewService.Initialize();
         }
 
         [ClientRpc]
@@ -40,10 +43,8 @@ namespace _PrismWars._Scripts.UI {
         [ClientRpc]
         public void OnGameStartedClientRpc() {
             if (IsClient) {
-                _gameUIViewService.ShowView();
-                ServiceLocator.Singleton.Register(_gameUIViewService);
-                _gameUIViewService.Initialize();
                 OnCharacterSelectionConfirmed?.Invoke();
+                _gameUIViewService.ShowView();
             }
         }
         public void OnPlayerDead() {

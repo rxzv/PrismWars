@@ -1,6 +1,8 @@
 using System;
 using _PrismWars._Scripts.Game.Services;
+using R3;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,19 +15,35 @@ namespace _PrismWars._Scripts.UI {
         [SerializeField] GameCursorUIService _gameCursorUIService;
         
         NetworkScoreManager _networkScoreManager;
+        NetworkPlayerSpawnService _networkPlayerSpawnService;
         
         float _maxHealth;
+        
+        readonly CompositeDisposable _disposables = new();
 
         public void ShowView() => gameObject.SetActive(true);
         public void HideView() => gameObject.SetActive(false);
         
-
         public void Initialize() {
             _networkScoreManager = ServiceLocator.Singleton.Get<NetworkScoreManager>();
+            _networkPlayerSpawnService = ServiceLocator.Singleton.Get<NetworkPlayerSpawnService>();
+            
+            ServiceLocator.Singleton.Register(_gameCursorUIService);
+            
             _networkScoreManager.FireScore.OnValueChanged += FireScoreChanged;
             _networkScoreManager.IceScore.OnValueChanged += IceScoreChanged;
             
-            ServiceLocator.Singleton.Register(_gameCursorUIService);
+            _networkPlayerSpawnService.OnPlayerSpawned
+                .Where(tuple => tuple.clientId == NetworkManager.Singleton.LocalClientId)
+                .Subscribe(_ => OnPlayerSpawned())
+                .AddTo(_disposables);
+        }
+
+        void OnPlayerSpawned() {
+            GameCursorUIServiceInitialize();
+        }
+
+        void GameCursorUIServiceInitialize() {
             _gameCursorUIService.Initialize();
             _gameCursorUIService.Show();
         }
@@ -63,6 +81,10 @@ namespace _PrismWars._Scripts.UI {
             _fireScore.text = "0";
             _iceScore.text = "0";
             _gameCursorUIService.Hide();
+        }
+
+        void OnDestroy() {
+            _disposables?.Dispose();
         }
 
     }
