@@ -82,9 +82,14 @@ namespace _PrismWars._Scripts.Player {
         }
 
         [Rpc(SendTo.Owner)]
-        public void PlayerIsRespawningRpc(Vector3 position) {
+        public void PlayerSetRespawnPositionRpc(Vector3 position) {
             _jumpController.PlayerIsRespawning(_currentTick, position);
             _moveController.PlayerIsRespawning(_currentTick, position);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        public void PlayerShowRpc() {
+            gameObject.SetActive(true);
         }
 
         public void Initialize(NetworkPlayerData playerConfig) {

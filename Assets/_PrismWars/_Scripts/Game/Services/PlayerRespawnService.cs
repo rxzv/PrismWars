@@ -73,7 +73,7 @@ namespace _PrismWars._Scripts.Game.Services {
                 player.TryGet(out NetworkObject networkObject);
                 if (networkObject != null) {
                     networkObject.TryGetComponent(out PlayerController playerController);
-                    playerController.PlayerIsRespawningRpc(spawnPos);
+                    playerController.PlayerSetRespawnPositionRpc(spawnPos);
                 }
             }
         }
@@ -82,12 +82,13 @@ namespace _PrismWars._Scripts.Game.Services {
         void PlayerRespawnClientRpc(ulong clientId, NetworkObjectReference player) {
             player.TryGet(out NetworkObject networkPlayer);
             if (networkPlayer != null) {
-                networkPlayer.gameObject.SetActive(true);
                 if (clientId == NetworkManager.Singleton.LocalClientId) {
                     OnPlayerRespawn?.Invoke();
                     ServiceLocator.Singleton.Get<NetworkUIManager>().OnPlayerRespawn();
                     ServiceLocator.Singleton.Get<InputService>().InputActionEnable();
-                    networkPlayer.gameObject.GetComponent<PlayerController>().enabled = true;
+                    var playerController = networkPlayer.gameObject.GetComponent<PlayerController>();
+                    playerController.enabled = true;
+                    playerController.PlayerShowRpc();
                 }
             } 
         }
