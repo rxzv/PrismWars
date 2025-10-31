@@ -14,6 +14,7 @@ namespace _PrismWars._Scripts.UI.Model {
         public float meleeAttackRange = 1;
         public float meleeDamage = 1;
         public LayerMask enemyLayer;
+        public int maxBulletCount = 4;
 
         // Конвертация в сетевую структуру
         public NetworkPlayerData ToNetworkConfig() {
@@ -27,7 +28,8 @@ namespace _PrismWars._Scripts.UI.Model {
                 maxHealth = maxHealth,
                 meleeAttackRange = meleeAttackRange,
                 meleeDamage = meleeDamage,
-                enemyLayerValue = enemyLayer.value
+                enemyLayerValue = enemyLayer.value,
+                maxBulletCount = maxBulletCount,
             };
         }
 
@@ -42,6 +44,7 @@ namespace _PrismWars._Scripts.UI.Model {
             maxHealth = networkData.maxHealth;
             meleeAttackRange = networkData.meleeAttackRange;
             meleeDamage = networkData.meleeDamage;
+            maxBulletCount = networkData.maxBulletCount;
             enemyLayer = new LayerMask { value = networkData.enemyLayerValue };
             
             // Загрузка спрайта по имени

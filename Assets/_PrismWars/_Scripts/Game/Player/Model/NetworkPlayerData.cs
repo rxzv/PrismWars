@@ -15,6 +15,7 @@ namespace _PrismWars._Scripts.UI.Model {
         public float meleeAttackRange;
         public float meleeDamage;
         public int enemyLayerValue;
+        public int maxBulletCount;
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
             serializer.SerializeValue(ref configId);
@@ -27,6 +28,7 @@ namespace _PrismWars._Scripts.UI.Model {
             serializer.SerializeValue(ref meleeAttackRange);
             serializer.SerializeValue(ref meleeDamage);
             serializer.SerializeValue(ref enemyLayerValue);
+            serializer.SerializeValue(ref maxBulletCount);
         }
 
         public bool Equals(NetworkPlayerData other) {
@@ -39,7 +41,8 @@ namespace _PrismWars._Scripts.UI.Model {
                    maxHealth.Equals(other.maxHealth) &&
                    meleeAttackRange.Equals(other.meleeAttackRange) &&
                    meleeDamage.Equals(other.meleeDamage) &&
-                   enemyLayerValue == other.enemyLayerValue;
+                   enemyLayerValue == other.enemyLayerValue &&
+                   maxBulletCount.Equals(other.maxBulletCount);
         }
     }
 }

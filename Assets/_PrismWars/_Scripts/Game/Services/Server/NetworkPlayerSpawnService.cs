@@ -10,6 +10,7 @@ namespace _PrismWars._Scripts {
         PlayerIceFactory _iceFactory;
         
         public readonly Subject<(ulong clientId, NetworkObjectReference playerRef)> OnPlayerSpawned = new();
+        public NetworkPlayerData PlayerData { get; private set; }
         
         public void Initialize(PlayerFireFactory fireFactory, PlayerIceFactory iceFactory) {
             _fireFactory = fireFactory;
@@ -19,6 +20,9 @@ namespace _PrismWars._Scripts {
         [Rpc(SendTo.Server)]
         public void SpawnPlayerRpc(NetworkPlayerData data, ulong clientId) {
             if(!IsServer) return;
+            
+            UpdatePlayerDataRpc(data, clientId);
+            
             NetworkObject playerRef;
             
             switch (data.playerElement) {
@@ -36,6 +40,12 @@ namespace _PrismWars._Scripts {
             SpawnPlayerRpc(playerRef, clientId);
         }
 
+        [Rpc(SendTo.ClientsAndHost)]
+        void UpdatePlayerDataRpc(NetworkPlayerData data, ulong clientId) {
+            if(NetworkManager.Singleton.LocalClientId == clientId)
+                PlayerData = data;
+        }
+        
         [Rpc(SendTo.ClientsAndHost)]
         void SpawnPlayerRpc(NetworkObjectReference playerRef, ulong clientId) =>
             OnPlayerSpawned?.OnNext((clientId,playerRef));

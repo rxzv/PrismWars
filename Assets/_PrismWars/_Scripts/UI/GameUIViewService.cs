@@ -10,6 +10,7 @@ namespace _PrismWars._Scripts.UI {
         [SerializeField] TextMeshProUGUI _fireScore;
         [SerializeField] TextMeshProUGUI _iceScore;
         [SerializeField] TextMeshProUGUI _shardCount;
+        [SerializeField] GameCursorUIService _gameCursorUIService;
         
         NetworkScoreManager _networkScoreManager;
         
@@ -23,6 +24,10 @@ namespace _PrismWars._Scripts.UI {
             _networkScoreManager = ServiceLocator.Singleton.Get<NetworkScoreManager>();
             _networkScoreManager.FireScore.OnValueChanged += FireScoreChanged;
             _networkScoreManager.IceScore.OnValueChanged += IceScoreChanged;
+            
+            ServiceLocator.Singleton.Register(_gameCursorUIService);
+            _gameCursorUIService.Initialize();
+            _gameCursorUIService.Show();
         }
 
         void FireScoreChanged(int previousValue, int newValue) {
@@ -57,6 +62,7 @@ namespace _PrismWars._Scripts.UI {
         void Awake() {
             _fireScore.text = "0";
             _iceScore.text = "0";
+            _gameCursorUIService.Hide();
         }
 
     }

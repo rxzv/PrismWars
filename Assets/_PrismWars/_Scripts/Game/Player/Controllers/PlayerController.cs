@@ -30,6 +30,8 @@ namespace _PrismWars._Scripts.Player {
 
         bool _isInitialized = false;
         
+        int _bulletCount = 4;
+        
         ClientMovementPrediction _moveController;
         ClientJumpPrediction _jumpController;
         FlipXController _flipXController;

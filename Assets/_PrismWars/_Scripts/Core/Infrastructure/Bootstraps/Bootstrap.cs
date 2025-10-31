@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
 using _PrismWars._Scripts.Game.Services;
-using _PrismWars._Scripts.Systems;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.Utils;
 using UnityEngine;
@@ -11,7 +10,6 @@ using UnityEngine;
 public class Bootstrap : MonoBehaviour {
     [Header("Mono Services")] 
     [SerializeField] InputService _inputService;
-    [SerializeField] CursorService _cursorService;
     [SerializeField] RespawnTimer _respawnTimer;
     
     [Header("Network Services")] 
@@ -30,7 +28,6 @@ public class Bootstrap : MonoBehaviour {
     
     void RegisterServices() {
         ServiceLocator.Singleton.Register(_inputService);
-        ServiceLocator.Singleton.Register(_cursorService);
         ServiceLocator.Singleton.Register(_networkCharacterSelectionManager);
         ServiceLocator.Singleton.Register(_networkGameTimer);
         ServiceLocator.Singleton.Register(_projectileFactory);
@@ -39,7 +36,6 @@ public class Bootstrap : MonoBehaviour {
         ServiceLocator.Singleton.Register(_networkScoreManager);
         
         DontDestroyOnLoad(_inputService);
-        DontDestroyOnLoad(_cursorService);
         DontDestroyOnLoad(_projectileFactory);
         DontDestroyOnLoad(_networkCharacterSelectionManager);
         DontDestroyOnLoad(_networkGameTimer);
@@ -54,7 +50,6 @@ public class Bootstrap : MonoBehaviour {
         var shardPrefab = Resources.Load<Shard>("Prefabs/Shard");
         
         _inputService.Initialize();
-        _cursorService.Initialize();
         _projectileFactory.Initialize(projectilePrefab);
         _shardFactory.Initialize(shardPrefab);
         
