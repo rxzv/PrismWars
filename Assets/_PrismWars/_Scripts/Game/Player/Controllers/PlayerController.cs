@@ -1,7 +1,6 @@
 using System;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
-using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
 using R3;
 using Unity.Netcode;
@@ -23,14 +22,16 @@ namespace _PrismWars._Scripts.Player {
         Animator _animator;
         Rigidbody2D _rb;
         
-        float _inputMoveDirection;
+        NetworkVariable<float> _inputMoveDirection = new NetworkVariable<float>(
+            default,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner);
+        
         bool _isJumping = false;
         
         PlayerConfig _config;
 
         bool _isInitialized = false;
-        
-        int _bulletCount = 4;
         
         ClientMovementPrediction _moveController;
         ClientJumpPrediction _jumpController;
@@ -77,7 +78,7 @@ namespace _PrismWars._Scripts.Player {
                 _currentTick++;
                 _time -= _tickTime;
                 
-                _moveController.Move(_inputMoveDirection, _currentTick);
+                _moveController.Move(_inputMoveDirection.Value, _currentTick);
                 _jumpController.Jump(_currentTick, _isJumping);
                 _isJumping = false;
             }
@@ -98,9 +99,14 @@ namespace _PrismWars._Scripts.Player {
             _playerData.Value = playerConfig;
             _projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
         }
-        
+
+        void FlipX(float previousValue, float newValue) {
+            _flipXController.FlipXClientRpc(newValue);
+        }
+
         public override void OnNetworkSpawn() {
             _playerData.OnValueChanged += OnConfigChanged;
+            _inputMoveDirection.OnValueChanged += FlipX;
         
             if (_playerData.Value.playerName.Length > 0) {
                 OnConfigChanged(default, _playerData.Value);
@@ -113,7 +119,7 @@ namespace _PrismWars._Scripts.Player {
         
             ApplyConfig(_config);
 
-            if (IsOwner || IsServer && !_isInitialized) {
+            if (!_isInitialized) {
                 InitializeControllersAndInput();
             }
         }
@@ -145,7 +151,9 @@ namespace _PrismWars._Scripts.Player {
                 _rb,
                 _maxJumpVelocityError
             );
+            
             _flipXController = new FlipXController(_spriteRenderer);
+            
             _attackMeleeController = new AttackMeleeController(
                 _config.playerElement,
                 _config.meleeAttackRange, 
@@ -165,11 +173,8 @@ namespace _PrismWars._Scripts.Player {
                 _inputService.MoveInput
                     .Subscribe(d => {
                         Vector3 direction = d.normalized;
-                        _inputMoveDirection = direction.x;
+                        _inputMoveDirection.Value = direction.x;
                     })
-                    .AddTo(_disposables);
-                _inputService.MoveInput
-                    .Subscribe(d => _flipXController.FlipX(d))
                     .AddTo(_disposables);
                 _inputService.JumpCommand
                     .Subscribe(_ => _isJumping = true)

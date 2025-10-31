@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Player {
@@ -7,10 +8,12 @@ namespace _PrismWars._Scripts.Player {
         public FlipXController(SpriteRenderer spriteRenderer) {
             _spriteRenderer = spriteRenderer;
         }
-        public void FlipX(Vector2 dir) {
-            if (dir.x == 1)
+        
+        [ClientRpc]
+        public void FlipXClientRpc(float dir) {
+            if (dir > 0)
                 _spriteRenderer.flipX = false;
-            else if (dir.x == -1)
+            else if (dir < 0)
                 _spriteRenderer.flipX = true;
         }
     }

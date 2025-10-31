@@ -1,11 +1,9 @@
-using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.UI.Model;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace _PrismWars._Scripts.Player {
-    public class AttackRangeController{
+    public class AttackRangeController {
         const float ATTACK_DISTANCE_FROM_PLAYER = 1f;
         
         Camera _camera;
@@ -36,10 +34,8 @@ namespace _PrismWars._Scripts.Player {
             Ray mouseRay = _camera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
             Vector2 worldPosition = Physics.Raycast(mouseRay, out RaycastHit hit, 100f) ? hit.point :
-                // Если луч ни во что не попал, используем точку на дальней дистанции
                 mouseRay.GetPoint(50f);
-
-            // Направление от точки выстрела к цели
+            
             Vector2 direction = (worldPosition - _firePoint).normalized;
             return direction;
         }
