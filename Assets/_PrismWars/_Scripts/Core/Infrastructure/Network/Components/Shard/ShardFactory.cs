@@ -31,12 +31,6 @@ namespace _PrismWars._Scripts.Components.Projectile {
             shard?.SetPosition(position, direction);
             return shard;
         }
-        public void SpawnAllShards(Vector3 position, Vector3 direction, PlayerElement element, int count) {
-            for (int i = 0; i <= count; i++) {
-                var shard = GetPoolFor(element)?.Get();
-                shard?.SetPosition(position, direction);
-            }
-        }
 
         public void ReturnToPool(Shard s, PlayerElement element) {
             if (!IsServer) return;

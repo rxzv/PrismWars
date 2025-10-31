@@ -1,9 +1,9 @@
-using System;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
     public class ShardComponent : NetworkBehaviour, IInitializable<PlayerElement> {
@@ -44,13 +44,25 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
         void DropShardsServerRpc(Vector3 position, Vector3 direction, PlayerElement playerElement) {
             Debug.Log("Dropped shards");
             _shardFactory = ServiceLocator.Singleton.Get<ShardFactory>();
-            _shardFactory.Spawn(position, direction, playerElement);
+            var randomPos = new Vector3(
+                Random.Range(position.x - 1, position.x + 1),
+                Random.Range(position.y, position.y + 0.5f),
+                position.z
+            );
+            _shardFactory.Spawn(randomPos, direction, playerElement);
         }
         [ServerRpc(RequireOwnership = false)]
         void DropAllShardsServerRpc(Vector3 position, Vector3 direction, PlayerElement playerElement, int count) {
             Debug.Log("Dropped all shards");
             _shardFactory = ServiceLocator.Singleton.Get<ShardFactory>();
-            _shardFactory.SpawnAllShards(position, direction, playerElement, count);
+            for (int i = 0; i < count; i++) {
+                var randomPos = new Vector3(
+                    Random.Range(position.x - 1, position.x + 1),
+                    Random.Range(position.y, position.y + 0.5f),
+                    position.z
+                );
+                _shardFactory.Spawn(randomPos, direction, playerElement);
+            }
         }
         void ShardsCountChanged(int previousValue, int newValue) {
             if (newValue != previousValue) {
