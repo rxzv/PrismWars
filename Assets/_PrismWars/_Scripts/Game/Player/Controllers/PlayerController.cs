@@ -25,7 +25,6 @@ namespace _PrismWars._Scripts.Player {
         
         float _inputMoveDirection;
         bool _isJumping = false;
-        bool _isRespawning = false;
         
         PlayerConfig _config;
 
@@ -45,7 +44,6 @@ namespace _PrismWars._Scripts.Player {
         
         InputService _inputService;
         ProjectileFactory _projectileFactory;
-        PlayerRespawnService _respawnService;
         
         NetworkVariable<NetworkPlayerData> _playerData = 
             new NetworkVariable<NetworkPlayerData>(default, 
@@ -77,17 +75,16 @@ namespace _PrismWars._Scripts.Player {
                 _currentTick++;
                 _time -= _tickTime;
                 
-                if (_isRespawning) {
-                    _jumpController.PlayerIsRespawning(_currentTick, transform.position);
-                    _moveController.PlayerIsRespawning(_currentTick, transform.position);
-                    _isRespawning = false;
-                    continue;
-                }
-                
                 _moveController.Move(_inputMoveDirection, _currentTick);
                 _jumpController.Jump(_currentTick, _isJumping);
                 _isJumping = false;
             }
+        }
+
+        [Rpc(SendTo.Owner)]
+        public void PlayerIsRespawningRpc(Vector3 position) {
+            _jumpController.PlayerIsRespawning(_currentTick, position);
+            _moveController.PlayerIsRespawning(_currentTick, position);
         }
 
         public void Initialize(NetworkPlayerData playerConfig) {
@@ -156,10 +153,7 @@ namespace _PrismWars._Scripts.Player {
                 
                 _inputService = ServiceLocator.Singleton.Get<InputService>();
                 _attackRangeController = new AttackRangeController(_config.playerElement, Camera.main, this);
-                _respawnService = ServiceLocator.Singleton.Get<PlayerRespawnService>();
                 
-                _healthComponent.OnDeath += PlayerOnDead;
-                _respawnService.OnPlayerRespawn += PlayerOnRespawned;
                 // Input
                 _inputService.MoveInput
                     .Subscribe(d => {
@@ -186,13 +180,6 @@ namespace _PrismWars._Scripts.Player {
             }
 
             _isInitialized = true;
-        }
-
-        void PlayerOnDead() {
-            _isRespawning = false;
-        }
-        void PlayerOnRespawned() {
-            _isRespawning = true;
         }
 
         void OnDrawGizmosSelected() {

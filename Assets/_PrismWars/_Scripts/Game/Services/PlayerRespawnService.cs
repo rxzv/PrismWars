@@ -73,7 +73,7 @@ namespace _PrismWars._Scripts.Game.Services {
                 player.TryGet(out NetworkObject networkObject);
                 if (networkObject != null) {
                     networkObject.TryGetComponent(out PlayerController playerController);
-                    playerController.transform.position = spawnPos;
+                    playerController.PlayerIsRespawningRpc(spawnPos);
                 }
             }
         }
