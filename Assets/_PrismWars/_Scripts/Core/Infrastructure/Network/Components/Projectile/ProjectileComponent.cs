@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.UI;
@@ -13,7 +12,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
         
         Timer _timer;
         NetworkVariable<float> _maxBulletCount = new();
-        Queue<int> _shotQueue = new();
+        Stack<int> _shotStack = new();
         GameCursorUIService _cursorService;
 
         AttackRangeController _attackRangeController;
@@ -45,11 +44,11 @@ namespace _PrismWars._Scripts.Components.Projectile {
             if (_bulletCountAvailable.Value < _maxBulletCount.Value) {
                 _bulletCountAvailable.Value++;
                 Debug.Log($"_shotQueue.Dequeue({_bulletCountAvailable.Value});");
-                var index = _shotQueue.Dequeue();
+                var index = _shotStack.Pop();
                 BulletAvailableRpc(index);
             }
 
-            if (_shotQueue.Count > 0) {
+            if (_shotStack.Count > 0) {
                 _timer.StartTimer(_rangeAttackCooldown);
             }
         }
@@ -76,13 +75,13 @@ namespace _PrismWars._Scripts.Components.Projectile {
         [ServerRpc]
         public void RangeAttackServerRpc() {
             if (_bulletCountAvailable.Value > 0) {
-                _shotQueue.Enqueue(_bulletCountAvailable.Value);
+                _shotStack.Push(_bulletCountAvailable.Value);
                 Debug.Log($"_shotQueue.Enqueue({_bulletCountAvailable.Value});");
                 SpawnProjectileRpc(_bulletCountAvailable.Value);
                 _bulletCountAvailable.Value--;
             }
 
-            if (_shotQueue.Count <= 1) {
+            if (_shotStack.Count <= 1) {
                 _timer.StartTimer(_rangeAttackCooldown);
             }
         }
