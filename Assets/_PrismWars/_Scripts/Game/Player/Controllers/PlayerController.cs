@@ -34,8 +34,6 @@ namespace _PrismWars._Scripts.Player {
 
         bool _isInitialized = false;
         
-        Timer _timer;
-        
         ClientMovementPrediction _moveController;
         ClientJumpPrediction _jumpController;
         FlipXController _flipXController;
@@ -44,6 +42,7 @@ namespace _PrismWars._Scripts.Player {
         
         HealthComponent _healthComponent;
         ShardComponent _shardComponent;
+        ProjectileComponent _projectileComponent;
         
         CompositeDisposable _disposables = new();
         SpriteRenderer _spriteRenderer;
@@ -72,7 +71,6 @@ namespace _PrismWars._Scripts.Player {
 
         void Update() {
             _time += Time.deltaTime;
-            _timer?.Update();
         }
         
         void FixedUpdate() {
@@ -141,8 +139,6 @@ namespace _PrismWars._Scripts.Player {
             _disposables?.Dispose();
             _disposables = new CompositeDisposable();
             
-            _timer = new Timer();
-            
             _moveController = new ClientMovementPrediction(
                 transform,
                 _config.moveSpeed,
@@ -168,9 +164,7 @@ namespace _PrismWars._Scripts.Player {
                 _config.meleeDamage);
             
             _attackRangeController = new AttackRangeController(
-                _config.playerElement, 
-                _config.maxBulletCount,
-                _timer,
+                _config.playerElement,
                 Camera.main,
                 this);
 
@@ -179,6 +173,12 @@ namespace _PrismWars._Scripts.Player {
                 _healthComponent.Initialize(_playerData.Value);
                 _shardComponent = GetComponent<ShardComponent>();
                 _shardComponent.Initialize(_playerData.Value.playerElement);
+                
+                _projectileComponent = GetComponent<ProjectileComponent>();
+                _projectileComponent.Initialize(
+                    _attackRangeController,
+                    _config.maxBulletCount, 
+                    3f);
                 
                 _inputService = ServiceLocator.Singleton.Get<InputService>();
                 
@@ -197,8 +197,8 @@ namespace _PrismWars._Scripts.Player {
                     .AddTo(_disposables);
                 _inputService.AttackRange
                     .Subscribe(_ => {
-                            _attackRangeController
-                                .RangeAttack();
+                            _projectileComponent
+                                .RangeAttackServerRpc();
                         }
                     )
                     .AddTo(_disposables);
