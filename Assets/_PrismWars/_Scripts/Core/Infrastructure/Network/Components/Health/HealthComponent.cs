@@ -15,7 +15,7 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
     NetworkPlayerData _playerData;
     GameUIViewService _gameUIViewService;
     PlayerRespawnService _playerRespawnService;
-    NetworkScoreManager _networkScoreManager;
+    NetworkScoreService _networkScoreService;
     
     const int VALUE_TO_DROP_SHARD = 20;
     
@@ -32,7 +32,7 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
             _currentHealth.OnValueChanged += HealthChanged;
             _playerRespawnService.OnPlayerRespawn += PlayerRespawn;
             UpdateHealthServerRpc(data.maxHealth);
-            _networkScoreManager = ServiceLocator.Singleton.Get<NetworkScoreManager>();
+            _networkScoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
             
             _currentHealth.OnValueChanged += CheckDropShard;
         }
@@ -64,7 +64,7 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
             Debug.Log("Player died!");
             OnDeath?.Invoke();
             var networkObject = gameObject.GetComponent<NetworkObject>();
-            _networkScoreManager.AddScoreServerRpc(_currentPlayerElementDamaged.Value, 10);
+            _networkScoreService.AddScoreServerRpc(_currentPlayerElementDamaged.Value, 10);
             _playerRespawnService.PlayerDeadServerRpc(NetworkManager.Singleton.LocalClientId, networkObject);
         }
     }

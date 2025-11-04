@@ -15,6 +15,8 @@ namespace _PrismWars._Scripts.UI {
         [SerializeField] GameObject _respawnUI;
         [SerializeField] TextMeshProUGUI _respawnTimerText;
         
+        GameOverUIService _gameOverUIService;
+        
         RespawnTimer _respawnTimer;
         
         bool _isDead = false;
@@ -26,6 +28,7 @@ namespace _PrismWars._Scripts.UI {
         public void Initialize() {
             _respawnTimer = ServiceLocator.Singleton.Get<RespawnTimer>();
             _networkGameTimer = ServiceLocator.Singleton.Get<NetworkGameTimer>();
+            _gameOverUIService = ServiceLocator.Singleton.Get<GameOverUIService>();
             
             ServiceLocator.Singleton.Register(_gameUIViewService);
             _gameUIViewService.Initialize();
@@ -33,19 +36,22 @@ namespace _PrismWars._Scripts.UI {
 
         [ClientRpc]
         public void OnSelectCharacterClientRpc() {
-            if (IsClient) {
-                _characterSelectionManager.Initialize();
-                _waitingUI.gameObject.SetActive(false);
-                _timerUI.gameObject.SetActive(true);
-                _characterSelectionManager.View.ShowView();
-            }
+            _characterSelectionManager.Initialize();
+            _gameOverUIService.HideView();
+            _waitingUI.gameObject.SetActive(false);
+            _timerUI.gameObject.SetActive(true);
+            _characterSelectionManager.View.ShowView();
         }
+        
         [ClientRpc]
         public void OnGameStartedClientRpc() {
-            if (IsClient) {
-                OnCharacterSelectionConfirmed?.Invoke();
-                _gameUIViewService.ShowView();
-            }
+            OnCharacterSelectionConfirmed?.Invoke();
+            _gameUIViewService.ShowView();
+        }
+        [ClientRpc]
+        public void OnGameOverClientRpc() {
+            _gameOverUIService.ShowView();
+            _gameOverUIService.GameOver();
         }
         public void OnPlayerDead() {
             if (IsClient) {

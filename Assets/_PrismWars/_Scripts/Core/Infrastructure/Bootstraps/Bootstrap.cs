@@ -8,6 +8,8 @@ using _PrismWars._Scripts.Utils;
 using UnityEngine;
 
 public class Bootstrap : MonoBehaviour {
+    const string GAME_SCENE_NAME = "Game";
+    
     [Header("Mono Services")] 
     [SerializeField] InputService _inputService;
     [SerializeField] RespawnTimer _respawnTimer;
@@ -16,8 +18,9 @@ public class Bootstrap : MonoBehaviour {
     [SerializeField] NetworkGameTimer _networkGameTimer;
     [SerializeField] NetworkCharacterSelectionManager _networkCharacterSelectionManager;
     [SerializeField] ProjectileFactory _projectileFactory;
-    [SerializeField] NetworkScoreManager  _networkScoreManager;
+    [SerializeField] NetworkScoreService  _networkScoreService;
     [SerializeField] ShardFactory _shardFactory;
+    [SerializeField] NetworkChangeScene _networkChangeScene;
     
     List<IDisposable> _disposables = new();
     
@@ -33,15 +36,17 @@ public class Bootstrap : MonoBehaviour {
         ServiceLocator.Singleton.Register(_projectileFactory);
         ServiceLocator.Singleton.Register(_shardFactory);
         ServiceLocator.Singleton.Register(_respawnTimer);
-        ServiceLocator.Singleton.Register(_networkScoreManager);
+        ServiceLocator.Singleton.Register(_networkScoreService);
+        ServiceLocator.Singleton.Register(_networkChangeScene);
         
         DontDestroyOnLoad(_inputService);
         DontDestroyOnLoad(_projectileFactory);
         DontDestroyOnLoad(_networkCharacterSelectionManager);
         DontDestroyOnLoad(_networkGameTimer);
         DontDestroyOnLoad(_respawnTimer);
-        DontDestroyOnLoad(_networkScoreManager);
+        DontDestroyOnLoad(_networkScoreService);
         DontDestroyOnLoad(_shardFactory);
+        DontDestroyOnLoad(_networkChangeScene);
         
         Debug.Log("BootstrapScene Services registered");
     }
@@ -53,7 +58,7 @@ public class Bootstrap : MonoBehaviour {
         _projectileFactory.Initialize(projectilePrefab);
         _shardFactory.Initialize(shardPrefab);
         
-        SceneLoader.LoadNetwork("Game");
+        _networkChangeScene.ChangeScene(GAME_SCENE_NAME);
         Debug.Log("BootstrapScene Services initialize");
     }
 }

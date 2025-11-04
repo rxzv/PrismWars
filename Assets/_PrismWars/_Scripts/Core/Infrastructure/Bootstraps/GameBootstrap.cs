@@ -14,6 +14,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
         
         [Header("Network Services")] 
         [SerializeField] NetworkUIManager _networkUIManager;
+        [SerializeField] GameOverUIService _gameOverUIService;
         [SerializeField] NetworkPlayerSpawnService _networkPlayerSpawnService;
         [SerializeField] NetworkSpawner _networkSpawner;
         [SerializeField] PlayerRespawnService _playerRespawnService;
@@ -39,6 +40,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             ServiceLocator.Singleton.Register(_cameraSpawnService);
             ServiceLocator.Singleton.Register(_networkSpawner);
             ServiceLocator.Singleton.Register(_playerRespawnService);
+            ServiceLocator.Singleton.Register(_gameOverUIService);
             
             _projectileServerService = new ProjectileServerService();
             ServiceLocator.Singleton.Register(_projectileServerService);
@@ -60,6 +62,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             _shardServerService.Initialize();
             _cameraSpawnService.Initialize(cameraPrefab);
             _playerRespawnService.Initialize(_fireSpawnPoints, _iceSpawnPoints);
+            _gameOverUIService.Initialize();
             
             _networkSpawner.ClientInitialized();
             Debug.Log("GameScene Services initialized");

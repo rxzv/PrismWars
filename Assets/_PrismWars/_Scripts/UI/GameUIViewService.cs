@@ -14,7 +14,7 @@ namespace _PrismWars._Scripts.UI {
         [SerializeField] TextMeshProUGUI _shardCount;
         [SerializeField] GameCursorUIService _gameCursorUIService;
         
-        NetworkScoreManager _networkScoreManager;
+        NetworkScoreService _networkScoreService;
         NetworkPlayerSpawnService _networkPlayerSpawnService;
         
         float _maxHealth;
@@ -25,13 +25,13 @@ namespace _PrismWars._Scripts.UI {
         public void HideView() => gameObject.SetActive(false);
         
         public void Initialize() {
-            _networkScoreManager = ServiceLocator.Singleton.Get<NetworkScoreManager>();
+            _networkScoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
             _networkPlayerSpawnService = ServiceLocator.Singleton.Get<NetworkPlayerSpawnService>();
             
             ServiceLocator.Singleton.Register(_gameCursorUIService);
             
-            _networkScoreManager.FireScore.OnValueChanged += FireScoreChanged;
-            _networkScoreManager.IceScore.OnValueChanged += IceScoreChanged;
+            _networkScoreService.FireScore.OnValueChanged += FireScoreChanged;
+            _networkScoreService.IceScore.OnValueChanged += IceScoreChanged;
             
             _networkPlayerSpawnService.OnPlayerSpawned
                 .Where(tuple => tuple.clientId == NetworkManager.Singleton.LocalClientId)

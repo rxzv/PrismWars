@@ -1,6 +1,7 @@
 using System;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
+using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
 using R3;
@@ -31,6 +32,8 @@ namespace _PrismWars._Scripts.Player {
         bool _isJumping = false;
         
         PlayerConfig _config;
+        
+        NetworkScoreService _networkScoreService;
 
         bool _isInitialized = false;
         
@@ -171,8 +174,12 @@ namespace _PrismWars._Scripts.Player {
             if (IsOwner) {
                 _healthComponent = GetComponent<HealthComponent>();
                 _healthComponent.Initialize(_playerData.Value);
+                
                 _shardComponent = GetComponent<ShardComponent>();
                 _shardComponent.Initialize(_playerData.Value.playerElement);
+                
+                _networkScoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
+                _networkScoreService.Initialize(_playerData.Value.playerElement);
                 
                 _projectileComponent = GetComponent<ProjectileComponent>();
                 _projectileComponent.Initialize(

@@ -18,6 +18,10 @@ namespace _PrismWars._Scripts.Game.GameManager {
             if (IsServer) {
                 StartGame();
             }
+
+            if (IsClient) {
+                _networkUIManager = ServiceLocator.Singleton.Get<NetworkUIManager>();
+            }
             base.OnNetworkSpawn();
         }
 
@@ -37,7 +41,11 @@ namespace _PrismWars._Scripts.Game.GameManager {
                         break;
                     case GameState.SelectCharacter:
                         _gameState.Value = GameState.GameStart;
-                        _networkGameTimer.StartTimerServerRpc(180f);
+                        // _networkGameTimer.StartTimerServerRpc(180f);
+                        _networkGameTimer.StartTimerServerRpc(15f);
+                        break;
+                    case GameState.GameStart:
+                        _gameState.Value = GameState.GameOver;
                         break;
                 } 
             }
@@ -50,17 +58,21 @@ namespace _PrismWars._Scripts.Game.GameManager {
                     case GameState.GameStart:
                         GameStarted();
                         break;
+                    case GameState.GameOver:
+                        GameOver();
+                        break;
                 }
             }
         }
 
         void SelectCharacter() {
-            _networkUIManager = ServiceLocator.Singleton.Get<NetworkUIManager>();
             _networkUIManager.OnSelectCharacterClientRpc();
         }
         void GameStarted() {
-            _networkUIManager = ServiceLocator.Singleton.Get<NetworkUIManager>();
             _networkUIManager.OnGameStartedClientRpc();
+        }
+        void GameOver() {
+            _networkUIManager.OnGameOverClientRpc();
         }
         
         enum GameState {
