@@ -42,7 +42,7 @@ namespace _PrismWars._Scripts.Game.GameManager {
                     case GameState.SelectCharacter:
                         _gameState.Value = GameState.GameStart;
                         // _networkGameTimer.StartTimerServerRpc(180f);
-                        _networkGameTimer.StartTimerServerRpc(15f);
+                        _networkGameTimer.StartTimerServerRpc(30f);
                         break;
                     case GameState.GameStart:
                         _gameState.Value = GameState.GameOver;

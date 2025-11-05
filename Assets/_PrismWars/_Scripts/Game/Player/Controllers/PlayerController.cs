@@ -65,6 +65,9 @@ namespace _PrismWars._Scripts.Player {
                 default,
                 NetworkVariableReadPermission.Everyone,
                 NetworkVariableWritePermission.Owner);
+        
+        
+        public ulong ClientId => _clientId;
 
         void Awake() {
             _tickTime = 1f / _tickRate;

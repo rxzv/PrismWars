@@ -34,6 +34,10 @@ namespace _PrismWars._Scripts.Game.Services {
             var prefab = Resources.Load<GameObject>("NetworkServicePrefabs/ServerGameManager");
             var instance = Instantiate(prefab);
             instance.GetComponent<NetworkObject>().Spawn();
+            
+            prefab = Resources.Load<GameObject>("NetworkServicePrefabs/HillCaptureComponent");
+            instance = Instantiate(prefab);
+            instance.GetComponent<NetworkObject>().Spawn();
         }
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configId: 0
   playerName: rocky
-  playerElement: 0
+  playerElement: 1
   spriteName: rocky
   sprite: {fileID: 8763281246926235044, guid: 59cfe3e98ac43614884b6e9f08467b0d, type: 3}
   moveSpeed: 10

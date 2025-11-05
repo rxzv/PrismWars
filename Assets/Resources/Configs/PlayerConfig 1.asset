@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configId: 1
   playerName: cornea
-  playerElement: 1
+  playerElement: 2
   spriteName: cornea
   sprite: {fileID: 21300000, guid: 8ce517a575f280f4986aafb87018d19c, type: 3}
   moveSpeed: 10
@@ -25,3 +25,4 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
+  maxBulletCount: 4
