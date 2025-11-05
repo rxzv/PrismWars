@@ -13,6 +13,8 @@ namespace _PrismWars._Scripts.Components.Projectile {
         [SerializeField] int _maxPoolSize = 100;
         
         NetworkVariable<PlayerElement> _currentType = new();
+        NetworkVariable<ulong> _currentPlayerId = new();
+        
         Projectile _projectilePrefab;
 
         readonly Dictionary<PlayerElement, IObjectPool<Projectile>> _pools = new();
@@ -26,7 +28,8 @@ namespace _PrismWars._Scripts.Components.Projectile {
             _projectilePrefab = projectilePrefab;
         }
         
-        public Projectile Spawn(Vector3 position, Vector3 direction, PlayerElement element) {
+        public Projectile Spawn(Vector3 position, Vector3 direction, PlayerElement element, ulong playerId) {
+            _currentPlayerId.Value = playerId;
             var projectile = GetPoolFor(element)?.Get();
             projectile?.SetPosition(position, direction);
             return projectile;
@@ -58,7 +61,7 @@ namespace _PrismWars._Scripts.Components.Projectile {
 
         Projectile Create() {
             Projectile projectile = Instantiate(_projectilePrefab);
-            projectile.SetType(_currentType.Value);
+            projectile.SetType(_currentType.Value, _currentPlayerId.Value);
             
             projectile.gameObject.TryGetComponent(out NetworkObject networkObject);
             networkObject.Spawn(true);

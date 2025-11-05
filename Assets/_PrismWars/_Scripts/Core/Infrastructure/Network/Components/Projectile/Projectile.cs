@@ -9,10 +9,11 @@ namespace _PrismWars._Scripts.Components.Projectile {
         [SerializeField] float _damage;
         [SerializeField] float _despawnDelay = 5f;
         
+        NetworkVariable<ulong> _playerId = new();
+        
         SpriteRenderer _spriteRenderer;
         
         NetworkVariable<PlayerElement> _type = new();
-        public PlayerElement Element => _type.Value;
         
         Vector2 _direction;
 
@@ -26,15 +27,16 @@ namespace _PrismWars._Scripts.Components.Projectile {
             StartCoroutine(DespawnAfterDelay(_despawnDelay));
         }
 
-        public void SetType(PlayerElement element) {
+        public void SetType(PlayerElement element, ulong playerId) {
+            _playerId.Value = playerId;
             _type.Value = element;
             Initialize();
         }
 
         void Initialize() {
-            gameObject.layer = LayerMask.NameToLayer(Element.ToString());
+            gameObject.layer = LayerMask.NameToLayer(_type.Value.ToString());
             _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-            _spriteRenderer.material = GetMaterialByPlayerType(Element);
+            _spriteRenderer.material = GetMaterialByPlayerType(_type.Value);
         }
 
         public void SetPosition(Vector2 startPos, Vector2 direction) {
@@ -50,14 +52,14 @@ namespace _PrismWars._Scripts.Components.Projectile {
         void OnTriggerEnter2D(Collider2D other) {
             StopAllCoroutines();
             if (other.gameObject.layer != gameObject.layer) {
-                other.GetComponent<IDamageable>()?.TakeDamage(_type.Value, _damage);
+                other.GetComponent<IDamageable>()?.TakeDamage(_type.Value, _damage, _playerId.Value);
             }
-            ReturnToPoolRpc(Element);
+            ReturnToPoolRpc(_type.Value);
         }
 
         IEnumerator DespawnAfterDelay(float delay) {
             yield return new WaitForSeconds(delay);
-            ReturnToPoolRpc(Element);
+            ReturnToPoolRpc(_type.Value);
         }
         
         [Rpc(SendTo.Server)]

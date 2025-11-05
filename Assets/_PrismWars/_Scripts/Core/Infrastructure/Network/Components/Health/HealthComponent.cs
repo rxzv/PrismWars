@@ -18,6 +18,8 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
     NetworkScoreService _networkScoreService;
     
     const int VALUE_TO_DROP_SHARD = 20;
+
+    ulong _killerId;
     
     public event Action OnDeath;
     public event Action OnDropShard;
@@ -64,11 +66,12 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
             Debug.Log("Player died!");
             OnDeath?.Invoke();
             var networkObject = gameObject.GetComponent<NetworkObject>();
-            _networkScoreService.AddScoreServerRpc(_currentPlayerElementDamaged.Value, 10);
+            _networkScoreService.AddScoreForDiedServerRpc(_currentPlayerElementDamaged.Value, 1, _killerId);
             _playerRespawnService.PlayerDeadServerRpc(NetworkManager.Singleton.LocalClientId, networkObject);
         }
     }
-    public void TakeDamage(PlayerElement playerElement, float damage) {
+    public void TakeDamage(PlayerElement playerElement, float damage, ulong playerId) {
+        _killerId = playerId;
         TakeDamageServerRpc(playerElement, damage);
     }
     public void AddHealth(float heal) {

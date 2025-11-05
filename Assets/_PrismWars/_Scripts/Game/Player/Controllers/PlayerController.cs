@@ -21,6 +21,8 @@ namespace _PrismWars._Scripts.Player {
         [SerializeField] float _maxPositionError = 0.5f;
         [SerializeField] float _maxJumpVelocityError = 2f;
         
+        ulong _clientId;
+        
         Animator _animator;
         Rigidbody2D _rb;
         
@@ -113,6 +115,7 @@ namespace _PrismWars._Scripts.Player {
         public override void OnNetworkSpawn() {
             _playerData.OnValueChanged += OnConfigChanged;
             _inputMoveDirection.OnValueChanged += FlipX;
+            _clientId = NetworkManager.Singleton.LocalClientId;
         
             if (_playerData.Value.playerName.Length > 0) {
                 OnConfigChanged(default, _playerData.Value);
@@ -164,6 +167,7 @@ namespace _PrismWars._Scripts.Player {
                 _config.playerElement,
                 _config.meleeAttackRange, 
                 _config.enemyLayer,
+                _clientId,
                 _config.meleeDamage);
             
             _attackRangeController = new AttackRangeController(
@@ -225,7 +229,7 @@ namespace _PrismWars._Scripts.Player {
         
         [Rpc(SendTo.Server)]
         void SpawnProjectileRpc(Vector3 position, Vector3 direction, PlayerElement playerElement) => 
-            _projectileFactory.Spawn(position, direction, playerElement);
+            _projectileFactory.Spawn(position, direction, playerElement, _clientId);
         
         public void Dispose() =>
             _disposables?.Dispose();

@@ -12,7 +12,6 @@ namespace _PrismWars._Scripts.Game.Services {
         [NonSerialized]
         public NetworkVariable<int> FireScore = new();
 
-        [NonSerialized] 
         int _playerScore;
         
         PlayerElement _playerElement;
@@ -25,7 +24,7 @@ namespace _PrismWars._Scripts.Game.Services {
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void AddScoreServerRpc(PlayerElement playerElement, int score) {
+        public void AddScoreForDiedServerRpc(PlayerElement playerElement, int score, ulong killerId) {
             if (score <= 0) return;
             switch(playerElement) {
                 default:
@@ -36,7 +35,17 @@ namespace _PrismWars._Scripts.Game.Services {
                     FireScore.Value += score;
                     break;
             }
+
+            AddScoreForKillerClientRpc(score, killerId);
         }
+
+        [ClientRpc(RequireOwnership = false)]
+        void AddScoreForKillerClientRpc(int score, ulong killerId) {
+            if (NetworkManager.Singleton.LocalClientId == killerId && score > 0) {
+                _playerScore += score;
+            }
+        }
+        
         public int GetTeamScores() => _playerElement switch {
                 PlayerElement.Fire => FireScore.Value,
                 PlayerElement.Ice => IceScore.Value,
