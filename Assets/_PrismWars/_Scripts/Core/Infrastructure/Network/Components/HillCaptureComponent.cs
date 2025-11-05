@@ -13,6 +13,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         
         Timer _hillCaptureTimer;
         SpriteRenderer _spriteRenderer;
+        Color _startColor;
+        Color _targetColor;
+        float _captureStartTime;
+        bool _isCapturing;
 
         public override void OnNetworkSpawn() {
             _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -32,6 +36,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             if (!IsServer) return;
             if (changeEvent.Value == 0) {
                 _hillCaptureTimer.StopTimer();
+                _isCapturing = false;
                 return;
             }
 
@@ -39,11 +44,17 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
             if (dominantElement == PlayerElement.None) {
                 _hillElement.Value = dominantElement;
-                if(IsTimerRunning())
+                if (IsTimerRunning()) {
                     _hillCaptureTimer.StopTimer();
+                    _isCapturing = false;
+                }
             }
             else if (!IsTimerRunning() && _hillElement.Value != dominantElement) {
                 _hillCaptureTimer.StartTimer(_captureDuration);
+                _isCapturing = true;
+                _captureStartTime = Time.time;
+                _startColor = GetColorHillByElement(_hillElement.Value);
+                _targetColor = GetColorHillByElement(dominantElement);
             }
         }
 
@@ -109,12 +120,31 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         bool IsTimerRunning() => _hillCaptureTimer.GetRemainingTime() > 0;
 
         void Update() {
-            if (!IsServer) return;
-            _hillCaptureTimer?.Update();
+            if (IsServer) {
+                _hillCaptureTimer?.Update();
+                
+                if (_isCapturing && IsTimerRunning()) {
+                    UpdateCaptureColor();
+                }
+            }
+            else {  
+                if (_isCapturing) {
+                    UpdateCaptureColor();
+                }
+            }
         }
-
+        void UpdateCaptureColor() {
+            if (_spriteRenderer == null) return;
+            
+            float elapsedTime = Time.time - _captureStartTime;
+            float progress = Mathf.Clamp01(elapsedTime / _captureDuration);
+            
+            _spriteRenderer.color = Color.Lerp(_startColor, _targetColor, progress);
+        }
+        
         void OnHillElementChanged(PlayerElement previous, PlayerElement current) {
             UpdateHillColor(current);
+            _isCapturing = false; 
         }
 
         void UpdateHillColor(PlayerElement element) {
