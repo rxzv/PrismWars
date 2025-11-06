@@ -101,7 +101,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         }
         PlayerElement GetDominantElement() {
             if (_hillPlayers.Count == 0) 
-                return PlayerElement.None;
+                return _hillElement.Value;
 
             int? firstElement = null;
     
