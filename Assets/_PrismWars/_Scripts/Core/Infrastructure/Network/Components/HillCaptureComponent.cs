@@ -8,21 +8,27 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
     public class HillCaptureComponent : NetworkBehaviour {
         [SerializeField] NetworkVariable<float> _captureDuration = new(5f);
         
-        NetworkVariable<PlayerElement> _hillElement = new ();
+        [SerializeField] NetworkVariable<PlayerElement> _hillElement = new ();
         NetworkList<int> _hillPlayers = new();
         
         Timer _hillCaptureTimer;
         SpriteRenderer _spriteRenderer;
-        NetworkVariable<Color> _startColor = new();
-        NetworkVariable<Color> _targetColor = new();
-        NetworkVariable<float> _captureStartTime = new ();
-        NetworkVariable<bool> _isCapturing = new ();
+        [SerializeField] NetworkVariable<Color> _startColor = new();
+        [SerializeField] NetworkVariable<Color> _targetColor = new();
+        [SerializeField] NetworkVariable<float> _captureStartTime = new ();
+        [SerializeField] NetworkVariable<bool> _isCapturing = new ();
+        [SerializeField] NetworkVariable<float> _timeSaver = new ();
+        [SerializeField] NetworkVariable<PlayerElement> _lastPlayerElement = new ();
+        [SerializeField] NetworkVariable<Color> _lastColor = new ();
+        [SerializeField] NetworkVariable<bool> _isNewElement = new();
 
         public override void OnNetworkSpawn() {
             _spriteRenderer = GetComponent<SpriteRenderer>();
             UpdateHillColor(_hillElement.Value);
             
             if (IsServer) {
+                _lastPlayerElement.Value = GetDominantElement();
+                _timeSaver.Value = _captureDuration.Value; 
                 _hillCaptureTimer = new Timer();
                 _hillCaptureTimer.OnTimerComplete += OnCaptureComplete;
                 _hillPlayers.OnListChanged += HillPlayersCountChanged;
@@ -35,26 +41,38 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         void HillPlayersCountChanged(NetworkListEvent<int> changeEvent) {
             if (!IsServer) return;
             if (changeEvent.Value == 0) {
-                _hillCaptureTimer.StopTimer();
+                if(IsTimerRunning())
+                    _hillCaptureTimer.StopTimer();
                 _isCapturing.Value = false;
+                _spriteRenderer.color = GetColorHillByElement(_hillElement.Value);
                 return;
             }
 
-            PlayerElement dominantElement = GetDominantElement();
+            PlayerElement currentElement = GetDominantElement();
 
-            if (dominantElement == PlayerElement.None) {
-                _hillElement.Value = dominantElement;
+            if (currentElement == PlayerElement.None) {
                 if (IsTimerRunning()) {
+                    _timeSaver.Value = _hillCaptureTimer.GetRemainingTime();
                     _hillCaptureTimer.StopTimer();
                     _isCapturing.Value = false;
                 }
             }
-            else if (!IsTimerRunning() && _hillElement.Value != dominantElement) {
-                _hillCaptureTimer.StartTimer(_captureDuration.Value);
+            else if (!IsTimerRunning() && _hillElement.Value != currentElement) {
+                // если игрок другого элемента захватывает
+                if (_lastPlayerElement.Value != currentElement) {
+                    _lastPlayerElement.Value = currentElement;
+                    _hillCaptureTimer.StartTimer(_captureDuration.Value);
+                    _isNewElement.Value = true;
+                }
+                else {
+                    _lastPlayerElement.Value = currentElement;
+                    _hillCaptureTimer.StartTimer(_timeSaver.Value);
+                    _isNewElement.Value = false;
+                }
+                _startColor.Value = GetColorHillByElement(_hillElement.Value);
+                _targetColor.Value = GetColorHillByElement(currentElement);
                 _isCapturing.Value = true;
                 _captureStartTime.Value = Time.time;
-                _startColor.Value = GetColorHillByElement(_hillElement.Value);
-                _targetColor.Value = GetColorHillByElement(dominantElement);
             }
         }
 
@@ -138,8 +156,23 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             
             float elapsedTime = Time.time - _captureStartTime.Value;
             float progress = Mathf.Clamp01(elapsedTime / _captureDuration.Value);
+            if (IsServer) {
+                if (_isNewElement.Value) 
+                    _lastColor.Value = _spriteRenderer.color =
+                        Color.Lerp(_startColor.Value, _targetColor.Value, progress);
             
-            _spriteRenderer.color = Color.Lerp(_startColor.Value, _targetColor.Value, progress);
+                else 
+                    _lastColor.Value = _spriteRenderer.color =
+                        Color.Lerp(_lastColor.Value, _targetColor.Value, progress);
+            }
+            else {
+                if (_isNewElement.Value) 
+                    _spriteRenderer.color =
+                        Color.Lerp(_startColor.Value, _targetColor.Value, progress);
+                else 
+                    _spriteRenderer.color =
+                        Color.Lerp(_lastColor.Value, _targetColor.Value, progress); 
+            }
         }
         
         void OnHillElementChanged(PlayerElement previous, PlayerElement current) {
