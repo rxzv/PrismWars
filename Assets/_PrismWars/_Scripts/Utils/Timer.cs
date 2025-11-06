@@ -16,6 +16,11 @@ namespace _PrismWars._Scripts.Utils {
             _isTimerRunning = true;
         }
 
+        public void ResetTimer() {
+            _respawnDuration = 0;
+            _isTimerRunning = false;
+        }
+
         public void StopTimer() {
             _isTimerRunning = false;
         }

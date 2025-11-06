@@ -13,7 +13,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         
         Timer _hillCaptureTimer;
         SpriteRenderer _spriteRenderer;
-        [SerializeField] NetworkVariable<Color> _startColor = new();
         [SerializeField] NetworkVariable<Color> _targetColor = new();
         [SerializeField] NetworkVariable<float> _captureStartTime = new ();
         [SerializeField] NetworkVariable<bool> _isCapturing = new ();
@@ -28,6 +27,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             
             if (IsServer) {
                 _lastPlayerElement.Value = GetDominantElement();
+                _lastColor.Value = GetColorHillByElement(_hillElement.Value);
                 _timeSaver.Value = _captureDuration.Value; 
                 _hillCaptureTimer = new Timer();
                 _hillCaptureTimer.OnTimerComplete += OnCaptureComplete;
@@ -40,7 +40,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         void HillPlayersCountChanged(NetworkListEvent<int> changeEvent) {
             if (!IsServer) return;
-            if (changeEvent.Value == 0) {
+            if (_hillPlayers.Count == 0) {
                 if(IsTimerRunning())
                     _hillCaptureTimer.StopTimer();
                 _isCapturing.Value = false;
@@ -53,12 +53,14 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             if (currentElement == PlayerElement.None) {
                 if (IsTimerRunning()) {
                     _timeSaver.Value = _hillCaptureTimer.GetRemainingTime();
-                    _hillCaptureTimer.StopTimer();
+                    _hillCaptureTimer.ResetTimer();
                     _isCapturing.Value = false;
                 }
             }
             else if (!IsTimerRunning() && _hillElement.Value != currentElement) {
-                // если игрок другого элемента захватывает
+                _targetColor.Value = GetColorHillByElement(currentElement);
+                _captureStartTime.Value = Time.time;
+                
                 if (_lastPlayerElement.Value != currentElement) {
                     _lastPlayerElement.Value = currentElement;
                     _hillCaptureTimer.StartTimer(_captureDuration.Value);
@@ -69,10 +71,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                     _hillCaptureTimer.StartTimer(_timeSaver.Value);
                     _isNewElement.Value = false;
                 }
-                _startColor.Value = GetColorHillByElement(_hillElement.Value);
-                _targetColor.Value = GetColorHillByElement(currentElement);
                 _isCapturing.Value = true;
-                _captureStartTime.Value = Time.time;
             }
         }
 
@@ -114,8 +113,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             Debug.Log("OnCaptureComplete");
             
             PlayerElement dominantElement = GetDominantElement();
-            if (dominantElement != PlayerElement.None) 
+            if (dominantElement != PlayerElement.None) {
                 _hillElement.Value = dominantElement;
+                _timeSaver.Value = _captureDuration.Value; 
+            }
         }
         PlayerElement GetDominantElement() {
             if (_hillPlayers.Count == 0) 
@@ -143,11 +144,15 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 
                 if (_isCapturing.Value && IsTimerRunning()) {
                     UpdateCaptureColor();
+                } else if(_hillPlayers.Count < 2) {
+                    _spriteRenderer.color = GetColorHillByElement(_hillElement.Value);
                 }
             }
             else {  
                 if (_isCapturing.Value) {
                     UpdateCaptureColor();
+                } else if(_hillPlayers.Count < 2) {
+                    _spriteRenderer.color = GetColorHillByElement(_hillElement.Value);
                 }
             }
         }
@@ -159,8 +164,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             if (IsServer) {
                 if (_isNewElement.Value) 
                     _lastColor.Value = _spriteRenderer.color =
-                        Color.Lerp(_startColor.Value, _targetColor.Value, progress);
-            
+                        Color.Lerp(_lastColor.Value, _targetColor.Value, progress);
                 else 
                     _lastColor.Value = _spriteRenderer.color =
                         Color.Lerp(_lastColor.Value, _targetColor.Value, progress);
@@ -168,7 +172,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             else {
                 if (_isNewElement.Value) 
                     _spriteRenderer.color =
-                        Color.Lerp(_startColor.Value, _targetColor.Value, progress);
+                        Color.Lerp(_lastColor.Value, _targetColor.Value, progress);
                 else 
                     _spriteRenderer.color =
                         Color.Lerp(_lastColor.Value, _targetColor.Value, progress); 
