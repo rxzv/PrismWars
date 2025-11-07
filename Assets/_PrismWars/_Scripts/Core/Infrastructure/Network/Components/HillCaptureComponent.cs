@@ -33,7 +33,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 _startColor.Value = GetColorHillByElement(_hillElement.Value);
                 _timeSaver.Value = _captureDuration.Value; 
                 _saverColor.Value = _startColor.Value;
-                _elapsedTime.Value = 0f;
+                _elapsedTime.Value = Time.time;
                 _hillCaptureTimer = new Timer();
                 _hillCaptureTimer.OnTimerComplete += OnCaptureComplete;
                 _hillPlayers.OnListChanged += HillPlayersCountChanged;
@@ -45,62 +45,41 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         void HillPlayersCountChanged(NetworkListEvent<int> changeEvent) {
             if (!IsServer) return;
+            // если игроков в зоне 0
             if (_hillPlayers.Count == 0) {
-                // Когда игроков 0 - полностью сбрасываем состояние захвата
                 if(IsTimerRunning())
                     _hillCaptureTimer.StopTimer();
                 _isCapturing.Value = false;
-                _progress.Value = 0f;
-                _elapsedTime.Value = 0f;
-                _timeSaver.Value = _captureDuration.Value;
                 _spriteRenderer.color = GetColorHillByElement(_hillElement.Value);
                 return;
             }
 
             PlayerElement currentElement = GetDominantElement();
-            
+            // если игроки разных элементов
             if (currentElement == PlayerElement.None) {
-                // Игроки разных элементов - приостанавливаем захват
                 if (IsTimerRunning()) {
                     _timeSaver.Value = _hillCaptureTimer.GetRemainingTime();
-                    _hillCaptureTimer.StopTimer();
+                    _hillCaptureTimer.ResetTimer();
                     _isCapturing.Value = false;
-                    // Прогресс не сбрасываем, чтобы сохранить текущее состояние
+                    _progress.Value = 0;
                 }
-            }
-            else if (_hillElement.Value != currentElement) {
-                // Начинаем или продолжаем захват
+            } // если игрок другого элемента чем зона 1 или более игроков одного элемента
+            else if (!IsTimerRunning() && _hillElement.Value != currentElement) {
                 _targetColor.Value = GetColorHillByElement(currentElement);
-                
-                if (!IsTimerRunning()) {
-                    if (_lastPlayerElement.Value != currentElement) {
-                        // Новый элемент - начинаем заново
-                        _lastPlayerElement.Value = currentElement;
-                        _startColor.Value = _spriteRenderer.color;
-                        _captureStartTime.Value = Time.time;
-                        _hillCaptureTimer.StartTimer(_captureDuration.Value);
-                        _isNewElement.Value = true;
-                        _elapsedTime.Value = 0f;
-                    }
-                    else {
-                        // Тот же элемент - продолжаем с сохраненного времени
-                        _lastPlayerElement.Value = currentElement;
-                        _startColor.Value = _saverColor.Value;
-                        _captureStartTime.Value = Time.time - (_captureDuration.Value - _timeSaver.Value);
-                        _hillCaptureTimer.StartTimer(_timeSaver.Value);
-                        _isNewElement.Value = false;
-                    }
-                    _isCapturing.Value = true;
+                _captureStartTime.Value = Time.time;
+                // если игрок другого элемента
+                if (_lastPlayerElement.Value != currentElement) {
+                    _lastPlayerElement.Value = currentElement;
+                    _hillCaptureTimer.StartTimer(_captureDuration.Value);
+                    _isNewElement.Value = true;
                 }
-            }
-            else {
-                // Холм уже захвачен текущим элементом - сбрасываем
-                if (IsTimerRunning()) {
-                    _hillCaptureTimer.StopTimer();
+                else { // если игрок того же элемента, вызывается когда игрок врага покидает зону
+                    _lastPlayerElement.Value = currentElement;
+                    _startColor.Value = _saverColor.Value;
+                    _hillCaptureTimer.StartTimer(_timeSaver.Value);
+                    _isNewElement.Value = false;
                 }
-                _isCapturing.Value = false;
-                _progress.Value = 0f;
-                _elapsedTime.Value = 0f;
+                _isCapturing.Value = true;
             }
         }
 
@@ -151,7 +130,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         }
         PlayerElement GetDominantElement() {
             if (_hillPlayers.Count == 0) 
-                return PlayerElement.None;
+                return _hillElement.Value;
 
             int? firstElement = null;
     
@@ -174,8 +153,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             
             if (_isCapturing.Value) {
                 UpdateCaptureColor();
-            } else if (_hillPlayers.Count == 0) {
-                // Гарантируем, что цвет сбросится когда нет игроков
+            } else if(_hillPlayers.Count < 2) {
                 _spriteRenderer.color = GetColorHillByElement(_hillElement.Value);
             }
         }
@@ -183,19 +161,17 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             if (_spriteRenderer == null) return;
 
             if (IsServer) {
-                if (_isNewElement.Value) {
+                if (_isNewElement.Value) 
                     _elapsedTime.Value = Time.time - _captureStartTime.Value;
-                }
-                else {
-                    _elapsedTime.Value = _captureDuration.Value - _hillCaptureTimer.GetRemainingTime();
-                }
                 
                 _progress.Value = Mathf.Clamp01(_elapsedTime.Value / _captureDuration.Value);
-                _saverColor.Value = _spriteRenderer.color = Color.Lerp(_startColor.Value, _targetColor.Value, _progress.Value);
+                
+                _saverColor.Value = _spriteRenderer.color =
+                    Color.Lerp(_startColor.Value, _targetColor.Value, _progress.Value);
             }
-            else if(IsClient) {
-                _spriteRenderer.color = Color.Lerp(_startColor.Value, _targetColor.Value, _progress.Value);
-            }
+            else if(IsClient)
+                _spriteRenderer.color =
+                    Color.Lerp(_startColor.Value, _targetColor.Value, _progress.Value);
         }
         
         void OnHillElementChanged(PlayerElement previous, PlayerElement current) {
@@ -219,7 +195,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         public override void OnNetworkDespawn() {
             if (IsServer) {
                 _hillCaptureTimer.OnTimerComplete -= OnCaptureComplete;
-                _hillPlayers.OnListChanged -= HillPlayersCountChanged;
             }
             _hillElement.OnValueChanged -= OnHillElementChanged;
             base.OnNetworkDespawn();
