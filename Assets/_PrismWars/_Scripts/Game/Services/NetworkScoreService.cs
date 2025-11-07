@@ -23,10 +23,10 @@ namespace _PrismWars._Scripts.Game.Services {
             _playerElement = data;
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        public void AddScoreForDiedServerRpc(PlayerElement playerElement, int score, ulong killerId) {
+        public void AddScore(PlayerElement element, int score) {
+            if(!IsServer) return;
             if (score <= 0) return;
-            switch(playerElement) {
+            switch(element) {
                 default:
                 case PlayerElement.Ice:
                     IceScore.Value += score;
@@ -35,7 +35,11 @@ namespace _PrismWars._Scripts.Game.Services {
                     FireScore.Value += score;
                     break;
             }
+        }
 
+        [ServerRpc(RequireOwnership = false)]
+        public void AddScoreForDiedServerRpc(PlayerElement playerElement, int score, ulong killerId) {
+            AddScore(playerElement, score);
             AddScoreForKillerClientRpc(score, killerId);
         }
 

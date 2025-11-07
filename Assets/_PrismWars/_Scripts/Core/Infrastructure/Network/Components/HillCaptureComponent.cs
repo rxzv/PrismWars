@@ -1,3 +1,4 @@
+using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
@@ -7,16 +8,22 @@ using UnityEngine;
 namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
     public class HillCaptureComponent : NetworkBehaviour {
         [SerializeField] NetworkVariable<float> _captureDuration = new(5f);
-        
         [SerializeField] NetworkVariable<PlayerElement> _hillElement = new ();
         NetworkList<int> _hillPlayers = new();
         
         Timer _hillCaptureTimer;
         SpriteRenderer _spriteRenderer;
+
+        const int ADD_SCORE_COUNT = 1;
+        const float DELAY_FOR_ADD_SCORE = 1;
+        Timer _addScoreTimer;
+
+        NetworkScoreService _scoreService;
         
         // TODO: Remove [SerializeField] to complete
         // TODO: Refactor
         // TODO: server time, dont local time: Time.time
+        //TODO: add death event to change player count
         [SerializeField] NetworkVariable<Color> _startColor = new ();
         [SerializeField] NetworkVariable<Color> _targetColor = new();
         [SerializeField] NetworkVariable<float> _captureTime = new ();
@@ -41,10 +48,18 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 _hillCaptureTimer = new Timer();
                 _hillCaptureTimer.OnTimerComplete += OnCaptureComplete;
                 _hillPlayers.OnListChanged += HillPlayersCountChanged;
+                _addScoreTimer = new Timer();
+                _addScoreTimer.OnTimerComplete += AddScoreTimerComplete;
+                _scoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
             }
             
             _hillElement.OnValueChanged += OnHillElementChanged;
             base.OnNetworkSpawn();
+        }
+
+        void AddScoreTimerComplete() {
+            AddScoreForDominantElement();
+            _addScoreTimer.StartTimer(DELAY_FOR_ADD_SCORE);
         }
 
         void HillPlayersCountChanged(NetworkListEvent<int> changeEvent) {
@@ -140,6 +155,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 _progress.Value = 0;
                 _elapsedTime.Value = Time.time;
                 _isCapturing.Value = false;
+                _addScoreTimer.StopTimer();
+                _addScoreTimer.StartTimer(DELAY_FOR_ADD_SCORE);
             }
         }
         PlayerElement GetDominantElement() {
@@ -164,13 +181,19 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         void Update() {
             _hillCaptureTimer?.Update();
+            _addScoreTimer?.Update();
             
-            if (_isCapturing.Value) {
+            if (_isCapturing.Value) 
                 UpdateCaptureColor();
-            } else if(_hillPlayers.Count == 0) {
+            else if(_hillPlayers.Count == 0) 
                 _spriteRenderer.color = GetColorHillByElement(_hillElement.Value);
-            }
         }
+
+        void AddScoreForDominantElement() {
+            if (_hillElement.Value != PlayerElement.None) 
+                _scoreService.AddScore(_hillElement.Value, ADD_SCORE_COUNT);
+        }
+        
         void UpdateCaptureColor() {
             if (_spriteRenderer == null) return;
 
@@ -192,6 +215,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             UpdateHillColor(current);
             if(!IsServer) return;
             _isCapturing.Value = false; 
+            
         }
 
         void UpdateHillColor(PlayerElement element) {
@@ -210,6 +234,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             if (IsServer) {
                 _hillCaptureTimer.OnTimerComplete -= OnCaptureComplete;
                 _hillPlayers.OnListChanged -= HillPlayersCountChanged;
+                _addScoreTimer.OnTimerComplete -= AddScoreTimerComplete;
             }
             _hillElement.OnValueChanged -= OnHillElementChanged;
             base.OnNetworkDespawn();
