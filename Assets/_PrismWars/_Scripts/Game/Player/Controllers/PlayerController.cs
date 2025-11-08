@@ -38,6 +38,8 @@ namespace _PrismWars._Scripts.Player {
         
         NetworkScoreService _networkScoreService;
 
+        bool _isFlipX = false;
+        
         bool _isInitialized = false;
         
         ClientMovementPrediction _moveController;
@@ -115,6 +117,10 @@ namespace _PrismWars._Scripts.Player {
 
         void FlipX(float previousValue, float newValue) {
             _flipXController.FlipXClientRpc(newValue);
+            if(newValue > 0) 
+                _isFlipX = false;
+            else if(newValue < 0)
+                _isFlipX = true;
         }
 
         public override void OnNetworkSpawn() {
@@ -219,8 +225,9 @@ namespace _PrismWars._Scripts.Player {
                 _inputService.AttackRange
                     .Subscribe(_ => {
                         if(!_captureTheCatComponent.CatPickedUp)
-                            _projectileComponent
-                            .RangeAttackServerRpc();
+                            _projectileComponent.RangeAttackServerRpc();
+                        else
+                            _captureTheCatComponent.ThrowCat(_isFlipX);
                         }
                     )
                     .AddTo(_disposables);

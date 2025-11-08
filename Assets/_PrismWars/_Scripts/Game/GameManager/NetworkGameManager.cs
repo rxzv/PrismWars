@@ -37,7 +37,7 @@ namespace _PrismWars._Scripts.Game.GameManager {
                 switch (_gameState.Value) {
                     case GameState.Init:
                         _gameState.Value = GameState.SelectCharacter;
-                        _networkGameTimer.StartTimerServerRpc(3f);
+                        _networkGameTimer.StartTimerServerRpc(1f);
                         break;
                     case GameState.SelectCharacter:
                         _gameState.Value = GameState.GameStart;

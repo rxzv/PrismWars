@@ -1,10 +1,9 @@
-using System;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Network {
     public class CaptureTheCatComponent : NetworkBehaviour {
-
+        const float THROW_FORCE = 10f;
         const string CAT_TAG = "Cat";
         const string ZONE_TAG = "Zone";
 
@@ -44,6 +43,17 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             }
         }
 
+        public void ThrowCat(bool isFlipX) {
+            if (_catPickedUp && IsOwner && _catObj) {
+                _catPickUpArea = false;
+                _catPickedUp = false;
+                Vector2 throwDirection = isFlipX ? new Vector2(-1, 1) : Vector2.one;
+                _catObj.GetComponent<Rigidbody2D>().AddForce(throwDirection * THROW_FORCE, ForceMode2D.Impulse);
+                ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
+                _catObj = null;
+            }
+        }
+
         void OnTriggerEnter2D(Collider2D other) {
             if (!IsOwner && _catObj) return;
             other.TryGetComponent(out NetworkObject networkObject);
@@ -70,10 +80,14 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
                 other.TryGet(out NetworkObject networkObject);
                 networkObject.ChangeOwnership(clientId);
             }
-            else {
-                other.TryGet(out NetworkObject networkObject);
-                networkObject.ChangeOwnership(NetworkManager.Singleton.LocalClientId);
-            }
+            else 
+                ChangeCatOwnershipRpc(other, clientId);
+        }
+
+        [Rpc(SendTo.Owner)]
+        void ChangeCatOwnershipRpc(NetworkObjectReference other, ulong clientId) {
+            other.TryGet(out NetworkObject networkObject);
+            networkObject.ChangeOwnership(clientId);
         }
         
         void OnDestroy() {
