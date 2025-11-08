@@ -9,11 +9,12 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         const string ZONE_TAG = "Zone";
 
         bool _catPickUpArea = false;
-        bool _catPickUped = false;
+        bool _catPickedUp = false;
 
         GameObject _catObj;
 
         HealthComponent _healthComponent;
+        public bool CatPickedUp => _catPickedUp;
 
         void Start() {
             if (!IsOwner) return;
@@ -30,13 +31,13 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         public void PickUpCat() {
             if (!IsOwner) return;
             if (_catPickUpArea) {
-                _catPickUped =  true;
-                ChangeOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
+                _catPickedUp = true;
+                ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
             }
         }
 
         void Update() {
-            if (_catPickUped && IsOwner && _catObj) {
+            if (_catPickedUp && IsOwner && _catObj) {
                 _catObj.transform.position = gameObject.transform.position + Vector3.up;
             }
         }
@@ -55,14 +56,14 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         void OnTriggerExit2D(Collider2D other) {
             if (!IsOwner) return;
             other.TryGetComponent(out NetworkObject networkObject);
-            if (networkObject != null && !_catPickUped) {
+            if (networkObject != null && !_catPickedUp) {
                 _catPickUpArea = false;
                 _catObj = null;
             }
         }
 
         [ServerRpc]
-        void ChangeOwnershipServerRpc(NetworkObjectReference other, ulong clientId, bool isEnter = false) {
+        void ChangeCatOwnershipServerRpc(NetworkObjectReference other, ulong clientId, bool isEnter = false) {
             if (isEnter) {
                 other.TryGet(out NetworkObject networkObject);
                 networkObject.ChangeOwnership(clientId);

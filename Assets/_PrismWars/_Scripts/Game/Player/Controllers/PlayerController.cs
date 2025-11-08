@@ -211,12 +211,16 @@ namespace _PrismWars._Scripts.Player {
                     .Subscribe(_ => _isJumping = true)
                     .AddTo(_disposables);
                 _inputService.AttackMelee
-                    .Subscribe(_ => _attackMeleeController.MeleeAttack(gameObject, _spriteRenderer))
+                    .Subscribe(_ => {
+                        if (!_captureTheCatComponent.CatPickedUp) ;
+                        _attackMeleeController.MeleeAttack(gameObject, _spriteRenderer); 
+                    })
                     .AddTo(_disposables);
                 _inputService.AttackRange
                     .Subscribe(_ => {
+                        if(!_captureTheCatComponent.CatPickedUp)
                             _projectileComponent
-                                .RangeAttackServerRpc();
+                            .RangeAttackServerRpc();
                         }
                     )
                     .AddTo(_disposables);
