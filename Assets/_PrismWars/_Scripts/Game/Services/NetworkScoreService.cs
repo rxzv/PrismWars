@@ -25,7 +25,7 @@ namespace _PrismWars._Scripts.Game.Services {
 
         public void AddScore(PlayerElement element, int score) {
             if(!IsServer) return;
-            if (score <= 0) return;
+            if (score <= 0 || element == PlayerElement.None) return;
             switch(element) {
                 default:
                 case PlayerElement.Ice:

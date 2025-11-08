@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7483113284950336259}
   - component: {fileID: 4538771666157511763}
   - component: {fileID: 1712180396590697377}
+  - component: {fileID: -8680656153759304748}
   m_Layer: 8
   m_Name: catFire
   m_TagString: Cat
@@ -281,3 +282,16 @@ CapsuleCollider2D:
   m_Offset: {x: -1.39, y: -0.56}
   m_Size: {x: 7.77, y: 5.5}
   m_Direction: 1
+--- !u!114 &-8680656153759304748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3577834552080808384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80ea81d2106d460a80f33c7cdfaeb39a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1

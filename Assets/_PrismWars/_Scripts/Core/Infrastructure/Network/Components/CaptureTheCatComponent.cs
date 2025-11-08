@@ -1,3 +1,6 @@
+using _PrismWars._Scripts.Core.Infrastructure.Network.Components;
+using _PrismWars._Scripts.Player;
+using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,28 +16,36 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         GameObject _catObj;
 
         HealthComponent _healthComponent;
+        PlayerElement _playerElement;
         public bool CatPickedUp => _catPickedUp;
 
         void Start() {
             if (!IsOwner) return;
             _healthComponent = GetComponent<HealthComponent>();
+            _playerElement = GetComponent<PlayerController>().PlayerElement.Value;
             _healthComponent!.OnDeath += PlayerIsDeath;
         }
 
         void PlayerIsDeath() {
             if (!IsOwner) return;
             ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
-            _catPickUpArea = false;
-            _catPickedUp = false;
-            _catObj = null;
+            ResetTheCat();
         }
 
         public void PickUpCat() {
             if (!IsOwner) return;
             if (_catPickUpArea) {
                 _catPickedUp = true;
+                _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementServerRpc(_playerElement);
                 ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
             }
+        }
+
+        void ResetTheCat() {
+            _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementServerRpc(PlayerElement.None);
+            _catPickUpArea = false;
+            _catPickedUp = false;
+            _catObj = null;
         }
 
         void Update() {
@@ -45,12 +56,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         public void ThrowCat(bool isFlipX) {
             if (_catPickedUp && IsOwner && _catObj) {
-                _catPickUpArea = false;
-                _catPickedUp = false;
                 Vector2 throwDirection = isFlipX ? new Vector2(-1, 1) : Vector2.one;
                 _catObj.GetComponent<Rigidbody2D>().AddForce(throwDirection * THROW_FORCE, ForceMode2D.Impulse);
                 ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
-                _catObj = null;
+                ResetTheCat();
             }
         }
 
