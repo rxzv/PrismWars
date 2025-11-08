@@ -40,7 +40,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         void Update() {
             if (_catPickedUp && IsOwner && _catObj) {
-                _catObj.transform.position = gameObject.transform.position + Vector3.up;
+                _catObj.transform.position = gameObject.transform.position + Vector3.up * 1.3f;
             }
         }
 
