@@ -43,7 +43,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 _startColor.Value = GetColorHillByElement(_hillElement.Value);
                 _timeSaver = CAPTURE_DURATION; 
                 _saverColor = GetColorHillByElement(_hillElement.Value);
-                _elapsedTime = Time.time;
+                _elapsedTime = (float)NetworkManager.Singleton.NetworkTimeSystem.ServerTime;
                 _hillCaptureTimer = new Timer();
                 _hillCaptureTimer.OnTimerComplete += OnCaptureComplete;
                 _hillPlayers.OnListChanged += HillPlayersCountChanged;
@@ -70,7 +70,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                     _hillCaptureTimer.StopTimer();
                 _isCapturing.Value = false;
                 _progress.Value = 0f;
-                _elapsedTime = Time.time;
+                _elapsedTime = (float)NetworkManager.Singleton.NetworkTimeSystem.ServerTime;
                 _timeSaver = CAPTURE_DURATION;  
                 _startColor.Value = GetColorHillByElement(_hillElement.Value);
                 _lastPlayerElement = PlayerElement.None;
@@ -86,7 +86,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                     _timeSaver = _hillCaptureTimer.GetRemainingTime();
                     _hillCaptureTimer.ResetTimer();
                     _isCapturing.Value = false;
-                    _captureTime = Time.time - (CAPTURE_DURATION - _timeSaver);
+                    _captureTime = (float)NetworkManager.Singleton.NetworkTimeSystem.ServerTime - (CAPTURE_DURATION - _timeSaver);
                 }
             } // Начинаем или продолжаем захват
             else if (_hillElement.Value != currentElement) {
@@ -96,14 +96,14 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                     if (_lastPlayerElement != currentElement) {
                         _startColor.Value = GetColorHillByElement(_hillElement.Value);
                         _lastPlayerElement = currentElement;
-                        _captureTime = Time.time;
+                        _captureTime = (float)NetworkManager.Singleton.NetworkTimeSystem.ServerTime;
                         _hillCaptureTimer.StartTimer(CAPTURE_DURATION);
                         _isNewElement = true;
-                        _elapsedTime = Time.time;
+                        _elapsedTime = (float)NetworkManager.Singleton.NetworkTimeSystem.ServerTime;
                     }
                     else { 
                         // Тот же элемент - продолжаем с сохраненного времени
-                        _captureTime = Time.time - (CAPTURE_DURATION - _timeSaver);
+                        _captureTime = (float)NetworkManager.Singleton.NetworkTimeSystem.ServerTime - (CAPTURE_DURATION - _timeSaver);
                         _hillCaptureTimer.StartTimer(_timeSaver);
                         _isNewElement = false;
                     }
@@ -154,7 +154,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 _hillElement.Value = dominantElement;
                 _timeSaver = CAPTURE_DURATION;
                 _progress.Value = 0;
-                _elapsedTime = Time.time;
+                _elapsedTime = (float)NetworkManager.Singleton.NetworkTimeSystem.ServerTime;
                 _isCapturing.Value = false;
                 _addScoreTimer.StopTimer();
                 _addScoreTimer.StartTimer(DELAY_FOR_ADD_SCORE);
@@ -201,7 +201,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
             if (IsServer) {
                 if (_isNewElement) 
-                    _elapsedTime = Time.time - _captureTime;
+                    _elapsedTime = (float)NetworkManager.Singleton.NetworkTimeSystem.ServerTime - _captureTime;
                 
                 _progress.Value = Mathf.Clamp01(_elapsedTime / CAPTURE_DURATION);
                 
