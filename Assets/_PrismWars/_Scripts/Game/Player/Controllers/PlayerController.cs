@@ -1,5 +1,6 @@
 using System;
 using _PrismWars._Scripts.Components.Projectile;
+using _PrismWars._Scripts.Core.Infrastructure.Network;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
@@ -66,6 +67,7 @@ namespace _PrismWars._Scripts.Player {
                 NetworkVariableReadPermission.Everyone,
                 NetworkVariableWritePermission.Owner);
         
+        CaptureTheCatComponent _captureTheCatComponent;
         
         public ulong ClientId => _clientId;
 
@@ -196,6 +198,8 @@ namespace _PrismWars._Scripts.Player {
                 
                 _inputService = ServiceLocator.Singleton.Get<InputService>();
                 
+                _captureTheCatComponent = GetComponent<CaptureTheCatComponent>();
+                
                 // Input
                 _inputService.MoveInput
                     .Subscribe(d => {
@@ -215,6 +219,9 @@ namespace _PrismWars._Scripts.Player {
                                 .RangeAttackServerRpc();
                         }
                     )
+                    .AddTo(_disposables);
+                _inputService.Interact
+                    .Subscribe(_ => _captureTheCatComponent?.PickUpCat())
                     .AddTo(_disposables);
             }
 
