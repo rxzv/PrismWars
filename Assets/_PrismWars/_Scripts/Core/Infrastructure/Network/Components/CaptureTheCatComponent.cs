@@ -24,7 +24,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         void PlayerIsDeath() {
             if (!IsOwner) return;
+            ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
             _catPickUpArea = false;
+            _catPickedUp = false;
             _catObj = null;
         }
 
@@ -43,7 +45,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         }
 
         void OnTriggerEnter2D(Collider2D other) {
-            if (!IsOwner) return;
+            if (!IsOwner && _catObj) return;
             other.TryGetComponent(out NetworkObject networkObject);
             if (networkObject != null) {
                 if (networkObject.CompareTag(CAT_TAG) && networkObject.gameObject.layer != gameObject.layer) {
@@ -74,7 +76,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             }
         }
         
-        void OnDisable() {
+        void OnDestroy() {
             _healthComponent!.OnDeath -= PlayerIsDeath;
         }
 
