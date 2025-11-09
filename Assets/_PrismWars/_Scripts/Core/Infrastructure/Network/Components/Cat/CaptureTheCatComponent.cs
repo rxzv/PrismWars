@@ -39,12 +39,14 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (!IsOwner) return;
             if (_catPickUpArea && _catObj != null) {
                 _catPickedUp = true;
+                _catObj!.GetComponent<Rigidbody2D>().isKinematic = true;
                 _catObj.GetComponent<CatController>()!.SetPlayerCaptureElementServerRpc(_playerElement);
                 ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
             }
         }
 
         void ResetTheCat() {
+            _catObj!.GetComponent<Rigidbody2D>().isKinematic = false;
             _catPickUpArea = false;
             _catPickedUp = false;
             _catObj = null; 
@@ -58,6 +60,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         public void ThrowCat(bool isFlipX) {
             if (_catPickedUp && IsOwner && _catObj != null) {
+                _catObj!.GetComponent<Rigidbody2D>().isKinematic = false;
                 GameObject catToThrow = _catObj;
                 Vector2 throwDirection = isFlipX ? new Vector2(-1, 1) : Vector2.one;
                 Vector2 throwVelocity = throwDirection * THROW_FORCE;
