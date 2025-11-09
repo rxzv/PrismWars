@@ -205,6 +205,7 @@ namespace _PrismWars._Scripts.Player {
                 _inputService = ServiceLocator.Singleton.Get<InputService>();
                 
                 _captureTheCatComponent = GetComponent<CaptureTheCatComponent>();
+                _captureTheCatComponent.Initialize();
                 
                 // Input
                 _inputService.MoveInput

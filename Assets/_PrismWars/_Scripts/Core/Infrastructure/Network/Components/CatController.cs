@@ -17,9 +17,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             base.OnNetworkSpawn();
         }
 
-        void OnTriggerStay2D(Collider2D other) {
+        void OnTriggerEnter2D(Collider2D other) {
             if(!IsOwner) return;
             if(other.CompareTag("Zone") && other.gameObject.layer != gameObject.layer) {
+                gameObject.SetActive(false);
                 AddScoreServerRpc();
             }
         }

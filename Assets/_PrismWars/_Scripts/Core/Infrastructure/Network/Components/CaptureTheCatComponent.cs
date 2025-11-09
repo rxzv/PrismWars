@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Network {
-    public class CaptureTheCatComponent : NetworkBehaviour {
+    public class CaptureTheCatComponent : NetworkBehaviour, IInitializable {
         const float THROW_FORCE = 10f;
         const string CAT_TAG = "Cat";
         const string ZONE_TAG = "Zone";
@@ -19,7 +19,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         PlayerElement _playerElement;
         public bool CatPickedUp => _catPickedUp;
 
-        void Start() {
+        public void Initialize() {
             if (!IsOwner) return;
             _healthComponent = GetComponent<HealthComponent>();
             _playerElement = GetComponent<PlayerController>().PlayerElement.Value;
@@ -36,7 +36,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (!IsOwner) return;
             if (_catPickUpArea) {
                 _catPickedUp = true;
-                _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementServerRpc(_playerElement);
+                _catObj.GetComponent<CatController>()!.SetPlayerCaptureElementServerRpc(_playerElement);
                 ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
             }
         }
