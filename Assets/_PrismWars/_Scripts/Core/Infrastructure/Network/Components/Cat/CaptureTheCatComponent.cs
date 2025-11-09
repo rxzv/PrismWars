@@ -13,9 +13,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         bool _catPickedUp = false;
 
         GameObject _catObj;
-
         HealthComponent _healthComponent;
         PlayerElement _playerElement;
+        
         public bool CatPickedUp => _catPickedUp;
 
         public void Initialize() {
@@ -59,12 +59,45 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         public void ThrowCat(bool isFlipX) {
             if (_catPickedUp && IsOwner && _catObj != null) {
                 GameObject catToThrow = _catObj;
-                ResetTheCat();
-                
                 Vector2 throwDirection = isFlipX ? new Vector2(-1, 1) : Vector2.one;
-                catToThrow.GetComponent<Rigidbody2D>().AddForce(throwDirection * THROW_FORCE, ForceMode2D.Impulse);
-                ChangeCatOwnershipServerRpc(catToThrow, NetworkManager.Singleton.LocalClientId, false);
+                Vector2 throwVelocity = throwDirection * THROW_FORCE;
+                
+                PerformLocalThrow(catToThrow, throwVelocity);
+                
+                ThrowCatServerRpc(
+                    catToThrow.GetComponent<NetworkObject>(),
+                    throwVelocity,
+                    NetworkManager.Singleton.LocalClientId
+                );
+                
+                ResetTheCat();
             }
+        }
+
+        [ServerRpc]
+        void ThrowCatServerRpc(NetworkObjectReference catNetRef, Vector2 throwVelocity, ulong clientId) {
+            if (catNetRef.TryGet(out NetworkObject catNetObj)) {
+                Rigidbody2D catRb = catNetObj.GetComponent<Rigidbody2D>();
+                catRb.linearVelocity = Vector2.zero;
+                catRb.AddForce(throwVelocity, ForceMode2D.Impulse);
+                
+                ThrowCatClientRpc(catNetRef, throwVelocity, clientId);
+            }
+        }
+
+        [ClientRpc(RequireOwnership = false)]
+        void ThrowCatClientRpc(NetworkObjectReference catNetRef, Vector2 throwVelocity, ulong clientId) {
+            if (IsOwner) return;
+            
+            if (catNetRef.TryGet(out NetworkObject catNetObj)) {
+                PerformLocalThrow(catNetObj.gameObject, throwVelocity);
+            }
+        }
+
+        void PerformLocalThrow(GameObject cat, Vector2 throwVelocity) {
+            Rigidbody2D catRb = cat.GetComponent<Rigidbody2D>();
+            catRb.linearVelocity = Vector2.zero;
+            catRb.AddForce(throwVelocity, ForceMode2D.Impulse);
         }
 
         void OnTriggerEnter2D(Collider2D other) {
@@ -90,8 +123,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         [ServerRpc]
         void ChangeCatOwnershipServerRpc(NetworkObjectReference other, ulong clientId, bool isEnter = false) {
-            if (other.TryGet(out NetworkObject networkObject) && networkObject != null)
-            {
+            if (other.TryGet(out NetworkObject networkObject) && networkObject != null) {
                 if (isEnter) 
                     networkObject.ChangeOwnership(clientId);
                 else 
