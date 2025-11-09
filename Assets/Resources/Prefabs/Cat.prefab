@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 1712180396590697377}
   - component: {fileID: -8680656153759304748}
   m_Layer: 8
-  m_Name: catFire
+  m_Name: Cat
   m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -295,3 +295,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  _catTag: Cat

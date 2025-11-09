@@ -1,0 +1,69 @@
+using System;
+using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
+using _PrismWars._Scripts.Game.Services;
+using _PrismWars._Scripts.UI.Model;
+using Unity.Netcode;
+using UnityEngine;
+
+namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
+    public class CatController : NetworkBehaviour, IInitializable<NetworkCatData> {
+        [SerializeField] string _catTag = "Cat";
+        const int ADD_SCORE_COUNT = 10;
+        NetworkScoreService _scoreService;
+        public NetworkVariable<NetworkCatData> Data = new ();
+        
+        PlayerElement _playerCaptureElement;
+        
+        public void Initialize(NetworkCatData data) {
+            if(IsServer)
+                Data.Value = data;
+            OnDataChanged(data,data);
+        }
+
+        Color GetColorByCatElement(PlayerElement playerElement) {
+            return playerElement switch {
+                PlayerElement.Fire => Color.red,
+                PlayerElement.Ice => Color.blue,
+                _ => Color.white
+            };
+        }
+        
+        public override void OnNetworkSpawn() {
+            Data.OnValueChanged += OnDataChanged;
+            if(!IsServer) return;
+            _scoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
+            base.OnNetworkSpawn();
+        }
+
+        [Rpc(SendTo.Everyone)]
+        void CatDespawnRpc(bool obj) {
+            gameObject.SetActive(obj);
+        }
+
+        void OnDataChanged(NetworkCatData previous, NetworkCatData current) {
+            GetComponent<SpriteRenderer>().color = GetColorByCatElement(Data.Value.catElement);
+            gameObject.name = $"{Data.Value.catElement}Cat";
+            gameObject.tag = _catTag;
+            gameObject.layer = LayerMask.NameToLayer(Data.Value.catElement.ToString());
+        }
+
+        void OnTriggerEnter2D(Collider2D other) {
+            if(!IsOwner) return;
+            if(other.CompareTag("Zone") && other.gameObject.layer != gameObject.layer) {
+                CatDespawnRpc(false);
+                AddScoreServerRpc();
+            }
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public void SetPlayerCaptureElementServerRpc(PlayerElement element) {
+            _playerCaptureElement = element;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        void AddScoreServerRpc() {
+            _scoreService.AddScore(_playerCaptureElement, ADD_SCORE_COUNT);
+        }
+
+    }
+}

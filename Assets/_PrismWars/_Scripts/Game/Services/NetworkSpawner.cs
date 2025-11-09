@@ -1,3 +1,5 @@
+using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
+using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -5,6 +7,7 @@ namespace _PrismWars._Scripts.Game.Services {
     [RequireComponent(typeof(NetworkObject))]
     public class NetworkSpawner : NetworkBehaviour, IService {
         NetworkVariable<int> _initClients =  new NetworkVariable<int>(0);
+        ServerCatSpawnService _serverCatSpawnService;
 
         public void ClientInitialized() {
             ClientInitServerRpc();
@@ -39,9 +42,13 @@ namespace _PrismWars._Scripts.Game.Services {
             instance = Instantiate(prefab);
             instance.GetComponent<NetworkObject>().Spawn();
             
-            prefab = Resources.Load<GameObject>("NetworkServicePrefabs/catFire");
-            instance = Instantiate(prefab);
-            instance.GetComponent<NetworkObject>().Spawn();
+            _serverCatSpawnService = ServiceLocator.Singleton.Get<ServerCatSpawnService>();
+            _serverCatSpawnService.SpawnCatRpc(
+                new NetworkCatData{catElement = PlayerElement.Fire}, 
+                NetworkManager.Singleton.LocalClientId);
+            _serverCatSpawnService.SpawnCatRpc(
+                new NetworkCatData{catElement = PlayerElement.Ice}, 
+                NetworkManager.Singleton.LocalClientId);
         }
     }
 }

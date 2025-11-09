@@ -3,7 +3,7 @@ using Unity.Netcode;
 
 namespace _PrismWars._Scripts.UI.Model {
     // Структура для сетевой синхронизации
-    public struct NetworkPlayerData : INetworkSerializable, System.IEquatable<NetworkPlayerData> {
+    public struct NetworkPlayerData : INetworkSerializable, System.IEquatable<NetworkPlayerData>, INetworkData {
 
         public int configId;
         public FixedString64Bytes playerName;

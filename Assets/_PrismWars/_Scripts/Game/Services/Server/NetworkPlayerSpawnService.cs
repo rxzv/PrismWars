@@ -30,10 +30,10 @@ namespace _PrismWars._Scripts {
                     Debug.LogError("Invalid player type");
                     return;
                 case PlayerElement.Fire:
-                    playerRef = _fireFactory.SpawnPlayer(data, clientId);
+                    playerRef = _fireFactory.Spawn(data, clientId);
                     break;
                 case PlayerElement.Ice:
-                    playerRef = _iceFactory.SpawnPlayer(data, clientId);
+                    playerRef = _iceFactory.Spawn(data, clientId);
                     break;
             }
             
