@@ -128,8 +128,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             
             if (other.CompareTag(CAT_TAG) && !_catPickedUp) {
                 _catPickUpArea = false;
-                if (_catObj != null)
-                {
+                if (_catObj != null) {
                     ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
                 }
             }

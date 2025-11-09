@@ -13,6 +13,9 @@ namespace _PrismWars._Scripts.Game.Services {
         Transform _iceSpawnPoint;
         Timer _respawnTimer;
         
+        public Transform GetFireSpawnPoint() => _fireSpawnPoint;
+        public Transform GetIceSpawnPoint() => _iceSpawnPoint;
+        
         Queue<NetworkObjectReference> _catToRespawn = new();
 
         public void Initialize(Transform fireSpawnPoint, Transform iceSpawnPoint) {

@@ -7,6 +7,8 @@ namespace _PrismWars._Scripts.Utils {
 
         float _endTime;
         bool _isTimerRunning;
+        
+        public bool IsTimerRunning => _isTimerRunning;
   
         public System.Action OnTimerComplete;
         

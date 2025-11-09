@@ -2,6 +2,7 @@ using System;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,14 +10,20 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
     public class CatController : NetworkBehaviour, IInitializable<NetworkCatData> {
         [SerializeField] string _catTag = "Cat";
         const string ZONE_TAG = "Zone";
+        const string GROUND_LAYER = "Ground";
         
         const int ADD_SCORE_COUNT = 10;
+        const float GROUND_TELEPORT_DELAY = 1f;
         
         NetworkScoreService _scoreService;
         CatRespawnService _respawnService;
         SpriteRenderer _catSpriteRenderer;
         
         bool _catIsDespawned = false;
+        Timer _groundTimer;
+
+        private NetworkVariable<bool> _isOnGround = new NetworkVariable<bool>(false);
+        private NetworkVariable<bool> _isInZone = new NetworkVariable<bool>(false);
 
         public NetworkVariable<NetworkCatData> Data = new();
         
@@ -44,6 +51,11 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             _respawnService = ServiceLocator.Singleton.Get<CatRespawnService>();
             _catSpriteRenderer = GetComponent<SpriteRenderer>();
             Data.OnValueChanged += OnDataChanged;
+            if (IsServer) {
+                _groundTimer = new Timer();
+                _groundTimer.OnTimerComplete += OnGroundTimerComplete;
+            }
+            
             if(!IsServer) return;
             _scoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
             base.OnNetworkSpawn();
@@ -64,28 +76,99 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         void FlipXRpc(bool value) {
             _catSpriteRenderer.flipX = value;
         }
+
+        void Update() {
+            if (!IsServer) return;
+            _groundTimer?.Update();
+            CheckTeleportConditions();
+        }
         
         void OnTriggerEnter2D(Collider2D other) {
-            if(!IsOwner) return;
             if(_catIsDespawned) return;
             
-            if(other.CompareTag(ZONE_TAG) && other.gameObject.layer != gameObject.layer) {
-                Debug.Log("Cat entered zone - scoring!");
-                _catIsDespawned = true;
-                ChangeCatOwnershipServerRpc();
-                var no = GetComponent<NetworkObject>();
-                _respawnService.CatDespawnRpc(no);
-                AddScoreServerRpc();
+            if (IsOwner) {
+                if(other.CompareTag(ZONE_TAG) && other.gameObject.layer != gameObject.layer) 
+                    HandleZoneEnterServerRpc();
+                if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER)) 
+                    SetOnGroundStateServerRpc(true);
+            }
+        }
+
+        void OnTriggerExit2D(Collider2D other) {
+            if (IsOwner) {
+                if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER)) 
+                    SetOnGroundStateServerRpc(false);
             }
         }
 
         [ServerRpc]
-        void ChangeCatOwnershipServerRpc() {
+        void HandleZoneEnterServerRpc() {
+            if(_catIsDespawned) return;
+            
+            Debug.Log("Cat entered zone - scoring!");
+            _catIsDespawned = true;
+            
             var no = GetComponent<NetworkObject>();
-            if(no == null) return;
-            no.RemoveOwnership();
+            if (no != null) {
+                no.RemoveOwnership();
+                _respawnService.CatDespawnRpc(no);
+            }
+            
+            AddScoreServerRpc();
         }
-        
+
+        [ServerRpc]
+        void SetOnGroundStateServerRpc(bool isOnGround) {
+            _isOnGround.Value = isOnGround;
+            UpdateTeleportTimer();
+        }
+
+        void CheckTeleportConditions() {
+            if (!IsServer) return;
+            UpdateTeleportTimer();
+        }
+
+        void UpdateTeleportTimer() {
+            if (!IsServer) return;
+            
+            bool shouldTeleport = _isOnGround.Value && !_isInZone.Value && !_catIsDespawned;
+            
+            if (shouldTeleport && !_groundTimer.IsTimerRunning) 
+                _groundTimer.StartTimer(GROUND_TELEPORT_DELAY);
+            else if (!shouldTeleport && _groundTimer.IsTimerRunning) 
+                _groundTimer.StopTimer();
+            
+        }
+
+        void OnGroundTimerComplete() {
+            if (!IsServer) return;
+            if (_isOnGround.Value && !_isInZone.Value && !_catIsDespawned) {
+                TeleportToBaseRpc();
+            }
+        }
+
+        [Rpc(SendTo.Owner)]
+        void TeleportToBaseRpc() {
+            var rb = GetComponent<Rigidbody2D>();
+            if (rb != null) {
+                rb.linearVelocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+            }
+
+            switch (Data.Value.catElement) {
+                default:
+                case PlayerElement.Fire:
+                    transform.position = _respawnService.GetFireSpawnPoint().position;
+                    break;
+                case PlayerElement.Ice:
+                    transform.position = _respawnService.GetIceSpawnPoint().position;
+                    break;
+            }
+
+            SetOnGroundStateServerRpc(false);
+            SetPlayerCaptureElementServerRpc(PlayerElement.None);
+        }
+
         [ServerRpc(RequireOwnership = false)]
         public void SetPlayerCaptureElementServerRpc(PlayerElement element) {
             _playerCaptureElement = element;
@@ -98,6 +181,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         public override void OnNetworkDespawn() {
             Data.OnValueChanged -= OnDataChanged;
+            if (IsServer && _groundTimer != null) {
+                _groundTimer.OnTimerComplete -= OnGroundTimerComplete;
+            }
             base.OnNetworkDespawn();
         }
     }
