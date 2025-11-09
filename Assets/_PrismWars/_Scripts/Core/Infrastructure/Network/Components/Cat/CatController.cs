@@ -8,14 +8,18 @@ using UnityEngine;
 namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
     public class CatController : NetworkBehaviour, IInitializable<NetworkCatData> {
         [SerializeField] string _catTag = "Cat";
+        
         const int ADD_SCORE_COUNT = 10;
+        
         NetworkScoreService _scoreService;
+        CatRespawnService _respawnService;
+        
         public NetworkVariable<NetworkCatData> Data = new ();
         
         PlayerElement _playerCaptureElement;
         
         public void Initialize(NetworkCatData data) {
-            if(IsServer)
+            if(IsServer) 
                 Data.Value = data;
             OnDataChanged(data,data);
         }
@@ -35,11 +39,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             base.OnNetworkSpawn();
         }
 
-        [Rpc(SendTo.Everyone)]
-        void CatDespawnRpc(bool obj) {
-            gameObject.SetActive(obj);
-        }
-
         void OnDataChanged(NetworkCatData previous, NetworkCatData current) {
             GetComponent<SpriteRenderer>().color = GetColorByCatElement(Data.Value.catElement);
             gameObject.name = $"{Data.Value.catElement}Cat";
@@ -50,9 +49,17 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         void OnTriggerEnter2D(Collider2D other) {
             if(!IsOwner) return;
             if(other.CompareTag("Zone") && other.gameObject.layer != gameObject.layer) {
-                CatDespawnRpc(false);
+                ChangeCatOwnershipServerRpc();
+                _respawnService = ServiceLocator.Singleton.Get<CatRespawnService>();
+                var no = GetComponent<NetworkObject>();
+                _respawnService.CatDespawnRpc(no);
                 AddScoreServerRpc();
             }
+        }
+        [ServerRpc(RequireOwnership = false)]
+        void ChangeCatOwnershipServerRpc() {
+            var networkObject = GetComponent<NetworkObject>();
+            networkObject.ChangeOwnership(NetworkManager.Singleton.LocalClientId);
         }
         
         [ServerRpc(RequireOwnership = false)]

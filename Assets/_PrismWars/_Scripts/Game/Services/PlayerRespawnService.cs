@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace _PrismWars._Scripts.Game.Services {
     public class PlayerRespawnService : NetworkBehaviour, IService, IInitializable<List<Transform>, List<Transform>> {
+        const float PLAYER_TIME_TO_RESPAWN = 5f;
         RespawnTimer _respawnTimer;
         Queue<NetworkObjectReference> _playerToRespawn = new();
         Queue<ulong> _playerToRespawnId = new();
@@ -37,7 +38,7 @@ namespace _PrismWars._Scripts.Game.Services {
             if (clientId == NetworkManager.Singleton.LocalClientId) {
                 _respawnTimer = ServiceLocator.Singleton.Get<RespawnTimer>();
                 _respawnTimer.OnTimerComplete += RespawnPlayerServerRpc;
-                _respawnTimer.StartRespawnTimer(5f);
+                _respawnTimer.StartRespawnTimer(PLAYER_TIME_TO_RESPAWN);
             }
         }
 

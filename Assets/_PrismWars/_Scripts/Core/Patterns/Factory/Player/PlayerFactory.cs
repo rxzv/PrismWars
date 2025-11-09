@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Core.Patterns.Factory {
     public abstract class PlayerFactory : Factory {
-        public PlayerFactory(Transform playerPrefab, List<Transform> spawnPoints) 
+        protected PlayerFactory(Transform playerPrefab, List<Transform> spawnPoints) 
             : base(playerPrefab, spawnPoints){ }
 
         public override NetworkObject Spawn(INetworkData data, ulong senderClientId) {
