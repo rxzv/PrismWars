@@ -25,10 +25,18 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             _healthComponent!.OnDeath += PlayerIsDeath;
         }
 
+        public void FlipXCat(float oldDir, float newDir) {
+            if(_catPickedUp && IsOwner && _catObj != null) {
+                if(newDir > 0)
+                    _catObj.GetComponent<CatController>().FlipX(true);
+                else if(newDir < 0)
+                    _catObj.GetComponent<CatController>().FlipX(false);
+            }
+        }
+
         void PlayerIsDeath() {
             if (!IsOwner) return;
-            if (_catObj != null)
-            {
+            if (_catObj != null) {
                 ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
                 ResetTheCat();
                 _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementServerRpc(PlayerElement.None);
@@ -38,9 +46,12 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         public void PickUpCat() {
             if (!IsOwner) return;
             if (_catPickUpArea && _catObj != null) {
+                var value = GetComponent<SpriteRenderer>().flipX;
+                var cat = _catObj.GetComponent<CatController>();
+                cat.FlipX(!value);
                 _catPickedUp = true;
                 _catObj!.GetComponent<Rigidbody2D>().isKinematic = true;
-                _catObj.GetComponent<CatController>()!.SetPlayerCaptureElementServerRpc(_playerElement);
+                cat!.SetPlayerCaptureElementServerRpc(_playerElement);
                 ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
             }
         }

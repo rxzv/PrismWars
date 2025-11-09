@@ -206,6 +206,7 @@ namespace _PrismWars._Scripts.Player {
                 
                 _captureTheCatComponent = GetComponent<CaptureTheCatComponent>();
                 _captureTheCatComponent.Initialize();
+                _inputMoveDirection.OnValueChanged += _captureTheCatComponent.FlipXCat;
                 
                 // Input
                 _inputService.MoveInput

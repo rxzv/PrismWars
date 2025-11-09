@@ -14,6 +14,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         
         NetworkScoreService _scoreService;
         CatRespawnService _respawnService;
+        SpriteRenderer _catSpriteRenderer;
         
         bool _catIsDespawned = false;
 
@@ -41,7 +42,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         public override void OnNetworkSpawn() {
             _respawnService = ServiceLocator.Singleton.Get<CatRespawnService>();
-            
+            _catSpriteRenderer = GetComponent<SpriteRenderer>();
             Data.OnValueChanged += OnDataChanged;
             if(!IsServer) return;
             _scoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
@@ -53,6 +54,15 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             gameObject.name = $"{Data.Value.catElement}Cat";
             gameObject.tag = _catTag;
             gameObject.layer = LayerMask.NameToLayer(Data.Value.catElement.ToString());
+        }
+
+        public void FlipX(bool value) {
+            FlipXRpc(value);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        void FlipXRpc(bool value) {
+            _catSpriteRenderer.flipX = value;
         }
         
         void OnTriggerEnter2D(Collider2D other) {
