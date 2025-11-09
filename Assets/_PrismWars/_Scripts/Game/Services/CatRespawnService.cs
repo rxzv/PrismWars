@@ -24,7 +24,7 @@ namespace _PrismWars._Scripts.Game.Services {
         [Rpc(SendTo.Server)]
         public void CatDespawnRpc(NetworkObjectReference catRef) {
             _catToRespawn.Enqueue(catRef);
-            CatDespawnRpc(catRef, false);
+            SetCatActiveStateRpc(catRef, false);
             CatStartRespawnTimer();
         }
 
@@ -35,16 +35,29 @@ namespace _PrismWars._Scripts.Game.Services {
 
         void CatStartRespawnTimer() {
             if(!IsServer) return;
+            if (_respawnTimer.GetRemainingTime() > 0) return; 
+            
             _respawnTimer.OnTimerComplete += RespawnCat;
             _respawnTimer.StartTimer(CAT_TIME_TO_RESPAWN);
         }
         
         void RespawnCat() {
             if(!IsServer) return;
+            if (_catToRespawn.Count == 0) return;
+            
             var catRef = _catToRespawn.Dequeue();
             catRef.TryGet(out NetworkObject cat);
+            if (cat == null) return;
+            
             cat.TryGetComponent(out CatController catController);
             if (catController == null) return;
+
+            var rb = cat.GetComponent<Rigidbody2D>();
+            if (rb != null) {
+                rb.linearVelocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+            }
+
             switch (catController.Data.Value.catElement) {
                 default:
                 case PlayerElement.Fire:
@@ -55,16 +68,34 @@ namespace _PrismWars._Scripts.Game.Services {
                     break;
             }
 
-            cat.GetComponent<CatController>()?.SetCatIsDespawned(true);
-            CatDespawnRpc(cat, true);
+            catController.SetCatIsDespawned(false);
+            catController.SetPlayerCaptureElementServerRpc(PlayerElement.None);
+            
+            SetCatActiveStateRpc(cat, true);
         }
         
         [Rpc(SendTo.ClientsAndHost)]
-        void CatDespawnRpc(NetworkObjectReference catRef, bool active) {
-            catRef.TryGet(out NetworkObject networkObject);
-            if(networkObject == null) return;
-            networkObject.gameObject.SetActive(active);
-            networkObject.GetComponent<CatController>()?.SetCatIsDespawned(active);
+        void SetCatActiveStateRpc(NetworkObjectReference catRef, bool active) {
+            if (catRef.TryGet(out NetworkObject networkObject) && networkObject != null)
+            {
+                networkObject.gameObject.SetActive(active);
+                var catController = networkObject.GetComponent<CatController>();
+                if (catController != null) {
+                    catController.SetCatIsDespawned(!active);
+                    
+                    if (active) {
+                        var rb = networkObject.GetComponent<Rigidbody2D>();
+                        if (rb != null) {
+                            rb.linearVelocity = Vector2.zero;
+                            rb.angularVelocity = 0f;
+                        }
+                    }
+                }
+            }
+        }
+
+        void OnDestroy() {
+            _respawnTimer.OnTimerComplete -= RespawnCat;
         }
     }
 }

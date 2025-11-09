@@ -8,6 +8,7 @@ using UnityEngine;
 namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
     public class CatController : NetworkBehaviour, IInitializable<NetworkCatData> {
         [SerializeField] string _catTag = "Cat";
+        const string ZONE_TAG = "Zone";
         
         const int ADD_SCORE_COUNT = 10;
         
@@ -56,8 +57,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         
         void OnTriggerEnter2D(Collider2D other) {
             if(!IsOwner) return;
-            if(other.CompareTag("Zone") && other.gameObject.layer != gameObject.layer && !_catIsDespawned) {
-                Debug.Log("OnTriggerEnter2D");
+            if(_catIsDespawned) return;
+            
+            if(other.CompareTag(ZONE_TAG) && other.gameObject.layer != gameObject.layer) {
+                Debug.Log("Cat entered zone - scoring!");
                 _catIsDespawned = true;
                 ChangeCatOwnershipServerRpc();
                 var no = GetComponent<NetworkObject>();
@@ -65,11 +68,12 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 AddScoreServerRpc();
             }
         }
+
         [ServerRpc]
         void ChangeCatOwnershipServerRpc() {
             var no = GetComponent<NetworkObject>();
             if(no == null) return;
-            no.ChangeOwnership(NetworkManager.Singleton.LocalClientId);
+            no.RemoveOwnership();
         }
         
         [ServerRpc(RequireOwnership = false)]
@@ -82,5 +86,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             _scoreService.AddScore(_playerCaptureElement, ADD_SCORE_COUNT);
         }
 
+        public override void OnNetworkDespawn() {
+            Data.OnValueChanged -= OnDataChanged;
+            base.OnNetworkDespawn();
+        }
     }
 }

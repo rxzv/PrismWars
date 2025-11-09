@@ -8,7 +8,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
     public class CaptureTheCatComponent : NetworkBehaviour, IInitializable {
         const float THROW_FORCE = 10f;
         const string CAT_TAG = "Cat";
-        const string ZONE_TAG = "Zone";
 
         bool _catPickUpArea = false;
         bool _catPickedUp = false;
@@ -28,14 +27,17 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         void PlayerIsDeath() {
             if (!IsOwner) return;
-            ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
-            ResetTheCat();
-            _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementServerRpc(PlayerElement.None);
+            if (_catObj != null)
+            {
+                ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
+                ResetTheCat();
+                _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementServerRpc(PlayerElement.None);
+            }
         }
 
         public void PickUpCat() {
             if (!IsOwner) return;
-            if (_catPickUpArea) {
+            if (_catPickUpArea && _catObj != null) {
                 _catPickedUp = true;
                 _catObj.GetComponent<CatController>()!.SetPlayerCaptureElementServerRpc(_playerElement);
                 ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
@@ -45,59 +47,61 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         void ResetTheCat() {
             _catPickUpArea = false;
             _catPickedUp = false;
+            _catObj = null; 
         }
 
         void Update() {
-            if (_catPickedUp && IsOwner && _catObj) {
+            if (_catPickedUp && IsOwner && _catObj != null) {
                 _catObj.transform.position = gameObject.transform.position + Vector3.up * 1.3f;
             }
         }
 
         public void ThrowCat(bool isFlipX) {
-            if (_catPickedUp && IsOwner && _catObj) {
+            if (_catPickedUp && IsOwner && _catObj != null) {
+                GameObject catToThrow = _catObj;
                 ResetTheCat();
+                
                 Vector2 throwDirection = isFlipX ? new Vector2(-1, 1) : Vector2.one;
-                _catObj.GetComponent<Rigidbody2D>().AddForce(throwDirection * THROW_FORCE, ForceMode2D.Impulse);
-                ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
+                catToThrow.GetComponent<Rigidbody2D>().AddForce(throwDirection * THROW_FORCE, ForceMode2D.Impulse);
+                ChangeCatOwnershipServerRpc(catToThrow, NetworkManager.Singleton.LocalClientId, false);
             }
         }
 
         void OnTriggerEnter2D(Collider2D other) {
-            if (!IsOwner && _catObj) return;
-            other.TryGetComponent(out NetworkObject networkObject);
-            if(other.CompareTag("Zone") && other.gameObject.layer == gameObject.layer) {
-                _catPickedUp = false;
-                return;
-            }
-            if (networkObject != null) {
-                if (networkObject.CompareTag(CAT_TAG) && networkObject.gameObject.layer != gameObject.layer) {
-                    _catPickUpArea = true;
-                    _catObj = networkObject.gameObject;
-                }
+            if (!IsOwner) return;
+            
+            if (other.CompareTag(CAT_TAG) && other.gameObject.layer != gameObject.layer) {
+                _catPickUpArea = true;
+                _catObj = other.gameObject;
             }
         }
 
         void OnTriggerExit2D(Collider2D other) {
             if (!IsOwner) return;
-            other.TryGetComponent(out NetworkObject networkObject);
-            if (networkObject != null && !_catPickedUp) {
+            
+            if (other.CompareTag(CAT_TAG) && !_catPickedUp) {
                 _catPickUpArea = false;
-                ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
+                if (_catObj != null)
+                {
+                    ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
+                }
             }
         }
 
         [ServerRpc]
         void ChangeCatOwnershipServerRpc(NetworkObjectReference other, ulong clientId, bool isEnter = false) {
-                other.TryGet(out NetworkObject networkObject);
-                if(networkObject != null && isEnter) 
+            if (other.TryGet(out NetworkObject networkObject) && networkObject != null)
+            {
+                if (isEnter) 
                     networkObject.ChangeOwnership(clientId);
                 else 
-                    networkObject.ChangeOwnership(NetworkManager.Singleton.LocalClientId);
+                    networkObject.RemoveOwnership();
+            }
         }
         
         void OnDestroy() {
-            _healthComponent!.OnDeath -= PlayerIsDeath;
+            if (_healthComponent != null)
+                _healthComponent.OnDeath -= PlayerIsDeath;
         }
-
     }
 }
