@@ -44,25 +44,27 @@ namespace _PrismWars._Scripts.Game.Services {
             var catRef = _catToRespawn.Dequeue();
             catRef.TryGet(out NetworkObject cat);
             cat.TryGetComponent(out CatController catController);
-            if (catController != null) {
-                switch (catController.Data.Value.catElement) {
-                    default:
-                    case PlayerElement.Fire:
-                        cat.transform.position = _fireSpawnPoint.position;
-                        break;
-                    case PlayerElement.Ice:
-                        cat.transform.position = _iceSpawnPoint.position;
-                        break;
-                }
+            if (catController == null) return;
+            switch (catController.Data.Value.catElement) {
+                default:
+                case PlayerElement.Fire:
+                    cat.transform.position = _fireSpawnPoint.position;
+                    break;
+                case PlayerElement.Ice:
+                    cat.transform.position = _iceSpawnPoint.position;
+                    break;
             }
+
+            cat.GetComponent<CatController>()?.SetCatIsDespawned(true);
             CatDespawnRpc(cat, true);
         }
         
         [Rpc(SendTo.ClientsAndHost)]
         void CatDespawnRpc(NetworkObjectReference catRef, bool active) {
             catRef.TryGet(out NetworkObject networkObject);
-            if(networkObject != null)
-                networkObject.gameObject.SetActive(active);
+            if(networkObject == null) return;
+            networkObject.gameObject.SetActive(active);
+            networkObject.GetComponent<CatController>()?.SetCatIsDespawned(active);
         }
     }
 }

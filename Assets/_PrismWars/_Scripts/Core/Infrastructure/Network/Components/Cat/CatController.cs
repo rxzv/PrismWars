@@ -14,7 +14,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         NetworkScoreService _scoreService;
         CatRespawnService _respawnService;
         
-        public NetworkVariable<NetworkCatData> Data = new ();
+        bool _catIsDespawned = false;
+
+        public NetworkVariable<NetworkCatData> Data = new();
         
         PlayerElement _playerCaptureElement;
         
@@ -24,6 +26,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             OnDataChanged(data,data);
         }
 
+        public void SetCatIsDespawned(bool value) {
+            _catIsDespawned = value;
+        }
+    
         Color GetColorByCatElement(PlayerElement playerElement) {
             return playerElement switch {
                 PlayerElement.Fire => Color.red,
@@ -31,8 +37,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 _ => Color.white
             };
         }
-        
+
         public override void OnNetworkSpawn() {
+            _respawnService = ServiceLocator.Singleton.Get<CatRespawnService>();
+            
             Data.OnValueChanged += OnDataChanged;
             if(!IsServer) return;
             _scoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
@@ -45,21 +53,23 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             gameObject.tag = _catTag;
             gameObject.layer = LayerMask.NameToLayer(Data.Value.catElement.ToString());
         }
-
+        
         void OnTriggerEnter2D(Collider2D other) {
             if(!IsOwner) return;
-            if(other.CompareTag("Zone") && other.gameObject.layer != gameObject.layer) {
+            if(other.CompareTag("Zone") && other.gameObject.layer != gameObject.layer && !_catIsDespawned) {
+                Debug.Log("OnTriggerEnter2D");
+                _catIsDespawned = true;
                 ChangeCatOwnershipServerRpc();
-                _respawnService = ServiceLocator.Singleton.Get<CatRespawnService>();
                 var no = GetComponent<NetworkObject>();
                 _respawnService.CatDespawnRpc(no);
                 AddScoreServerRpc();
             }
         }
-        [ServerRpc(RequireOwnership = false)]
+        [ServerRpc]
         void ChangeCatOwnershipServerRpc() {
-            var networkObject = GetComponent<NetworkObject>();
-            networkObject.ChangeOwnership(NetworkManager.Singleton.LocalClientId);
+            var no = GetComponent<NetworkObject>();
+            if(no == null) return;
+            no.ChangeOwnership(NetworkManager.Singleton.LocalClientId);
         }
         
         [ServerRpc(RequireOwnership = false)]
