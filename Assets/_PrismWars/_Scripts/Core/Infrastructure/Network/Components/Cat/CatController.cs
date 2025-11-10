@@ -88,21 +88,21 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             
             if (IsOwner) {
                 if(other.CompareTag(ZONE_TAG) && other.gameObject.layer != gameObject.layer) 
-                    HandleZoneEnterServerRpc();
+                    HandleZoneEnterRpc();
                 if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER)) 
-                    SetOnGroundStateServerRpc(true);
+                    SetOnGroundStateRpc(true);
             }
         }
 
         void OnTriggerExit2D(Collider2D other) {
             if (IsOwner) {
                 if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER)) 
-                    SetOnGroundStateServerRpc(false);
+                    SetOnGroundStateRpc(false);
             }
         }
 
-        [ServerRpc]
-        void HandleZoneEnterServerRpc() {
+        [Rpc(SendTo.Server)]
+        void HandleZoneEnterRpc() {
             if(_catIsDespawned) return;
             
             Debug.Log("Cat entered zone - scoring!");
@@ -114,11 +114,11 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 _respawnService.CatDespawnRpc(no);
             }
             
-            AddScoreServerRpc();
+            AddScoreRpc();
         }
 
-        [ServerRpc]
-        void SetOnGroundStateServerRpc(bool isOnGround) {
+        [Rpc(SendTo.Server)]
+        void SetOnGroundStateRpc(bool isOnGround) {
             _isOnGround.Value = isOnGround;
             UpdateTeleportTimer();
         }
@@ -165,17 +165,17 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                     break;
             }
 
-            SetOnGroundStateServerRpc(false);
-            SetPlayerCaptureElementServerRpc(PlayerElement.None);
+            SetOnGroundStateRpc(false);
+            SetPlayerCaptureElementRpc(PlayerElement.None);
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        public void SetPlayerCaptureElementServerRpc(PlayerElement element) {
+        [Rpc(SendTo.Server)]
+        public void SetPlayerCaptureElementRpc(PlayerElement element) {
             _playerCaptureElement = element;
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        void AddScoreServerRpc() {
+        [Rpc(SendTo.Server)]
+        void AddScoreRpc() {
             _scoreService.AddScore(_playerCaptureElement, ADD_SCORE_COUNT);
         }
 

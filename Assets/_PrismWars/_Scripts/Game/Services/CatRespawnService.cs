@@ -72,7 +72,7 @@ namespace _PrismWars._Scripts.Game.Services {
             }
 
             catController.SetCatIsDespawned(false);
-            catController.SetPlayerCaptureElementServerRpc(PlayerElement.None);
+            catController.SetPlayerCaptureElementRpc(PlayerElement.None);
             
             SetCatActiveStateRpc(cat, true);
         }

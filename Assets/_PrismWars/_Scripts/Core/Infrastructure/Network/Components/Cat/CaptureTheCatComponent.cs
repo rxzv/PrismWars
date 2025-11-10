@@ -6,8 +6,9 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Network {
     public class CaptureTheCatComponent : NetworkBehaviour, IInitializable {
-        const float THROW_FORCE = 10f;
+        const float THROW_FORCE = 100f;
         const string CAT_TAG = "Cat";
+        const float CAT_UP_TO_PLAYER = 1.3f;
 
         bool _catPickUpArea = false;
         bool _catPickedUp = false;
@@ -37,9 +38,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         void PlayerIsDeath() {
             if (!IsOwner) return;
             if (_catObj != null) {
-                ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
+                ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
                 ResetTheCat();
-                _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementServerRpc(PlayerElement.None);
+                _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementRpc(PlayerElement.None);
             }
         }
 
@@ -51,8 +52,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
                 cat.FlipX(!value);
                 _catPickedUp = true;
                 _catObj!.GetComponent<Rigidbody2D>().isKinematic = true;
-                cat!.SetPlayerCaptureElementServerRpc(_playerElement);
-                ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
+                cat!.SetPlayerCaptureElementRpc(_playerElement);
+                ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
             }
         }
 
@@ -65,7 +66,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         void Update() {
             if (_catPickedUp && IsOwner && _catObj != null) {
-                _catObj.transform.position = gameObject.transform.position + Vector3.up * 1.3f;
+                _catObj.transform.position = gameObject.transform.position + Vector3.up * CAT_UP_TO_PLAYER;
             }
         }
 
@@ -88,19 +89,19 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             }
         }
 
-        [ServerRpc]
+        [Rpc(SendTo.Server)]
         void ThrowCatServerRpc(NetworkObjectReference catNetRef, Vector2 throwVelocity, ulong clientId) {
             if (catNetRef.TryGet(out NetworkObject catNetObj)) {
                 Rigidbody2D catRb = catNetObj.GetComponent<Rigidbody2D>();
                 catRb.linearVelocity = Vector2.zero;
                 catRb.AddForce(throwVelocity, ForceMode2D.Impulse);
                 
-                ThrowCatClientRpc(catNetRef, throwVelocity, clientId);
+                ThrowCatRpc(catNetRef, throwVelocity, clientId);
             }
         }
 
-        [ClientRpc(RequireOwnership = false)]
-        void ThrowCatClientRpc(NetworkObjectReference catNetRef, Vector2 throwVelocity, ulong clientId) {
+        [Rpc(SendTo.ClientsAndHost)]
+        void ThrowCatRpc(NetworkObjectReference catNetRef, Vector2 throwVelocity, ulong clientId) {
             if (IsOwner) return;
             
             if (catNetRef.TryGet(out NetworkObject catNetObj)) {
@@ -129,13 +130,13 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (other.CompareTag(CAT_TAG) && !_catPickedUp) {
                 _catPickUpArea = false;
                 if (_catObj != null) {
-                    ChangeCatOwnershipServerRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
+                    ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
                 }
             }
         }
 
-        [ServerRpc]
-        void ChangeCatOwnershipServerRpc(NetworkObjectReference other, ulong clientId, bool isEnter = false) {
+        [Rpc(SendTo.Server)]
+        void ChangeCatOwnershipRpc(NetworkObjectReference other, ulong clientId, bool isEnter = false) {
             if (other.TryGet(out NetworkObject networkObject) && networkObject != null) {
                 if (isEnter) 
                     networkObject.ChangeOwnership(clientId);
