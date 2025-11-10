@@ -1,0 +1,96 @@
+idle.png
+size: 1737,395
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+full_bazuka
+  rotate: false
+  xy: 2, 2
+  size: 718, 391
+  orig: 718, 391
+  offset: 0, 0
+  index: -1
+l_arm_2
+  rotate: true
+  xy: 1127, 3
+  size: 65, 111
+  orig: 65, 111
+  offset: 0, 0
+  index: -1
+l_leg_3
+  rotate: true
+  xy: 1594, 80
+  size: 88, 131
+  orig: 91, 131
+  offset: 0, 0
+  index: -1
+left_arm
+  rotate: false
+  xy: 1594, 266
+  size: 141, 127
+  orig: 141, 127
+  offset: 0, 0
+  index: -1
+left_leg
+  rotate: false
+  xy: 1127, 70
+  size: 189, 323
+  orig: 189, 323
+  offset: 0, 0
+  index: -1
+left_leg_2
+  rotate: false
+  xy: 1318, 126
+  size: 152, 267
+  orig: 152, 267
+  offset: 0, 0
+  index: -1
+r_arm_2
+  rotate: true
+  xy: 1593, 170
+  size: 94, 139
+  orig: 94, 139
+  offset: 0, 0
+  index: -1
+r_arm_3
+  rotate: true
+  xy: 1594, 2
+  size: 76, 100
+  orig: 76, 100
+  offset: 0, 0
+  index: -1
+r_leg_2
+  rotate: true
+  xy: 1318, 43
+  size: 81, 274
+  orig: 81, 274
+  offset: 0, 0
+  index: -1
+r_leg_3
+  rotate: false
+  xy: 1472, 135
+  size: 96, 128
+  orig: 96, 128
+  offset: 0, 0
+  index: -1
+right_arm
+  rotate: false
+  xy: 1472, 265
+  size: 119, 128
+  orig: 119, 128
+  offset: 0, 0
+  index: -1
+right_leg
+  rotate: false
+  xy: 962, 11
+  size: 163, 382
+  orig: 179, 382
+  offset: 16, 0
+  index: -1
+telo
+  rotate: false
+  xy: 722, 47
+  size: 238, 346
+  orig: 238, 379
+  offset: 0, 33
+  index: -1
