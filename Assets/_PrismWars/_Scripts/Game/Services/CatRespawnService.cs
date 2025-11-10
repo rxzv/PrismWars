@@ -7,18 +7,18 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Game.Services {
-    public class CatRespawnService : NetworkBehaviour, IService, IInitializable<Transform, Transform> {
+    public class CatRespawnService : NetworkBehaviour, IService, IInitializable<Vector3, Vector3> {
         const float CAT_TIME_TO_RESPAWN = 3f;
-        Transform _fireSpawnPoint;
-        Transform _iceSpawnPoint;
+        Vector3 _fireSpawnPoint;
+        Vector3 _iceSpawnPoint;
         Timer _respawnTimer;
         
-        public Transform GetFireSpawnPoint() => _fireSpawnPoint;
-        public Transform GetIceSpawnPoint() => _iceSpawnPoint;
+        public Vector3 GetFireSpawnPoint() => _fireSpawnPoint;
+        public Vector3 GetIceSpawnPoint() => _iceSpawnPoint;
         
         Queue<NetworkObjectReference> _catToRespawn = new();
 
-        public void Initialize(Transform fireSpawnPoint, Transform iceSpawnPoint) {
+        public void Initialize(Vector3 fireSpawnPoint, Vector3 iceSpawnPoint) {
             _fireSpawnPoint = fireSpawnPoint;
             _iceSpawnPoint = iceSpawnPoint;
             _respawnTimer = new Timer();
@@ -64,10 +64,10 @@ namespace _PrismWars._Scripts.Game.Services {
             switch (catController.Data.Value.catElement) {
                 default:
                 case PlayerElement.Fire:
-                    cat.transform.position = _fireSpawnPoint.position;
+                    cat.transform.position = _fireSpawnPoint;
                     break;
                 case PlayerElement.Ice:
-                    cat.transform.position = _iceSpawnPoint.position;
+                    cat.transform.position = _iceSpawnPoint;
                     break;
             }
 

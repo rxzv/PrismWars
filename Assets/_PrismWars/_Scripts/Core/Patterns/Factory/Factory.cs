@@ -6,14 +6,14 @@ using UnityEngine;
 namespace _PrismWars._Scripts.Core.Patterns.Factory {
     public abstract class Factory {
         protected Transform _prefab;
-        protected List<Transform> _spawnPoints;
-        protected Transform _spawnPoint;
+        protected Vector3[] _spawnPoints;
+        protected Vector3 _spawnPoint;
         
-        protected Factory(Transform prefab, Transform spawnPoints) {
+        protected Factory(Transform prefab, Vector3 spawnPoints) {
             _prefab =  prefab;
             _spawnPoint = spawnPoints;
         }
-        protected Factory(Transform prefab, List<Transform> spawnPoints) {
+        protected Factory(Transform prefab, Vector3[] spawnPoints) {
             _prefab =  prefab;
             _spawnPoints = spawnPoints;
         }

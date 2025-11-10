@@ -77,6 +77,7 @@ namespace _PrismWars._Scripts.UI {
         }
 
         void Update() {
+            if(!_networkGameTimer) return;
             var time = (int)_networkGameTimer.GetRemainingTime();
             _timer.text = time.ToString();
             if (_isDead) {

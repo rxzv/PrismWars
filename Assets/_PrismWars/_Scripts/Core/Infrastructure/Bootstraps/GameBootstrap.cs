@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Patterns.Factory;
+using _PrismWars._Scripts.Game.GameManager;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI;
 using Unity.Cinemachine;
@@ -21,14 +22,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
         [SerializeField] ServerCatSpawnService _serverCatSpawnService;
         [SerializeField] CatRespawnService _catRespawnService;
         
-        [Header("Scene Components")]
-        [SerializeField] List<Transform> _fireSpawnPoints;
-        [SerializeField] List<Transform> _iceSpawnPoints;
-        [SerializeField] Transform _catFireSpawnPoint;
-        [SerializeField] Transform _catIceSpawnPoint;
-        
         ProjectileServerService _projectileServerService;
         ShardServerService _shardServerService;
+        MapManager _mapManager;
+        GameModeManager _gameModeManager;
         
         List<IDisposable> _disposables = new();
 
@@ -57,25 +54,28 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             Debug.Log("GameScene Services registered");
         }
         void InitializeServices() {
-            var playerPrefab = Resources.Load<Transform>("Prefabs/Player");
-            var playerFireFactory = new PlayerFireFactory(playerPrefab, _fireSpawnPoints);
-            var playerIceFactory = new PlayerIceFactory(playerPrefab, _iceSpawnPoints);
+            _mapManager = ServiceLocator.Singleton.Get<MapManager>();
+            _gameModeManager = ServiceLocator.Singleton.Get<GameModeManager>();
             
+            var playerPrefab = Resources.Load<Transform>("Prefabs/Player");
             var cameraPrefab = Resources.Load<CinemachineCamera>("Prefabs/CinemachineCamera");
-
             var catPrefab = Resources.Load<Transform>("Prefabs/Cat");
-            var catFireFactory = new CatFireFactory(catPrefab, _catFireSpawnPoint);
-            var catIceFactory = new CatIceFactory(catPrefab, _catIceSpawnPoint);
+            
+            var playerFireFactory = new PlayerFireFactory(playerPrefab, _mapManager.Data.fireSpawnPoints);
+            var playerIceFactory = new PlayerIceFactory(playerPrefab, _mapManager.Data.iceSpawnPoints);
+            
+            var catFireFactory = new CatFireFactory(catPrefab, _mapManager.Data.catFireSpawnPoints);
+            var catIceFactory = new CatIceFactory(catPrefab, _mapManager.Data.catIceSpawnPoints);
             
             _networkPlayerSpawnService.Initialize(playerFireFactory, playerIceFactory);
             _networkUIManager.Initialize();
             _projectileServerService.Initialize();
             _shardServerService.Initialize();
             _cameraSpawnService.Initialize(cameraPrefab);
-            _playerRespawnService.Initialize(_fireSpawnPoints, _iceSpawnPoints);
+            _playerRespawnService.Initialize(_mapManager.Data.fireSpawnPoints, _mapManager.Data.iceSpawnPoints);
             _gameOverUIService.Initialize();
             _serverCatSpawnService.Initialize(catFireFactory, catIceFactory);
-            _catRespawnService.Initialize(_catFireSpawnPoint, _catIceSpawnPoint);
+            _catRespawnService.Initialize(_mapManager.Data.catFireSpawnPoints, _mapManager.Data.catIceSpawnPoints);
             
             _networkSpawner.ClientInitialized();
             Debug.Log("GameScene Services initialized");

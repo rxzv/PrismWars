@@ -158,10 +158,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             switch (Data.Value.catElement) {
                 default:
                 case PlayerElement.Fire:
-                    transform.position = _respawnService.GetFireSpawnPoint().position;
+                    transform.position = _respawnService.GetFireSpawnPoint();
                     break;
                 case PlayerElement.Ice:
-                    transform.position = _respawnService.GetIceSpawnPoint().position;
+                    transform.position = _respawnService.GetIceSpawnPoint();
                     break;
             }
 

@@ -8,11 +8,11 @@ using UnityEngine;
 namespace _PrismWars._Scripts.Core.Patterns.Factory.Cat {
     public class CatFactory : Factory{
 
-        protected CatFactory(Transform prefab, Transform spawnPoint) 
+        protected CatFactory(Transform prefab, Vector3 spawnPoint) 
             : base(prefab, spawnPoint) { }
 
         public override NetworkObject Spawn(INetworkData data, ulong senderClientId) {
-            var playerInstance = Object.Instantiate(_prefab, _spawnPoint.position, Quaternion.identity);
+            var playerInstance = Object.Instantiate(_prefab, _spawnPoint, Quaternion.identity);
             var networkCat = playerInstance.GetComponent<CatController>();
             var networkObjectReference = playerInstance.GetComponent<NetworkObject>();
             playerInstance.GetComponent<NetworkObject>().SpawnWithOwnership(senderClientId);

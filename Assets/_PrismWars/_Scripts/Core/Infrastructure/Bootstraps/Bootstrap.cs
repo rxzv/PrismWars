@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
+using _PrismWars._Scripts.Game.GameManager;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.Utils;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Bootstrap : MonoBehaviour {
     const string GAME_SCENE_NAME = "Game";
@@ -21,14 +24,29 @@ public class Bootstrap : MonoBehaviour {
     [SerializeField] NetworkScoreService  _networkScoreService;
     [SerializeField] ShardFactory _shardFactory;
     [SerializeField] NetworkChangeScene _networkChangeScene;
+    [SerializeField] MapManager _mapManager;
+    [SerializeField] GameModeManager _gameModeManager;
     
     List<IDisposable> _disposables = new();
     
     void Start() {
+        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneLoaded;
         RegisterServices();
         InitializeServices();
     }
-    
+    void OnSceneLoaded(ulong clientId, string sceneName, LoadSceneMode loadSceneMode) {
+        if (sceneName == GAME_SCENE_NAME) {
+            ApplyGameSettings();
+        }
+    }
+    void ApplyGameSettings() {
+        var sessionManager = GameLobbyManager.Instance;
+        var gameMode = sessionManager.GameMode;
+        var mapData = sessionManager.Map;
+        
+        _gameModeManager.ApplyGameMode(gameMode);
+        _mapManager.LoadMap(mapData);
+    }
     void RegisterServices() {
         ServiceLocator.Singleton.Register(_inputService);
         ServiceLocator.Singleton.Register(_networkCharacterSelectionManager);
@@ -38,7 +56,10 @@ public class Bootstrap : MonoBehaviour {
         ServiceLocator.Singleton.Register(_respawnTimer);
         ServiceLocator.Singleton.Register(_networkScoreService);
         ServiceLocator.Singleton.Register(_networkChangeScene);
+        ServiceLocator.Singleton.Register(_gameModeManager);
+        ServiceLocator.Singleton.Register(_mapManager);
         
+        DontDestroyOnLoad(this);
         DontDestroyOnLoad(_inputService);
         DontDestroyOnLoad(_projectileFactory);
         DontDestroyOnLoad(_networkCharacterSelectionManager);
@@ -47,6 +68,8 @@ public class Bootstrap : MonoBehaviour {
         DontDestroyOnLoad(_networkScoreService);
         DontDestroyOnLoad(_shardFactory);
         DontDestroyOnLoad(_networkChangeScene);
+        DontDestroyOnLoad(_gameModeManager);
+        DontDestroyOnLoad(_mapManager);
         
         Debug.Log("BootstrapScene Services registered");
     }
@@ -61,4 +84,11 @@ public class Bootstrap : MonoBehaviour {
         _networkChangeScene.ChangeScene(GAME_SCENE_NAME);
         Debug.Log("BootstrapScene Services initialize");
     }
+
+    void OnDestroy() {
+        foreach (var disposable in _disposables) {
+            disposable.Dispose();
+        }
+    }
+
 }

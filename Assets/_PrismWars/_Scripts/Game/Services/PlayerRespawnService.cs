@@ -9,18 +9,18 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace _PrismWars._Scripts.Game.Services {
-    public class PlayerRespawnService : NetworkBehaviour, IService, IInitializable<List<Transform>, List<Transform>> {
+    public class PlayerRespawnService : NetworkBehaviour, IService, IInitializable<Vector3[], Vector3[]> {
         const float PLAYER_TIME_TO_RESPAWN = 5f;
         RespawnTimer _respawnTimer;
         Queue<NetworkObjectReference> _playerToRespawn = new();
         Queue<ulong> _playerToRespawnId = new();
 
-        List<Transform> _fireSpawnPoints;
-        List<Transform> _iceSpawnPoints;
+        Vector3[] _fireSpawnPoints;
+        Vector3[] _iceSpawnPoints;
         
         public event Action OnPlayerRespawn;
         
-        public void Initialize(List<Transform> fireSpawnPoints, List<Transform> iceSpawnPoints) {
+        public void Initialize(Vector3[] fireSpawnPoints, Vector3[] iceSpawnPoints) {
             _fireSpawnPoints = fireSpawnPoints;
             _iceSpawnPoints = iceSpawnPoints;
         }
@@ -54,13 +54,13 @@ namespace _PrismWars._Scripts.Game.Services {
                 switch (playerController.PlayerElement.Value) {
                     default:
                     case PlayerElement.Fire:
-                        spawnPointId = Random.Range(0, _fireSpawnPoints.Count);
-                        spawnPos = _fireSpawnPoints[spawnPointId].position;
+                        spawnPointId = Random.Range(0, _fireSpawnPoints.Length - 1);
+                        spawnPos = _fireSpawnPoints[spawnPointId];
                         PlayerUpdateSpawnPositionClientRpc(id, spawnPos, networkObject);
                         break;
                     case PlayerElement.Ice:
-                        spawnPointId = Random.Range(0, _iceSpawnPoints.Count);
-                        spawnPos = _iceSpawnPoints[spawnPointId].position;
+                        spawnPointId = Random.Range(0, _iceSpawnPoints.Length - 1);
+                        spawnPos = _iceSpawnPoints[spawnPointId];
                         PlayerUpdateSpawnPositionClientRpc(id, spawnPos, networkObject);
                         break;
                 }
