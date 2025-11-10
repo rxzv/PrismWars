@@ -13,7 +13,7 @@ namespace _PrismWars._Scripts.Game.Services {
             ClientInitServerRpc();
         }
         
-        [ServerRpc(RequireOwnership = false)]
+        [Rpc(SendTo.Server)]
         void ClientInitServerRpc() {
             _initClients.Value++;
         }
@@ -32,16 +32,28 @@ namespace _PrismWars._Scripts.Game.Services {
             }
         }
 
-        [ServerRpc]
+        [Rpc(SendTo.Server)]
         void SpawnNetworkObjectServerRpc() {
+            SpawnServerGameManager();
+            // SpawnHillCaptureComponent();
+            // SpawnServerCatSpawnService();
+        }
+
+        void SpawnServerGameManager() {
             var prefab = Resources.Load<GameObject>("NetworkServicePrefabs/ServerGameManager");
             var instance = Instantiate(prefab);
             instance.GetComponent<NetworkObject>().Spawn();
-            
-            prefab = Resources.Load<GameObject>("NetworkServicePrefabs/HillCaptureComponent");
-            instance = Instantiate(prefab);
+        }
+
+        void SpawnHillCaptureComponent() {
+            if(!IsServer) return;
+            var prefab = Resources.Load<GameObject>("NetworkServicePrefabs/HillCaptureComponent");
+            var instance = Instantiate(prefab);
             instance.GetComponent<NetworkObject>().Spawn();
-            
+        }
+
+        void SpawnServerCatSpawnService() {
+            if(!IsServer) return;
             _serverCatSpawnService = ServiceLocator.Singleton.Get<ServerCatSpawnService>();
             _serverCatSpawnService.SpawnCatRpc(
                 new NetworkCatData{catElement = PlayerElement.Fire}, 
