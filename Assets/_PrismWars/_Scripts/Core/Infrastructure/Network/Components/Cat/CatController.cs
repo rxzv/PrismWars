@@ -129,7 +129,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             
             var no = GetComponent<NetworkObject>();
             if (no != null) {
-                no.RemoveOwnership();
+                if(!IsOwner) 
+                    no.RemoveOwnership();
                 _respawnService.CatDespawnRpc(no);
             }
             

@@ -138,19 +138,20 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             
             if (other.CompareTag(CAT_TAG) && !_catPickedUp) {
                 _catPickUpArea = false;
-                if (_catObj != null) {
-                    ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
-                }
             }
         }
 
         [Rpc(SendTo.Server)]
         void ChangeCatOwnershipRpc(NetworkObjectReference other, ulong clientId, bool isEnter = false) {
             if (other.TryGet(out NetworkObject networkObject) && networkObject != null) {
-                if (isEnter) 
-                    networkObject.ChangeOwnership(clientId);
-                else 
-                    networkObject.RemoveOwnership();
+                if(isEnter) {
+                    if(networkObject.OwnerClientId != clientId) 
+                        networkObject.ChangeOwnership(clientId);
+                }
+                else {
+                    if(!networkObject.IsOwner) 
+                        networkObject.RemoveOwnership();
+                }
             }
         }
 
