@@ -100,7 +100,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                     HandleZoneEnterRpc();
                 if(other.CompareTag(ZONE_TAG) && other.gameObject.layer == gameObject.layer) 
                     HandleBaseZoneEnterRpc(true);
-                if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER)) 
+                if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER) && !GetComponent<Rigidbody2D>().isKinematic) 
                     SetOnGroundStateRpc(true);
             }
         }
