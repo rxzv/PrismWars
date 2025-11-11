@@ -19,8 +19,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         NetworkScoreService _scoreService;
         CatRespawnService _respawnService;
         SpriteRenderer _catSpriteRenderer;
-        
-        //TODO: fix flipX to client, return to base to server, fix cat up respawn to client, fix client owner
+
+        Rigidbody2D _catRb;
         
         bool _catIsDespawned = false;
         Timer _groundTimer;
@@ -56,6 +56,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         }
 
         public override void OnNetworkSpawn() {
+            _catRb = GetComponent<Rigidbody2D>();
             _respawnService = ServiceLocator.Singleton.Get<CatRespawnService>();
             _mapManager = ServiceLocator.Singleton.Get<MapManager>();
             _catSpriteRenderer = GetComponent<SpriteRenderer>();
@@ -100,7 +101,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                     HandleZoneEnterRpc();
                 if(other.CompareTag(ZONE_TAG) && other.gameObject.layer == gameObject.layer) 
                     HandleBaseZoneEnterRpc(true);
-                if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER) && !GetComponent<Rigidbody2D>().isKinematic) 
+                if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER) && _catRb.bodyType == RigidbodyType2D.Dynamic)  
                     SetOnGroundStateRpc(true);
             }
         }

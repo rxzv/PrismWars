@@ -14,6 +14,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         bool _catPickedUp = false;
 
         GameObject _catObj;
+        Rigidbody2D _catObjRb;
         HealthComponent _healthComponent;
         PlayerElement _playerElement;
         
@@ -51,7 +52,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
                 var cat = _catObj.GetComponent<CatController>();
                 cat.FlipX(!value);
                 _catPickedUp = true;
-                _catObj!.GetComponent<Rigidbody2D>().isKinematic = true;
+                _catObjRb.bodyType = RigidbodyType2D.Kinematic;
                 cat!.SetPlayerCaptureElementRpc(_playerElement);
                 ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
             }
@@ -60,9 +61,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         [Rpc(SendTo.Owner)]
         void ResetTheCatRpc() {
             _catObj.GetComponent<CatController>().OnCatDisable -= ResetTheCatRpc;
-            _catObj!.GetComponent<Rigidbody2D>().isKinematic = false;
+            _catObjRb.bodyType = RigidbodyType2D.Dynamic;
             _catPickUpArea = false;
             _catPickedUp = false;
+            _catObjRb = null;
             _catObj = null; 
         }
 
@@ -74,7 +76,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         public void ThrowCat(bool isFlipX) {
             if (_catPickedUp && IsOwner && _catObj != null) {
-                _catObj!.GetComponent<Rigidbody2D>().isKinematic = false;
+                _catObjRb.bodyType = RigidbodyType2D.Dynamic;
                 GameObject catToThrow = _catObj;
                 Vector2 throwDirection = isFlipX ? new Vector2(-1, 1) : Vector2.one;
                 Vector2 throwVelocity = throwDirection * THROW_FORCE;
@@ -94,9 +96,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         [Rpc(SendTo.Server)]
         void ThrowCatServerRpc(NetworkObjectReference catNetRef, Vector2 throwVelocity, ulong clientId) {
             if (catNetRef.TryGet(out NetworkObject catNetObj)) {
-                Rigidbody2D catRb = catNetObj.GetComponent<Rigidbody2D>();
-                catRb.linearVelocity = Vector2.zero;
-                catRb.AddForce(throwVelocity, ForceMode2D.Impulse);
+                _catObjRb = catNetObj.GetComponent<Rigidbody2D>();
+                _catObjRb.linearVelocity = Vector2.zero;
+                _catObjRb.AddForce(throwVelocity, ForceMode2D.Impulse);
                 
                 ThrowCatRpc(catNetRef, throwVelocity, clientId);
             }
@@ -112,9 +114,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         }
 
         void PerformLocalThrow(GameObject cat, Vector2 throwVelocity) {
-            Rigidbody2D catRb = cat.GetComponent<Rigidbody2D>();
-            catRb.linearVelocity = Vector2.zero;
-            catRb.AddForce(throwVelocity, ForceMode2D.Impulse);
+            _catObjRb = cat.GetComponent<Rigidbody2D>();
+            _catObjRb.linearVelocity = Vector2.zero;
+            _catObjRb.AddForce(throwVelocity, ForceMode2D.Impulse);
         }
 
         void OnTriggerEnter2D(Collider2D other) {
@@ -123,6 +125,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (other.CompareTag(CAT_TAG) && other.gameObject.layer != gameObject.layer) {
                 _catPickUpArea = true;
                 _catObj = other.gameObject;
+                _catObjRb = _catObj.GetComponent<Rigidbody2D>();
                 _catObj.GetComponent<CatController>().OnCatDisable += ResetTheCatRpc;
             }
         }
