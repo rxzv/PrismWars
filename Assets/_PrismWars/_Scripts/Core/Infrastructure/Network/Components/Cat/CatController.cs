@@ -24,12 +24,15 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         bool _catIsDespawned = false;
         Timer _groundTimer;
 
-        private NetworkVariable<bool> _isOnGround = new NetworkVariable<bool>(false);
-        private NetworkVariable<bool> _isInZone = new NetworkVariable<bool>(false);
+        NetworkVariable<bool> _isOnGround = new NetworkVariable<bool>(false);
+        NetworkVariable<bool> _isInZone = new NetworkVariable<bool>(false);
 
+        [NonSerialized]
         public NetworkVariable<NetworkCatData> Data = new();
         
         PlayerElement _playerCaptureElement;
+        
+        public event Action OnCatDisable;
         
         public void Initialize(NetworkCatData data) {
             if(IsServer) 
@@ -39,6 +42,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         public void SetCatIsDespawned(bool value) {
             _catIsDespawned = value;
+            OnCatDisable?.Invoke();
         }
     
         Color GetColorByCatElement(PlayerElement playerElement) {

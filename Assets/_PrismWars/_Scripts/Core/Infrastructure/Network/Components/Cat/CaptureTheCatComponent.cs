@@ -58,6 +58,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         }
 
         void ResetTheCat() {
+            _catObj.GetComponent<CatController>().OnCatDisable -= ResetTheCat;
             _catObj!.GetComponent<Rigidbody2D>().isKinematic = false;
             _catPickUpArea = false;
             _catPickedUp = false;
@@ -121,6 +122,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (other.CompareTag(CAT_TAG) && other.gameObject.layer != gameObject.layer) {
                 _catPickUpArea = true;
                 _catObj = other.gameObject;
+                _catObj.GetComponent<CatController>().OnCatDisable += ResetTheCat;
             }
         }
 
