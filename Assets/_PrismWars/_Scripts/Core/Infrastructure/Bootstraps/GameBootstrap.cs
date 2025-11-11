@@ -19,8 +19,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
         [SerializeField] NetworkPlayerSpawnService _networkPlayerSpawnService;
         [SerializeField] NetworkSpawner _networkSpawner;
         [SerializeField] PlayerRespawnService _playerRespawnService;
-        [SerializeField] ServerCatSpawnService _serverCatSpawnService;
-        [SerializeField] CatRespawnService _catRespawnService;
         
         ProjectileServerService _projectileServerService;
         ShardServerService _shardServerService;
@@ -42,8 +40,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             ServiceLocator.Singleton.Register(_networkSpawner);
             ServiceLocator.Singleton.Register(_playerRespawnService);
             ServiceLocator.Singleton.Register(_gameOverUIService);
-            ServiceLocator.Singleton.Register(_serverCatSpawnService);
-            ServiceLocator.Singleton.Register(_catRespawnService);
             
             _projectileServerService = new ProjectileServerService();
             ServiceLocator.Singleton.Register(_projectileServerService);
@@ -59,13 +55,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             
             var playerPrefab = Resources.Load<Transform>("Prefabs/Player");
             var cameraPrefab = Resources.Load<CinemachineCamera>("Prefabs/CinemachineCamera");
-            var catPrefab = Resources.Load<Transform>("Prefabs/Cat");
             
             var playerFireFactory = new PlayerFireFactory(playerPrefab, _mapManager.Data.fireSpawnPoints);
             var playerIceFactory = new PlayerIceFactory(playerPrefab, _mapManager.Data.iceSpawnPoints);
-            
-            var catFireFactory = new CatFireFactory(catPrefab, _mapManager.Data.catFireSpawnPoints);
-            var catIceFactory = new CatIceFactory(catPrefab, _mapManager.Data.catIceSpawnPoints);
             
             _networkPlayerSpawnService.Initialize(playerFireFactory, playerIceFactory);
             _networkUIManager.Initialize();
@@ -74,8 +66,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             _cameraSpawnService.Initialize(cameraPrefab);
             _playerRespawnService.Initialize(_mapManager.Data.fireSpawnPoints, _mapManager.Data.iceSpawnPoints);
             _gameOverUIService.Initialize();
-            _serverCatSpawnService.Initialize(catFireFactory, catIceFactory);
-            _catRespawnService.Initialize(_mapManager.Data.catFireSpawnPoints, _mapManager.Data.catIceSpawnPoints);
             
             _networkSpawner.ClientInitialized();
             Debug.Log("GameScene Services initialized");

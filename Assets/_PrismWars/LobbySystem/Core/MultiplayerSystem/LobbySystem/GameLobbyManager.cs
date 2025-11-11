@@ -76,14 +76,6 @@ public class GameLobbyManager : PersistentSingleton<GameLobbyManager>
     }
 }
 
-
-public enum GameMode
-{
-    Deathmatch,
-    FreeForAll,
-    CaptureTheFlag,
-    KingOfTheHill
-}
 public enum Map
 {
     Map1,

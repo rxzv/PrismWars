@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using _PrismWars._Scripts;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
+using _PrismWars._Scripts.Core.Patterns.Factory;
 using _PrismWars._Scripts.Game.GameManager;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI;
@@ -26,6 +28,8 @@ public class Bootstrap : MonoBehaviour {
     [SerializeField] NetworkChangeScene _networkChangeScene;
     [SerializeField] MapManager _mapManager;
     [SerializeField] GameModeManager _gameModeManager;
+    [SerializeField] ServerCatSpawnService _catSpawnService;
+    [SerializeField] CatRespawnService _catRespawnService;
     
     List<IDisposable> _disposables = new();
     
@@ -44,9 +48,24 @@ public class Bootstrap : MonoBehaviour {
         var gameMode = sessionManager.GameMode;
         var mapData = sessionManager.Map;
         
-        _gameModeManager.ApplyGameMode(gameMode);
         _mapManager.LoadMap(mapData);
+        _gameModeManager.ApplyGameMode(gameMode);
+        
+        if(_gameModeManager.Data.modeName == GameMode.CaptureTheCat) {
+            CatInitialize();
+        }
+
+        _gameModeManager.SpawnGameMode();
     }
+    void CatInitialize() {
+        var catPrefab = Resources.Load<Transform>("Prefabs/Cat");
+        var catFireFactory = new CatFireFactory(catPrefab, _mapManager.Data.catFireSpawnPoints);
+        var catIceFactory = new CatIceFactory(catPrefab, _mapManager.Data.catIceSpawnPoints);
+
+        _catSpawnService.Initialize(catFireFactory, catIceFactory);
+        _catRespawnService.Initialize(_mapManager.Data.catFireSpawnPoints, _mapManager.Data.catIceSpawnPoints);
+    }
+    
     void RegisterServices() {
         ServiceLocator.Singleton.Register(_inputService);
         ServiceLocator.Singleton.Register(_networkCharacterSelectionManager);
@@ -58,6 +77,8 @@ public class Bootstrap : MonoBehaviour {
         ServiceLocator.Singleton.Register(_networkChangeScene);
         ServiceLocator.Singleton.Register(_gameModeManager);
         ServiceLocator.Singleton.Register(_mapManager);
+        ServiceLocator.Singleton.Register(_catSpawnService);
+        ServiceLocator.Singleton.Register(_catRespawnService);
         
         DontDestroyOnLoad(this);
         DontDestroyOnLoad(_inputService);
@@ -70,6 +91,8 @@ public class Bootstrap : MonoBehaviour {
         DontDestroyOnLoad(_networkChangeScene);
         DontDestroyOnLoad(_gameModeManager);
         DontDestroyOnLoad(_mapManager);
+        DontDestroyOnLoad(_catSpawnService);
+        DontDestroyOnLoad(_catRespawnService);
         
         Debug.Log("BootstrapScene Services registered");
     }
