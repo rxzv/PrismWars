@@ -133,7 +133,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                 _respawnService.CatDespawnRpc(no);
             }
             
-            AddScoreRpc();
+            AddScore();
         }
 
         [Rpc(SendTo.Server)]
@@ -193,8 +193,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             _playerCaptureElement = element;
         }
 
-        [Rpc(SendTo.Server)]
-        void AddScoreRpc() {
+        void AddScore() {
+            if(!IsServer) return;
             _scoreService.AddScore(_playerCaptureElement, ADD_SCORE_COUNT);
         }
 

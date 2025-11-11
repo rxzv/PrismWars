@@ -15,6 +15,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         GameObject _catObj;
         Rigidbody2D _catObjRb;
+        CatController _catController;
+        
         HealthComponent _healthComponent;
         PlayerElement _playerElement;
         
@@ -30,9 +32,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         public void FlipXCat(float oldDir, float newDir) {
             if(_catPickedUp && IsOwner && _catObj != null) {
                 if(newDir > 0)
-                    _catObj.GetComponent<CatController>().FlipX(true);
+                    _catController.FlipX(true);
                 else if(newDir < 0)
-                    _catObj.GetComponent<CatController>().FlipX(false);
+                    _catController.FlipX(false);
             }
         }
 
@@ -41,7 +43,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (_catObj != null) {
                 ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
                 ResetTheCatRpc();
-                _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementRpc(PlayerElement.None);
+                _catController?.SetPlayerCaptureElementRpc(PlayerElement.None);
             }
         }
 
@@ -49,7 +51,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (!IsOwner) return;
             if (_catPickUpArea && _catObj != null) {
                 var value = GetComponent<SpriteRenderer>().flipX;
-                var cat = _catObj.GetComponent<CatController>();
+                var cat = _catController;
                 cat.FlipX(!value);
                 _catPickedUp = true;
                 _catObjRb.bodyType = RigidbodyType2D.Kinematic;
@@ -60,12 +62,13 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         [Rpc(SendTo.Owner)]
         void ResetTheCatRpc() {
-            _catObj.GetComponent<CatController>().OnCatDisable -= ResetTheCatRpc;
+            _catController.OnCatDisable -= ResetTheCatRpc;
             _catObjRb.bodyType = RigidbodyType2D.Dynamic;
             _catPickUpArea = false;
             _catPickedUp = false;
             _catObjRb = null;
             _catObj = null; 
+            _catController = null;
         }
 
         void Update() {
@@ -126,7 +129,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
                 _catPickUpArea = true;
                 _catObj = other.gameObject;
                 _catObjRb = _catObj.GetComponent<Rigidbody2D>();
-                _catObj.GetComponent<CatController>().OnCatDisable += ResetTheCatRpc;
+                _catController = _catObj.GetComponent<CatController>();
+                _catController.OnCatDisable += ResetTheCatRpc;
             }
         }
 
