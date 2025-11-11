@@ -30,7 +30,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         }
 
         public void FlipXCat(float oldDir, float newDir) {
-            if(_catPickedUp && IsOwner && _catObj != null) {
+            if(_catPickedUp && IsOwner && _catObj != null && _catController != null) {
                 if(newDir > 0)
                     _catController.FlipX(true);
                 else if(newDir < 0)
@@ -40,11 +40,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         void PlayerIsDeath() {
             if (!IsOwner) return;
-            if (_catObj != null) {
-                ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
-                ResetTheCatRpc();
-                _catController?.SetPlayerCaptureElement(PlayerElement.None);
-            }
+            if(_catObj == null || _catController == null) return;
+            ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
+            ResetTheCatRpc();
+            _catController?.SetPlayerCaptureElement(PlayerElement.None);
         }
 
         public void PickUpCat() {
@@ -62,8 +61,11 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
 
         [Rpc(SendTo.Owner)]
         void ResetTheCatRpc() {
-            _catController.OnCatDisable -= ResetTheCatRpc;
-            _catObjRb.bodyType = RigidbodyType2D.Dynamic;
+            if (_catController is not null)
+                _catController.OnCatDisable -= ResetTheCatRpc;
+            if (_catObjRb is not null)
+                _catObjRb.bodyType = RigidbodyType2D.Dynamic;
+            
             _catPickUpArea = false;
             _catPickedUp = false;
             _catObjRb = null;
@@ -72,17 +74,17 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         }
 
         void Update() {
-            if (_catPickedUp && IsOwner && _catObj != null) {
+            if (_catPickedUp && IsOwner && _catObj is not null && _catController is not null) {
                 _catObj.transform.position = gameObject.transform.position + Vector3.up * CAT_IS_TALLER_THAN_PLAYER;
             }
         }
 
         public void ThrowCat(bool isFlipX) {
-            if (_catPickedUp && IsOwner && _catObj != null) {
+            if (_catPickedUp && IsOwner && _catObj != null && _catController != null) {
                 _catObjRb.bodyType = RigidbodyType2D.Dynamic;
-                GameObject catToThrow = _catObj;
-                Vector2 throwDirection = isFlipX ? new Vector2(-1, 1) : Vector2.one;
-                Vector2 throwVelocity = throwDirection * THROW_FORCE;
+                var catToThrow = _catObj;
+                var throwDirection = isFlipX ? new Vector2(-1, 1) : Vector2.one;
+                var throwVelocity = throwDirection * THROW_FORCE;
                 
                 PerformLocalThrow(catToThrow, throwVelocity);
                 
