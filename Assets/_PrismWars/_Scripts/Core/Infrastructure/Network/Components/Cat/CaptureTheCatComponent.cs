@@ -43,7 +43,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (_catObj != null) {
                 ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
                 ResetTheCatRpc();
-                _catController?.SetPlayerCaptureElementRpc(PlayerElement.None);
+                _catController?.SetPlayerCaptureElement(PlayerElement.None);
             }
         }
 
@@ -55,7 +55,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
                 cat.FlipX(!value);
                 _catPickedUp = true;
                 _catObjRb.bodyType = RigidbodyType2D.Kinematic;
-                cat!.SetPlayerCaptureElementRpc(_playerElement);
+                cat!.SetPlayerCaptureElement(_playerElement);
                 ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, true);
             }
         }

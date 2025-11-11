@@ -44,7 +44,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         public void SetCatIsDespawned(bool value) {
             _catIsDespawned = value;
-            OnCatDisable?.Invoke();
+            if(value)
+                OnCatDisable?.Invoke();
         }
     
         Color GetColorByCatElement(PlayerElement playerElement) {
@@ -131,7 +132,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             if (no != null) {
                 if(!IsOwner) 
                     no.RemoveOwnership();
-                _respawnService.CatDespawnRpc(no);
+                _respawnService.CatDespawn(no);
             }
             
             AddScore();
@@ -169,7 +170,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         [Rpc(SendTo.Owner)]
         void TeleportToBaseRpc() {
-            if (_catRb != null) {
+            if(_catRb != null) {
                 _catRb.linearVelocity = Vector2.zero;
                 _catRb.angularVelocity = 0f;
             }
@@ -184,15 +185,27 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
                     break;
             }
 
-            SetOnGroundStateRpc(false);
-            SetPlayerCaptureElementRpc(PlayerElement.None);
+            SetPlayerCaptureElement(PlayerElement.None);
+            
+            if(IsServer) {
+                _isOnGround.Value = false;
+                UpdateTeleportTimer();
+            }
+            else {
+                SetOnGroundStateRpc(false);
+            }
         }
 
+        public void SetPlayerCaptureElement(PlayerElement element) {
+            if(IsServer)
+                _playerCaptureElement = element;
+            else
+                SetPlayerCaptureElementRpc(element);
+        }
         [Rpc(SendTo.Server)]
-        public void SetPlayerCaptureElementRpc(PlayerElement element) {
+        void SetPlayerCaptureElementRpc(PlayerElement element) {
             _playerCaptureElement = element;
         }
-
         void AddScore() {
             if(!IsServer) return;
             _scoreService.AddScore(_playerCaptureElement, ADD_SCORE_COUNT);
