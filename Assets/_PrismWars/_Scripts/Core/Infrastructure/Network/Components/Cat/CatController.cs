@@ -1,5 +1,6 @@
 using System;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
+using _PrismWars._Scripts.Game.GameManager;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
@@ -31,6 +32,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         public NetworkVariable<NetworkCatData> Data = new();
         
         PlayerElement _playerCaptureElement;
+        MapManager _mapManager;
         
         public event Action OnCatDisable;
         
@@ -55,6 +57,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         public override void OnNetworkSpawn() {
             _respawnService = ServiceLocator.Singleton.Get<CatRespawnService>();
+            _mapManager = ServiceLocator.Singleton.Get<MapManager>();
             _catSpriteRenderer = GetComponent<SpriteRenderer>();
             Data.OnValueChanged += OnDataChanged;
             if (IsServer) {
@@ -173,10 +176,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             switch (Data.Value.catElement) {
                 default:
                 case PlayerElement.Fire:
-                    transform.position = _respawnService.GetFireSpawnPoint();
+                    transform.position = _mapManager.Data.catFireSpawnPoint;
                     break;
                 case PlayerElement.Ice:
-                    transform.position = _respawnService.GetIceSpawnPoint();
+                    transform.position = _mapManager.Data.catIceSpawnPoint;
                     break;
             }
 

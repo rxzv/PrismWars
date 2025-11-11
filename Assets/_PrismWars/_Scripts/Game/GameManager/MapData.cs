@@ -8,7 +8,7 @@ namespace _PrismWars._Scripts.Game.GameManager {
         public GameObject mapPrefab;
         public Vector3[] fireSpawnPoints;
         public Vector3[] iceSpawnPoints;
-        public Vector3 catFireSpawnPoints;
-        public Vector3 catIceSpawnPoints;
+        public Vector3 catFireSpawnPoint;
+        public Vector3 catIceSpawnPoint;
     }
 }

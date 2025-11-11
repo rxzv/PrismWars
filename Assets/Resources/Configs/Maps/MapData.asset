@@ -27,5 +27,5 @@ MonoBehaviour:
   - {x: 8, y: -5.85, z: 0}
   - {x: 9, y: -5.85, z: 0}
   - {x: 10, y: -5.85, z: 0}
-  catFireSpawnPoints: {x: -11, y: -5.85, z: 0}
-  catIceSpawnPoints: {x: 11, y: -5.85, z: 0}
+  catFireSpawnPoint: {x: -10, y: -5.85, z: 0}
+  catIceSpawnPoint: {x: 11, y: -5.85, z: 0}

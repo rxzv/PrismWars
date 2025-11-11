@@ -59,11 +59,11 @@ public class Bootstrap : MonoBehaviour {
     }
     void CatInitialize() {
         var catPrefab = Resources.Load<Transform>("Prefabs/Cat");
-        var catFireFactory = new CatFireFactory(catPrefab, _mapManager.Data.catFireSpawnPoints);
-        var catIceFactory = new CatIceFactory(catPrefab, _mapManager.Data.catIceSpawnPoints);
+        var catFireFactory = new CatFireFactory(catPrefab, _mapManager.Data.catFireSpawnPoint);
+        var catIceFactory = new CatIceFactory(catPrefab, _mapManager.Data.catIceSpawnPoint);
 
         _catSpawnService.Initialize(catFireFactory, catIceFactory);
-        _catRespawnService.Initialize(_mapManager.Data.catFireSpawnPoints, _mapManager.Data.catIceSpawnPoints);
+        _catRespawnService.Initialize(_mapManager.Data.catFireSpawnPoint, _mapManager.Data.catIceSpawnPoint);
     }
     
     void RegisterServices() {

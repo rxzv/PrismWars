@@ -39,7 +39,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (!IsOwner) return;
             if (_catObj != null) {
                 ChangeCatOwnershipRpc(_catObj, NetworkManager.Singleton.LocalClientId, false);
-                ResetTheCat();
+                ResetTheCatRpc();
                 _catObj.GetComponent<CatController>()?.SetPlayerCaptureElementRpc(PlayerElement.None);
             }
         }
@@ -57,8 +57,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             }
         }
 
-        void ResetTheCat() {
-            _catObj.GetComponent<CatController>().OnCatDisable -= ResetTheCat;
+        [Rpc(SendTo.Owner)]
+        void ResetTheCatRpc() {
+            _catObj.GetComponent<CatController>().OnCatDisable -= ResetTheCatRpc;
             _catObj!.GetComponent<Rigidbody2D>().isKinematic = false;
             _catPickUpArea = false;
             _catPickedUp = false;
@@ -86,7 +87,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
                     NetworkManager.Singleton.LocalClientId
                 );
                 
-                ResetTheCat();
+                ResetTheCatRpc();
             }
         }
 
@@ -122,7 +123,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
             if (other.CompareTag(CAT_TAG) && other.gameObject.layer != gameObject.layer) {
                 _catPickUpArea = true;
                 _catObj = other.gameObject;
-                _catObj.GetComponent<CatController>().OnCatDisable += ResetTheCat;
+                _catObj.GetComponent<CatController>().OnCatDisable += ResetTheCatRpc;
             }
         }
 
