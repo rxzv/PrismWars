@@ -11,12 +11,14 @@ namespace _PrismWars._Scripts.Game.GameManager {
         ServerCatSpawnService _serverCatSpawnService;
     
         GameModeData _currentGameMode;
+        NetworkVariable<bool> _isSpawnedGameMode = new();
         public GameModeData Data => _currentGameMode;
         
         public void ApplyGameMode(string mapName) {
             _currentGameMode = _gameModeDatas.FirstOrDefault(m => m.name.ToString() == mapName);
             if(!IsServer) return;
-            if (_currentGameMode != null) {
+            if (_currentGameMode != null && !_isSpawnedGameMode.Value) {
+                _isSpawnedGameMode.Value = true;
                 switch (_currentGameMode.modeName) {
                     case GameMode.Deathmatch:
                         //
