@@ -168,10 +168,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
 
         [Rpc(SendTo.Owner)]
         void TeleportToBaseRpc() {
-            var rb = GetComponent<Rigidbody2D>();
-            if (rb != null) {
-                rb.linearVelocity = Vector2.zero;
-                rb.angularVelocity = 0f;
+            if (_catRb != null) {
+                _catRb.linearVelocity = Vector2.zero;
+                _catRb.angularVelocity = 0f;
             }
 
             switch (Data.Value.catElement) {
