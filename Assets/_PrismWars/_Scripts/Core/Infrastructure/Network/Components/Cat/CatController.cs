@@ -19,6 +19,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         CatRespawnService _respawnService;
         SpriteRenderer _catSpriteRenderer;
         
+        //TODO: fix flipX to client, return to base to server, fix cat up respawn to client, fix client owner
+        
         bool _catIsDespawned = false;
         Timer _groundTimer;
 
@@ -89,6 +91,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             if (IsOwner) {
                 if(other.CompareTag(ZONE_TAG) && other.gameObject.layer != gameObject.layer) 
                     HandleZoneEnterRpc();
+                if(other.CompareTag(ZONE_TAG) && other.gameObject.layer == gameObject.layer) 
+                    HandleBaseZoneEnterRpc(true);
                 if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER)) 
                     SetOnGroundStateRpc(true);
             }
@@ -98,7 +102,14 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
             if (IsOwner) {
                 if (other.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER)) 
                     SetOnGroundStateRpc(false);
+                if(other.CompareTag(ZONE_TAG) && other.gameObject.layer == gameObject.layer) 
+                    HandleBaseZoneEnterRpc(false);
             }
+        }
+
+        [Rpc(SendTo.Server)]
+        void HandleBaseZoneEnterRpc(bool value) {
+            _isInZone.Value = value;
         }
 
         [Rpc(SendTo.Server)]
