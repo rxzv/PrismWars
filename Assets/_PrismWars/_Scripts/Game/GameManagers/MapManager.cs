@@ -2,7 +2,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Game.GameManager {
+namespace _PrismWars._Scripts.Game.GameManagers {
     public class MapManager : NetworkBehaviour, IService {
         [SerializeField] MapData[] _availableMaps;
         

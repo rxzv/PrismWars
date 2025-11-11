@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using _PrismWars._Scripts.Game.GameManagers;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 
@@ -12,6 +13,9 @@ namespace _PrismWars._Scripts.Game.Services {
         [NonSerialized]
         public NetworkVariable<int> FireScore = new();
 
+        int _scoreLimit = 100;
+        GameModeManager _gameModeManager;
+
         int _playerScore;
         
         PlayerElement _playerElement;
@@ -21,6 +25,8 @@ namespace _PrismWars._Scripts.Game.Services {
 
         public void Initialize(PlayerElement data) {
             _playerElement = data;
+            _gameModeManager = ServiceLocator.Singleton.Get<GameModeManager>();
+            _scoreLimit = _gameModeManager.Data.scoreLimit;
         }
 
         public void AddScore(PlayerElement element, int score) {
@@ -29,10 +35,14 @@ namespace _PrismWars._Scripts.Game.Services {
             switch(element) {
                 default:
                 case PlayerElement.Ice:
-                    IceScore.Value += score;
+                    if(IceScore.Value < _scoreLimit){
+                        IceScore.Value += score; 
+                    }
                     break;
                 case PlayerElement.Fire:
-                    FireScore.Value += score;
+                    if(FireScore.Value < _scoreLimit){
+                        FireScore.Value += score;
+                    }
                     break;
             }
         }

@@ -6,7 +6,7 @@ using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Game.GameManager {
+namespace _PrismWars._Scripts.Game.GameManagers {
     public class GameModeManager : NetworkBehaviour, IService {
         [SerializeField] GameModeData[] _gameModeDatas;
     

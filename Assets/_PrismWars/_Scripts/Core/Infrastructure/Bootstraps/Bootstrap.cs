@@ -4,7 +4,7 @@ using _PrismWars._Scripts;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
 using _PrismWars._Scripts.Core.Patterns.Factory;
-using _PrismWars._Scripts.Game.GameManager;
+using _PrismWars._Scripts.Game.GameManagers;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.Utils;

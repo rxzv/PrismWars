@@ -1,5 +1,5 @@
 using System;
-using _PrismWars._Scripts.Game.GameManager;
+using _PrismWars._Scripts.Game.GameManagers;
 using UnityEngine;
 
 public class ChangeLobbyGameModeBtn : UIButtonEnumCycle<GameMode>

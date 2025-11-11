@@ -1,6 +1,6 @@
 using System;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
-using _PrismWars._Scripts.Game.GameManager;
+using _PrismWars._Scripts.Game.GameManagers;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
