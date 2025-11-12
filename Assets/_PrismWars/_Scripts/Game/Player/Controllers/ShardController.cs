@@ -1,4 +1,3 @@
-using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Patterns.Factory.ShardFactory;
 using _PrismWars._Scripts.UI;

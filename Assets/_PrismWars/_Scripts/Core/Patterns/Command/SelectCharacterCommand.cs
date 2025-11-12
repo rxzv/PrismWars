@@ -1,5 +1,5 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces;
-using _PrismWars._Scripts.UI.Controller;
+using _PrismWars._Scripts.UI.CharacterSelection.Controller;
 
 namespace _PrismWars._Scripts.UI.Command {
     public class SelectCharacterCommand : ICommand

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using _PrismWars._Scripts.UI.Model;
 
-namespace _PrismWars._Scripts.UI.Model {
+namespace _PrismWars._Scripts.UI.CharacterSelection.Model {
     public class CharacterSelectionModel {
         public event Action<int> OnCharacterSelected;
         public event Action<int> OnCharacterUnavaliableHighlighted;

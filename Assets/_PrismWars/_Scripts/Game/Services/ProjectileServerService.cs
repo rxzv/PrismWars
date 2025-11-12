@@ -5,7 +5,7 @@ using R3;
 using Unity.Netcode;
 using Object = UnityEngine.Object;
 
-namespace _PrismWars._Scripts.Components.Projectile {
+namespace _PrismWars._Scripts.Game.Services {
     public class ProjectileServerService : IService, IInitializable, IDisposable {
         NetworkObjectReference _networkObject;
         

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
-using _PrismWars._Scripts.Game.GameManagers;
 using _PrismWars._Scripts.Game.GameManagers.Managers;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
@@ -49,13 +47,13 @@ namespace _PrismWars._Scripts.Game.Services {
             }
         }
 
-        [ServerRpc(RequireOwnership = false)]
+        [Rpc(SendTo.Server)]
         public void AddScoreForDiedServerRpc(PlayerElement playerElement, int score, ulong killerId) {
             AddScore(playerElement, score);
             AddScoreForKillerClientRpc(score, killerId);
         }
 
-        [ClientRpc(RequireOwnership = false)]
+        [Rpc(SendTo.ClientsAndHost)]
         void AddScoreForKillerClientRpc(int score, ulong killerId) {
             if (NetworkManager.Singleton.LocalClientId == killerId && score > 0) {
                 _playerScore += score;

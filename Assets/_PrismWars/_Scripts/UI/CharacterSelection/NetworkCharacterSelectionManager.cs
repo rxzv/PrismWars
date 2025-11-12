@@ -1,9 +1,8 @@
-using System;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.UI {
+namespace _PrismWars._Scripts.UI.CharacterSelection {
     [RequireComponent(typeof(NetworkObject))]
     public class NetworkCharacterSelectionManager : NetworkBehaviour, IService {
         public NetworkList<int> UnavailableCharacters { get; private set; } = new NetworkList<int>(

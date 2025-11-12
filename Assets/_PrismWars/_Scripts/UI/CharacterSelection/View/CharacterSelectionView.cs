@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _PrismWars._Scripts.UI.View {
+namespace _PrismWars._Scripts.UI.CharacterSelection.View {
     public class CharacterSelectionView : MonoBehaviour {
         [SerializeField] List<CharacterButton> _characterButtons;
         [SerializeField] Color _fireColor = Color.red;

@@ -73,7 +73,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.ProjectileC
             return playerElement switch {
                 PlayerElement.Fire => Resources.Load<Material>($"Materials/FireColorMaterial"),
                 PlayerElement.Ice => Resources.Load<Material>($"Materials/IceColorMaterial"),
-                _ => default
+                _ => null
             };
         }
     }

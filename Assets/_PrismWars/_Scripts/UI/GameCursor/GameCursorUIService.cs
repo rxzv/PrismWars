@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.UI.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _PrismWars._Scripts.UI {
+namespace _PrismWars._Scripts.UI.GameCursor {
     public class GameCursorUIService : MonoBehaviour, IService, IInitializable {
         [SerializeField] Slider _ultimateFillSlider;
         [SerializeField] VerticalLayoutGroup _bulletCountGroupView;

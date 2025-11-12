@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
+using _PrismWars._Scripts.Game.Services.Mono;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.UI.Model;
@@ -26,7 +27,7 @@ namespace _PrismWars._Scripts.Game.Services {
             _iceSpawnPoints = iceSpawnPoints;
         }
         
-        [ServerRpc(RequireOwnership = false)]
+        [Rpc(SendTo.Server)]
         public void PlayerDeadServerRpc(ulong clientId, NetworkObjectReference player) {
             PlayerDeadClientRpc(clientId, player);
             _playerToRespawn.Enqueue(player);
@@ -34,7 +35,7 @@ namespace _PrismWars._Scripts.Game.Services {
             PlayerStartRespawnTimerClientRpc(clientId);
         }
 
-        [ClientRpc(RequireOwnership = false)]
+        [Rpc(SendTo.ClientsAndHost)]
         void PlayerStartRespawnTimerClientRpc(ulong clientId) {
             if (clientId == NetworkManager.Singleton.LocalClientId) {
                 _respawnTimer = ServiceLocator.Singleton.Get<RespawnTimer>();
@@ -43,7 +44,7 @@ namespace _PrismWars._Scripts.Game.Services {
             }
         }
 
-        [ServerRpc(RequireOwnership = false)]
+        [Rpc(SendTo.Server)]
         void RespawnPlayerServerRpc() {
             var pl = _playerToRespawn.Dequeue();
             var id = _playerToRespawnId.Dequeue();
@@ -69,7 +70,7 @@ namespace _PrismWars._Scripts.Game.Services {
             PlayerRespawnClientRpc(id, pl);
         }
 
-        [ClientRpc(RequireOwnership = false)]
+        [Rpc(SendTo.ClientsAndHost)]
         void PlayerUpdateSpawnPositionClientRpc(ulong clientId, Vector3 spawnPos, NetworkObjectReference player) {
             if (clientId == NetworkManager.Singleton.LocalClientId) {
                 player.TryGet(out NetworkObject networkObject);
@@ -80,7 +81,7 @@ namespace _PrismWars._Scripts.Game.Services {
             }
         }
 
-        [ClientRpc(RequireOwnership = false)]
+        [Rpc(SendTo.ClientsAndHost)]
         void PlayerRespawnClientRpc(ulong clientId, NetworkObjectReference player) {
             player.TryGet(out NetworkObject networkPlayer);
             if (networkPlayer != null) {
@@ -95,7 +96,7 @@ namespace _PrismWars._Scripts.Game.Services {
             } 
         }
 
-        [ClientRpc(RequireOwnership = false)]
+        [Rpc(SendTo.ClientsAndHost)]
         void PlayerDeadClientRpc(ulong clientId, NetworkObjectReference player) {
             player.TryGet(out NetworkObject networkPlayer);
             if (networkPlayer != null) {

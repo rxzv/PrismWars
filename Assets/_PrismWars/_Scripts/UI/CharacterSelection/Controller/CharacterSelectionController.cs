@@ -1,8 +1,9 @@
+using _PrismWars._Scripts.UI.CharacterSelection.Model;
+using _PrismWars._Scripts.UI.CharacterSelection.View;
 using _PrismWars._Scripts.UI.Command;
 using _PrismWars._Scripts.UI.Model;
-using _PrismWars._Scripts.UI.View;
 
-namespace _PrismWars._Scripts.UI.Controller {
+namespace _PrismWars._Scripts.UI.CharacterSelection.Controller {
     public class CharacterSelectionController {
         readonly CharacterSelectionModel _model;
         readonly CharacterSelectionView _view;
