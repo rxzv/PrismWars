@@ -24,7 +24,6 @@ public class Bootstrap : MonoBehaviour {
     
     [Header("Mono Services")] 
     [SerializeField] InputService _inputService;
-    [SerializeField] RespawnTimer _respawnTimer;
     
     [Header("Network Services")] 
     [SerializeField] NetworkGameTimer _networkGameTimer;
@@ -79,7 +78,6 @@ public class Bootstrap : MonoBehaviour {
         ServiceLocator.Singleton.Register(_networkGameTimer);
         ServiceLocator.Singleton.Register(_projectileFactory);
         ServiceLocator.Singleton.Register(_shardFactory);
-        ServiceLocator.Singleton.Register(_respawnTimer);
         ServiceLocator.Singleton.Register(_networkScoreService);
         ServiceLocator.Singleton.Register(_networkChangeScene);
         ServiceLocator.Singleton.Register(_gameModeManager);
@@ -92,7 +90,6 @@ public class Bootstrap : MonoBehaviour {
         DontDestroyOnLoad(_projectileFactory);
         DontDestroyOnLoad(_networkCharacterSelectionManager);
         DontDestroyOnLoad(_networkGameTimer);
-        DontDestroyOnLoad(_respawnTimer);
         DontDestroyOnLoad(_networkScoreService);
         DontDestroyOnLoad(_shardFactory);
         DontDestroyOnLoad(_networkChangeScene);

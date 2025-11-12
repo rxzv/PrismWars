@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 namespace _PrismWars._Scripts.Game.Services {
     public class PlayerRespawnService : NetworkBehaviour, IService, IInitializable<Vector3[], Vector3[]> {
         const float PLAYER_TIME_TO_RESPAWN = 5f;
-        RespawnTimer _respawnTimer;
+        Timer _respawnTimer;
         Queue<NetworkObjectReference> _playerToRespawn = new();
         Queue<ulong> _playerToRespawnId = new();
 
@@ -25,6 +25,8 @@ namespace _PrismWars._Scripts.Game.Services {
         public void Initialize(Vector3[] fireSpawnPoints, Vector3[] iceSpawnPoints) {
             _fireSpawnPoints = fireSpawnPoints;
             _iceSpawnPoints = iceSpawnPoints;
+            _respawnTimer = new Timer();
+            ServiceLocator.Singleton.Get<NetworkUIManager>().SetRespawnTimer(_respawnTimer);
         }
         
         [Rpc(SendTo.Server)]
@@ -38,10 +40,13 @@ namespace _PrismWars._Scripts.Game.Services {
         [Rpc(SendTo.ClientsAndHost)]
         void PlayerStartRespawnTimerClientRpc(ulong clientId) {
             if (clientId == NetworkManager.Singleton.LocalClientId) {
-                _respawnTimer = ServiceLocator.Singleton.Get<RespawnTimer>();
                 _respawnTimer.OnTimerComplete += RespawnPlayerServerRpc;
-                _respawnTimer.StartRespawnTimer(PLAYER_TIME_TO_RESPAWN);
+                _respawnTimer.StartTimer(PLAYER_TIME_TO_RESPAWN);
             }
+        }
+
+        void Update() {
+            _respawnTimer?.Update();
         }
 
         [Rpc(SendTo.Server)]

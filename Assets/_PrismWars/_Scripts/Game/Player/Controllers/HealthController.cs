@@ -1,5 +1,4 @@
 using System;
-using _PrismWars._Scripts.Components;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Health;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Game.Services;

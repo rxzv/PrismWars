@@ -19,7 +19,7 @@ namespace _PrismWars._Scripts.UI {
         
         GameOverUIService _gameOverUIService;
         
-        RespawnTimer _respawnTimer;
+        Timer _respawnTimer;
         
         bool _isDead = false;
         
@@ -28,12 +28,15 @@ namespace _PrismWars._Scripts.UI {
         NetworkGameTimer _networkGameTimer;
 
         public void Initialize() {
-            _respawnTimer = ServiceLocator.Singleton.Get<RespawnTimer>();
             _networkGameTimer = ServiceLocator.Singleton.Get<NetworkGameTimer>();
             _gameOverUIService = ServiceLocator.Singleton.Get<GameOverUIService>();
             
             ServiceLocator.Singleton.Register(_gameUIViewService);
             _gameUIViewService.Initialize();
+        }
+
+        public void SetRespawnTimer(Timer respawnTimer) {
+            _respawnTimer = respawnTimer;
         }
 
         [ClientRpc]
@@ -82,10 +85,9 @@ namespace _PrismWars._Scripts.UI {
             if(!_networkGameTimer) return;
             var time = (int)_networkGameTimer.GetRemainingTime();
             _timer.text = time.ToString();
-            if (_isDead) {
-                var respawnTime = (int)_respawnTimer.GetRemainingTime();
-                _respawnTimerText.text = $"Time to respawn: {respawnTime}";
-            }
+            if(!_isDead) return;
+            var respawnTime = (int)_respawnTimer!.GetRemainingTime();
+            _respawnTimerText.text = $"Time to respawn: {respawnTime}";
         }
     }
 }
