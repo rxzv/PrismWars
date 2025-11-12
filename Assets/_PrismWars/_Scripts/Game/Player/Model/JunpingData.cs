@@ -1,6 +1,6 @@
 using Unity.Netcode;
 
-namespace _PrismWars._Scripts.UI.Model {
+namespace _PrismWars._Scripts.Game.Player.Model {
     [System.Serializable]
     public class JumpingData : INetworkSerializable {
         public int tick;

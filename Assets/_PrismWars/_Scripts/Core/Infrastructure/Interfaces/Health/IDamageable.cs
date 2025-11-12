@@ -1,4 +1,4 @@
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Interfaces.Health {
     public interface IDamageable {

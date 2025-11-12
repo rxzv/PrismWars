@@ -3,10 +3,10 @@ using Unity.Netcode;
 using UnityEngine;
 namespace _PrismWars._Scripts.Utils { 
     public class NetworkTimer : NetworkBehaviour, IService {
-        float _timerDuration = 0f;
+        float _timerDuration;
  
-        NetworkVariable<float> _endTime = new NetworkVariable<float>();
-        NetworkVariable<bool> _isTimerRunning = new NetworkVariable<bool>();
+        NetworkVariable<float> _endTime = new();
+        NetworkVariable<bool> _isTimerRunning = new();
   
         public System.Action OnTimerComplete;
         

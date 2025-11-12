@@ -1,7 +1,7 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces;
 using _PrismWars._Scripts.UI.CharacterSelection.Controller;
 
-namespace _PrismWars._Scripts.UI.Command {
+namespace _PrismWars._Scripts.Core.Patterns.Command {
     public class SelectCharacterCommand : ICommand
     {
         readonly CharacterSelectionController _controller;

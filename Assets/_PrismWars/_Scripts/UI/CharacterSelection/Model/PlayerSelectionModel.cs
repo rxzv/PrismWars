@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 
 namespace _PrismWars._Scripts.UI.CharacterSelection.Model {
     public class CharacterSelectionModel {
         public event Action<int> OnCharacterSelected;
-        public event Action<int> OnCharacterUnavaliableHighlighted;
+        public event Action<int> OnCharacterUnavailableHighlighted;
         public event Action<int> OnSelectionConfirmed;
 
         readonly List<PlayerConfig> _availableCharacters;
@@ -42,7 +42,7 @@ namespace _PrismWars._Scripts.UI.CharacterSelection.Model {
             if (config == null) return;
             
             HighlightedCharacterIndex = _availableCharacters.IndexOf(config);
-            OnCharacterUnavaliableHighlighted?.Invoke(HighlightedCharacterIndex);
+            OnCharacterUnavailableHighlighted?.Invoke(HighlightedCharacterIndex);
         }
 
         public void ConfirmSelection() {

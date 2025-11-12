@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces;
 
-namespace _PrismWars._Scripts.UI.Command {
+namespace _PrismWars._Scripts.Core.Patterns.Command {
     public class CommandInvoker
     {
-        private readonly Stack<ICommand> _commandHistory = new Stack<ICommand>();
+        private readonly Stack<ICommand> _commandHistory = new ();
 
         public void ExecuteCommand(ICommand command) {
             command.Execute();

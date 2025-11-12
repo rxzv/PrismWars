@@ -1,5 +1,5 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Attack;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Game.Player.Controllers.Attack {

@@ -1,8 +1,8 @@
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces;
 using Unity.Collections;
 using Unity.Netcode;
 
-namespace _PrismWars._Scripts.UI.Model {
-    // Структура для сетевой синхронизации
+namespace _PrismWars._Scripts.Game.Player.Model {
     public struct NetworkPlayerData : INetworkSerializable, System.IEquatable<NetworkPlayerData>, INetworkData {
 
         public int configId;

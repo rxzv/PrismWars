@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
+using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.Game.Services.Mono;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.UI;
-using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
@@ -26,7 +26,7 @@ namespace _PrismWars._Scripts.Game.Services {
             _fireSpawnPoints = fireSpawnPoints;
             _iceSpawnPoints = iceSpawnPoints;
             _respawnTimer = new Timer();
-            ServiceLocator.Singleton.Get<NetworkUIManager>().SetRespawnTimer(_respawnTimer);
+            ServiceLocator.Singleton.Get<ClientUIManager>().SetRespawnTimer(_respawnTimer);
         }
         
         [Rpc(SendTo.Server)]
@@ -92,7 +92,7 @@ namespace _PrismWars._Scripts.Game.Services {
             if (networkPlayer != null) {
                 if (clientId == NetworkManager.Singleton.LocalClientId) {
                     OnPlayerRespawn?.Invoke();
-                    ServiceLocator.Singleton.Get<NetworkUIManager>().OnPlayerRespawn();
+                    ServiceLocator.Singleton.Get<ClientUIManager>().OnPlayerRespawn();
                     ServiceLocator.Singleton.Get<InputService>().InputActionEnable();
                     var playerController = networkPlayer.gameObject.GetComponent<PlayerController>();
                     playerController.enabled = true;
@@ -108,7 +108,7 @@ namespace _PrismWars._Scripts.Game.Services {
                 networkPlayer.gameObject.SetActive(false);
                 if (clientId == NetworkManager.Singleton.LocalClientId) {
                     networkPlayer.gameObject.GetComponent<PlayerController>().enabled = false;
-                    ServiceLocator.Singleton.Get<NetworkUIManager>().OnPlayerDead();
+                    ServiceLocator.Singleton.Get<ClientUIManager>().OnPlayerDead();
                     ServiceLocator.Singleton.Get<InputService>().InputActionDisable();
                 }
             }

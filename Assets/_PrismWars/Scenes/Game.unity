@@ -347,13 +347,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cameraSpawnService: {fileID: 466133815}
-  _networkUIManager: {fileID: 434693307216023487}
+  clientUIManager: {fileID: 434693307216023487}
   _gameOverUIService: {fileID: 985613409}
   _networkPlayerSpawnService: {fileID: 1272801921}
-  _networkSpawner: {fileID: 124108923315628914}
+  _serverGameManagerSpawner: {fileID: 124108923315628914}
   _playerRespawnService: {fileID: 147841120}
-  _serverCatSpawnService: {fileID: 0}
-  _catRespawnService: {fileID: 0}
 --- !u!4 &238529172
 Transform:
   m_ObjectHideFlags: 0

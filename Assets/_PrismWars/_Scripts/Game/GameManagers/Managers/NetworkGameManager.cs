@@ -11,7 +11,7 @@ namespace _PrismWars._Scripts.Game.GameManagers.Managers {
         NetworkVariable<GameState> _gameState = new();
         
         NetworkTimer _networkTimer;
-        NetworkUIManager _networkUIManager;
+        ClientUIManager _clientUIManager;
         GameModeManager _gameModeManager;
 
         public override void OnNetworkSpawn() {
@@ -25,7 +25,7 @@ namespace _PrismWars._Scripts.Game.GameManagers.Managers {
             }
 
             if (IsClient) {
-                _networkUIManager = ServiceLocator.Singleton.Get<NetworkUIManager>();
+                _clientUIManager = ServiceLocator.Singleton.Get<ClientUIManager>();
             }
             base.OnNetworkSpawn();
         }
@@ -70,13 +70,13 @@ namespace _PrismWars._Scripts.Game.GameManagers.Managers {
         }
 
         void SelectCharacter() {
-            _networkUIManager.OnSelectCharacterClientRpc();
+            _clientUIManager.OnSelectCharacterClientRpc();
         }
         void GameStarted() {
-            _networkUIManager.OnGameStartedClientRpc();
+            _clientUIManager.OnGameStartedClientRpc();
         }
         void GameOver() {
-            _networkUIManager.OnGameOverClientRpc();
+            _clientUIManager.OnGameOverClientRpc();
         }
         
         enum GameState {

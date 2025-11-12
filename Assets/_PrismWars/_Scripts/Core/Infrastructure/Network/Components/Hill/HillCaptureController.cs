@@ -1,6 +1,6 @@
+using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.Player;
-using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;

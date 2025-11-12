@@ -1,5 +1,4 @@
-using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

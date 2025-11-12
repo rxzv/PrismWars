@@ -1,5 +1,6 @@
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 using Unity.Netcode;
 using UnityEngine;
 

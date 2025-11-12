@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.Utils {
     public class Timer{
-        float _respawnDuration = 0f;
+        float _respawnDuration;
 
         float _endTime;
         bool _isTimerRunning;

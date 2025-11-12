@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _PrismWars._Scripts.UI.Model {
+namespace _PrismWars._Scripts.Game.Player.Model {
     [CreateAssetMenu(fileName = "PlayerConfig", menuName = "Configs/Player Config")]
     public class PlayerConfig : ScriptableObject {
         public int configId;
@@ -16,7 +16,6 @@ namespace _PrismWars._Scripts.UI.Model {
         public LayerMask enemyLayer;
         public int maxBulletCount = 4;
 
-        // Конвертация в сетевую структуру
         public NetworkPlayerData ToNetworkConfig() {
             return new NetworkPlayerData {
                 configId = configId,
@@ -33,7 +32,6 @@ namespace _PrismWars._Scripts.UI.Model {
             };
         }
 
-        // Восстановление из сетевой структуры
         public void FromNetworkConfig(NetworkPlayerData networkData) {
             configId = networkData.configId;
             playerName = networkData.playerName.ToString();
@@ -47,7 +45,6 @@ namespace _PrismWars._Scripts.UI.Model {
             maxBulletCount = networkData.maxBulletCount;
             enemyLayer = new LayerMask { value = networkData.enemyLayerValue };
             
-            // Загрузка спрайта по имени
             if (!string.IsNullOrEmpty(spriteName))
                 sprite = Resources.Load<Sprite>($"Sprites/{spriteName}");
         }

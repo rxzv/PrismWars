@@ -1,6 +1,7 @@
 using System;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.UI.CharacterSelection;
+using _PrismWars._Scripts.UI.Services.Mono;
 using _PrismWars._Scripts.Utils;
 using TMPro;
 using Unity.Netcode;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 namespace _PrismWars._Scripts.UI {
     [RequireComponent(typeof(NetworkObject))]
-    public class NetworkUIManager : NetworkBehaviour, IService, IInitializable {
+    public class ClientUIManager : NetworkBehaviour, IService, IInitializable {
         [SerializeField] TextMeshProUGUI _timer;
         [SerializeField] CharacterSelectionManager _characterSelectionManager;
         [SerializeField] GameObject _waitingUI;
@@ -21,7 +22,7 @@ namespace _PrismWars._Scripts.UI {
         
         Timer _respawnTimer;
         
-        bool _isDead = false;
+        bool _isDead;
         
         public event Action OnCharacterSelectionConfirmed;
         
@@ -39,7 +40,7 @@ namespace _PrismWars._Scripts.UI {
             _respawnTimer = respawnTimer;
         }
 
-        [ClientRpc]
+        [Rpc(SendTo.ClientsAndHost)]
         public void OnSelectCharacterClientRpc() {
             _characterSelectionManager.Initialize();
             _gameOverUIService.HideView();
@@ -48,12 +49,12 @@ namespace _PrismWars._Scripts.UI {
             _characterSelectionManager.View.ShowView();
         }
         
-        [ClientRpc]
+        [Rpc(SendTo.ClientsAndHost)]
         public void OnGameStartedClientRpc() {
             OnCharacterSelectionConfirmed?.Invoke();
             _gameUIViewService.ShowView();
         }
-        [ClientRpc]
+        [Rpc(SendTo.ClientsAndHost)]
         public void OnGameOverClientRpc() {
             _gameOverUIService.ShowView();
             _gameOverUIService.GameOver();

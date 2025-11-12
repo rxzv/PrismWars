@@ -2,15 +2,13 @@ using System.Collections.Generic;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Patterns.Factory.ProjectileFactory;
 using _PrismWars._Scripts.Game.Player.Controllers.Attack;
-using _PrismWars._Scripts.Player;
-using _PrismWars._Scripts.UI;
-using _PrismWars._Scripts.UI.GameCursor;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
+using _PrismWars._Scripts.UI.Services.Mono;
 using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile {
+namespace _PrismWars._Scripts.Game.Player.Controllers {
     public class ProjectileController : NetworkBehaviour, IInitializable<RangeAttackController, int, float> {
         const int MAX_BULLET_COUNT = 10;
         const float MAX_RANGE_ATTACK_COOLDOWN = 3f;

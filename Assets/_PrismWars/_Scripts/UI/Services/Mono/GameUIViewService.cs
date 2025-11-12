@@ -1,14 +1,13 @@
-using System;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Game.Services;
-using _PrismWars._Scripts.UI.GameCursor;
+using _PrismWars._Scripts.Game.Services.Server;
 using R3;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _PrismWars._Scripts.UI {
+namespace _PrismWars._Scripts.UI.Services.Mono {
     public class GameUIViewService : MonoBehaviour, IService, IInitializable {
         [SerializeField] Slider _healthSlider;
         [SerializeField] TextMeshProUGUI _fireScore;

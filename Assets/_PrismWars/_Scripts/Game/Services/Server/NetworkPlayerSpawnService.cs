@@ -1,12 +1,11 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
-using _PrismWars._Scripts.Core.Patterns.Factory;
 using _PrismWars._Scripts.Core.Patterns.Factory.Player;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts {
+namespace _PrismWars._Scripts.Game.Services.Server {
     public class NetworkPlayerSpawnService : NetworkBehaviour, IService, IInitializable<PlayerFireFactory, PlayerIceFactory> {
         PlayerFireFactory _fireFactory;
         PlayerIceFactory _iceFactory;

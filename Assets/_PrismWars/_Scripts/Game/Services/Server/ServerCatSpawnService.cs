@@ -1,12 +1,11 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
-using _PrismWars._Scripts.Core.Patterns.Factory;
 using _PrismWars._Scripts.Core.Patterns.Factory.Cat;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts {
+namespace _PrismWars._Scripts.Game.Services.Server {
     public class ServerCatSpawnService : NetworkBehaviour, IService, IInitializable<CatFireFactory, CatIceFactory> {
         CatFireFactory _fireFactory;
         CatIceFactory _iceFactory;
@@ -20,6 +19,7 @@ namespace _PrismWars._Scripts {
             if(!IsServer) return;
             
             switch (data.catElement) {
+                case PlayerElement.None:
                 default:
                     Debug.LogError("Invalid cat type");
                     return;

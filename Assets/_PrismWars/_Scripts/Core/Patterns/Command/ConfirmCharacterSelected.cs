@@ -1,8 +1,9 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
+using _PrismWars._Scripts.Game.Services.Server;
 using Unity.Netcode;
 
-namespace _PrismWars._Scripts.UI.Command {
+namespace _PrismWars._Scripts.Core.Patterns.Command {
     public class ConfirmCharacterSelected : ICommand {
         readonly PlayerConfig _playerConfig;
         readonly NetworkPlayerSpawnService _networkPlayerSpawnService;

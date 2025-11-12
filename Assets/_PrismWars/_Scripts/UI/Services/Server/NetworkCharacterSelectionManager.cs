@@ -5,10 +5,7 @@ using UnityEngine;
 namespace _PrismWars._Scripts.UI.CharacterSelection {
     [RequireComponent(typeof(NetworkObject))]
     public class NetworkCharacterSelectionManager : NetworkBehaviour, IService {
-        public NetworkList<int> UnavailableCharacters { get; private set; } = new NetworkList<int>(
-            null,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server);
+        public NetworkList<int> UnavailableCharacters { get; } = new();
 
         [Rpc(SendTo.Server)]
         public void SelectCharacterRpc(int configId) {

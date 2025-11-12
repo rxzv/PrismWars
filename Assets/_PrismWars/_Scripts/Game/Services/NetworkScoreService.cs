@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Game.GameManagers.Managers;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 using Unity.Netcode;
 
 namespace _PrismWars._Scripts.Game.Services {

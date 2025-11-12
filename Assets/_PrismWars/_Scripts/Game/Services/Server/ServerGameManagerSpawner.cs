@@ -2,9 +2,9 @@ using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Game.Services {
+namespace _PrismWars._Scripts.Game.Services.Server {
     [RequireComponent(typeof(NetworkObject))]
-    public class NetworkSpawner : NetworkBehaviour, IService {
+    public class ServerGameManagerSpawner : NetworkBehaviour, IService {
         NetworkVariable<int> _initClients =  new ();
 
         public void ClientInitialized() {
@@ -26,12 +26,12 @@ namespace _PrismWars._Scripts.Game.Services {
 
         void ClientInitChanged(int previousValue, int newValue) {
             if (IsServer && newValue == GameLobbyManager.Instance.MaxPlayers) {
-                SpawnNetworkObjectServerRpc();
+                SpawnNetworkObject();
             }
         }
 
-        [Rpc(SendTo.Server)]
-        void SpawnNetworkObjectServerRpc() {
+        void SpawnNetworkObject() {
+            if(!IsServer) return;
             SpawnServerGameManager();
         }
 

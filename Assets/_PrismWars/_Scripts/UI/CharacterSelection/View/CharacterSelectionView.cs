@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +13,7 @@ namespace _PrismWars._Scripts.UI.CharacterSelection.View {
         [SerializeField] Button _confirmButton;
         [SerializeField] TextMeshProUGUI _confirmButtonText;
         public event Action<int> OnCharacterButtonClicked;
-        public event Action OnConfrimButtonClicked;
+        public event Action OnConfirmButtonClicked;
         public event Action OnGameReady;
         
         NetworkCharacterSelectionManager _networkCharacterSelectionManager;
@@ -23,7 +23,7 @@ namespace _PrismWars._Scripts.UI.CharacterSelection.View {
                 var index = i;
                 _characterButtons[i].button.onClick.AddListener(() => OnCharacterButtonClicked?.Invoke(index));
             }
-            _confirmButton.onClick.AddListener(() => OnConfrimButtonClicked?.Invoke());
+            _confirmButton.onClick.AddListener(() => OnConfirmButtonClicked?.Invoke());
         }
 
         public void ConfirmButtonClicked() {
@@ -68,13 +68,12 @@ namespace _PrismWars._Scripts.UI.CharacterSelection.View {
         public void HideView() => gameObject.SetActive(false);
         public void ShowView() => gameObject.SetActive(true);
 
-        public void HighlightUnavaliableCharacter(int characterIndex) {
+        public void HighlightUnavailableCharacter(int characterIndex) {
             _characterButtons[characterIndex].selectedImageFrame.gameObject.SetActive(true);
         }
 
         public void ShowCharacterUnavailableMessage(int characterIndex) {
             Debug.Log($"Персонаж {characterIndex} уже выбран другим игроком!");
-            // Можно добавить визуальную обратную связь
         }
 
         public void ShowNoCharacterSelectedMessage() {

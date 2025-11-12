@@ -1,11 +1,10 @@
 using System;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
-using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile;
 using _PrismWars._Scripts.Game.Player.Controllers;
 using _PrismWars._Scripts.Game.Player.Controllers.Attack;
+using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.Game.Services.Mono;
-using _PrismWars._Scripts.UI.Model;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -28,18 +27,18 @@ namespace _PrismWars._Scripts.Player {
         Animator _animator;
         Rigidbody2D _rb;
         
-        NetworkVariable<float> _inputMoveDirection = new NetworkVariable<float>(
-            default,
+        NetworkVariable<float> _inputMoveDirection = new (
+            0,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner);
         
-        bool _isJumping = false;
+        bool _isJumping;
         
         PlayerConfig _config;
         
         NetworkScoreService _networkScoreService;
         
-        bool _isInitialized = false;
+        bool _isInitialized;
         
         ClientMovementPrediction _moveController;
         ClientJumpPrediction _jumpController;
@@ -57,12 +56,10 @@ namespace _PrismWars._Scripts.Player {
         InputService _inputService;
         
         NetworkVariable<NetworkPlayerData> _playerData = 
-            new NetworkVariable<NetworkPlayerData>(default, 
-                NetworkVariableReadPermission.Everyone, 
-                NetworkVariableWritePermission.Server);
+            new ();
         
-        public NetworkVariable<PlayerElement> PlayerElement { get; private set; } = 
-            new NetworkVariable<PlayerElement>(
+        public NetworkVariable<PlayerElement> PlayerElement { get; } = 
+            new (
                 default,
                 NetworkVariableReadPermission.Everyone,
                 NetworkVariableWritePermission.Owner);

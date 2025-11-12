@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
+using _PrismWars._Scripts.Game.Player.Model;
+using _PrismWars._Scripts.UI.CharacterSelection;
 using _PrismWars._Scripts.UI.CharacterSelection.Controller;
 using _PrismWars._Scripts.UI.CharacterSelection.Model;
 using _PrismWars._Scripts.UI.CharacterSelection.View;
-using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.UI.CharacterSelection {
+namespace _PrismWars._Scripts.UI.Services.Mono {
     public class CharacterSelectionManager : MonoBehaviour, IInitializable, IService {
         [SerializeField] List<PlayerConfig> _characterConfigs;
         [SerializeField] CharacterSelectionView _view;

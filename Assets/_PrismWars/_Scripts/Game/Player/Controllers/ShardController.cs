@@ -1,7 +1,7 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Patterns.Factory.ShardFactory;
-using _PrismWars._Scripts.UI;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
+using _PrismWars._Scripts.UI.Services.Mono;
 using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 namespace _PrismWars._Scripts.Game.Player.Controllers {
     public class ShardController : NetworkBehaviour, IInitializable<PlayerElement> {
 
-        NetworkVariable<int> _countShards = new NetworkVariable<int>();
+        NetworkVariable<int> _countShards = new();
         
         PlayerElement _playerElement;
         GameUIViewService _uiGameViewService;
@@ -71,7 +71,7 @@ namespace _PrismWars._Scripts.Game.Player.Controllers {
             }
         }
 
-        [ServerRpc(RequireOwnership = false)]
+        [Rpc(SendTo.Server)]
         public void AddShardServerRpc() {
             _countShards.Value++;
         }

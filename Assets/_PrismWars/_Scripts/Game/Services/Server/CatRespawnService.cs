@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
-using _PrismWars._Scripts.UI.Model;
+using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Game.Services {
+namespace _PrismWars._Scripts.Game.Services.Server {
     public class CatRespawnService : NetworkBehaviour, IService, IInitializable<Vector3, Vector3> {
         const float CAT_TIME_TO_RESPAWN = 3f;
         Vector3 _fireSpawnPoint;

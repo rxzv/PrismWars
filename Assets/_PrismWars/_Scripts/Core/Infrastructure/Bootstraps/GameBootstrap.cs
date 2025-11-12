@@ -8,6 +8,7 @@ using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.Game.Services.Mono;
 using _PrismWars._Scripts.Game.Services.Server;
 using _PrismWars._Scripts.UI;
+using _PrismWars._Scripts.UI.Services.Mono;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -17,10 +18,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
         [SerializeField] CameraSpawnService _cameraSpawnService;
         
         [Header("Network Services")] 
-        [SerializeField] NetworkUIManager _networkUIManager;
+        [SerializeField] ClientUIManager clientUIManager;
         [SerializeField] GameOverUIService _gameOverUIService;
         [SerializeField] NetworkPlayerSpawnService _networkPlayerSpawnService;
-        [SerializeField] NetworkSpawner _networkSpawner;
+        [SerializeField] ServerGameManagerSpawner _serverGameManagerSpawner;
         [SerializeField] PlayerRespawnService _playerRespawnService;
         
         ProjectileServerService _projectileServerService;
@@ -37,10 +38,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
         }
 
         void RegisterServices() {
-            ServiceLocator.Singleton.Register(_networkUIManager);
+            ServiceLocator.Singleton.Register(clientUIManager);
             ServiceLocator.Singleton.Register(_networkPlayerSpawnService);
             ServiceLocator.Singleton.Register(_cameraSpawnService);
-            ServiceLocator.Singleton.Register(_networkSpawner);
+            ServiceLocator.Singleton.Register(_serverGameManagerSpawner);
             ServiceLocator.Singleton.Register(_playerRespawnService);
             ServiceLocator.Singleton.Register(_gameOverUIService);
             
@@ -63,14 +64,14 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             var playerIceFactory = new PlayerIceFactory(playerPrefab, _mapManager.Data.iceSpawnPoints);
             
             _networkPlayerSpawnService.Initialize(playerFireFactory, playerIceFactory);
-            _networkUIManager.Initialize();
+            clientUIManager.Initialize();
             _projectileServerService.Initialize();
             _shardServerService.Initialize();
             _cameraSpawnService.Initialize(cameraPrefab);
             _playerRespawnService.Initialize(_mapManager.Data.fireSpawnPoints, _mapManager.Data.iceSpawnPoints);
             _gameOverUIService.Initialize();
             
-            _networkSpawner.ClientInitialized();
+            _serverGameManagerSpawner.ClientInitialized();
             Debug.Log("GameScene Services initialized");
         }
 
