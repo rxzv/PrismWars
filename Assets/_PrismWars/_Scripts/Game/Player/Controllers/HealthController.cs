@@ -1,18 +1,18 @@
 using System;
 using _PrismWars._Scripts.Components;
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Health;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializable<NetworkPlayerData> {
+public class HealthController : NetworkBehaviour, IDamageable, IHeal, IInitializable<NetworkPlayerData> {
     float _maxHealth = 100f;
     NetworkVariable<float> _currentHealth = new(100f);
     
     NetworkVariable<PlayerElement> _currentPlayerElementDamaged = new();
     
-    NetworkPlayerData _playerData;
     GameUIViewService _gameUIViewService;
     PlayerRespawnService _playerRespawnService;
     NetworkScoreService _networkScoreService;
@@ -28,7 +28,6 @@ public class HealthComponent : NetworkBehaviour, IDamageable, IHeal, IInitializa
         if (IsOwner) {
             _playerRespawnService = ServiceLocator.Singleton.Get<PlayerRespawnService>();
             _gameUIViewService = ServiceLocator.Singleton.Get<GameUIViewService>();
-            _playerData = data;
             _maxHealth = data.maxHealth;
             _gameUIViewService.SetMaxHealth(_maxHealth);
             _currentHealth.OnValueChanged += HealthChanged;

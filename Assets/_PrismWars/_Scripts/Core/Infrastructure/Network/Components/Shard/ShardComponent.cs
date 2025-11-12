@@ -12,13 +12,13 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
         
         PlayerElement _playerElement;
         GameUIViewService _uiGameViewService;
-        HealthComponent _healthComponent;
+        HealthController _healthController;
         ShardFactory _shardFactory;
 
         public void Initialize(PlayerElement playerElement) {
-            _healthComponent = GetComponent<HealthComponent>();
-            _healthComponent.OnDeath += DropAndClearAllShards;
-            _healthComponent.OnDropShard += DropShard;
+            _healthController = GetComponent<HealthController>();
+            _healthController.OnDeath += DropAndClearAllShards;
+            _healthController.OnDropShard += DropShard;
             _playerElement = playerElement;
             _uiGameViewService = ServiceLocator.Singleton.Get<GameUIViewService>();
             _countShards.OnValueChanged += ShardsCountChanged;

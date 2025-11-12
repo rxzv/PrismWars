@@ -1,7 +1,6 @@
 using System.Linq;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
-using _PrismWars._Scripts.Core.Patterns.Factory;
-using _PrismWars._Scripts.Game.Services;
+using _PrismWars._Scripts.Game.GameManagers.Datas;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;

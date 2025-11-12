@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;

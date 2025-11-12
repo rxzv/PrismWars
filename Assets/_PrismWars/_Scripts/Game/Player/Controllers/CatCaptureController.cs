@@ -1,11 +1,12 @@
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components;
+using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
 using _PrismWars._Scripts.Player;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Core.Infrastructure.Network {
-    public class CaptureTheCatComponent : NetworkBehaviour, IInitializable {
+namespace _PrismWars._Scripts.Game.Player.Controllers {
+    public class CatCaptureController : NetworkBehaviour, IInitializable {
         const float THROW_FORCE = 100f;
         const string CAT_TAG = "Cat";
         const float CAT_IS_TALLER_THAN_PLAYER = 1.3f;
@@ -17,16 +18,16 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         Rigidbody2D _catObjRb;
         CatController _catController;
         
-        HealthComponent _healthComponent;
+        HealthController _healthController;
         PlayerElement _playerElement;
         
         public bool CatPickedUp => _catPickedUp;
 
         public void Initialize() {
             if (!IsOwner) return;
-            _healthComponent = GetComponent<HealthComponent>();
+            _healthController = GetComponent<HealthController>();
             _playerElement = GetComponent<PlayerController>().PlayerElement.Value;
-            _healthComponent!.OnDeath += PlayerIsDeath;
+            _healthController!.OnDeath += PlayerIsDeath;
         }
 
         public void FlipXCat(float oldDir, float newDir) {
@@ -158,8 +159,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network {
         }
 
         public override void OnDestroy() {
-            if (_healthComponent != null)
-                _healthComponent.OnDeath -= PlayerIsDeath;
+            if (_healthController != null)
+                _healthController.OnDeath -= PlayerIsDeath;
         }
     }
 }

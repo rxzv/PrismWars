@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components;
+using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
 using Unity.Netcode;

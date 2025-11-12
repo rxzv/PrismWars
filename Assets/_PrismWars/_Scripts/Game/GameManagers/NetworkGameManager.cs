@@ -1,4 +1,3 @@
-using System;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.Utils;
 using Unity.Netcode;

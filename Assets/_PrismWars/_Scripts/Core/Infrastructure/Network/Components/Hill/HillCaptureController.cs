@@ -5,8 +5,8 @@ using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
-    public class HillCaptureComponent : NetworkBehaviour {
+namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Hill {
+    public class HillCaptureController : NetworkBehaviour {
         NetworkVariable<PlayerElement> _hillElement = new ();
         NetworkList<int> _hillPlayers = new();
         
@@ -20,8 +20,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
         
         NetworkScoreService _scoreService;
         
-        // TODO: Refactor
-        // TODO: server time, dont local time: Time.time
         [SerializeField] NetworkVariable<Color> _startColor = new ();
         [SerializeField] NetworkVariable<Color> _targetColor = new();
         [SerializeField] NetworkVariable<float> _progress = new();

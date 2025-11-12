@@ -1,7 +1,10 @@
 using System;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network;
+using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
+using _PrismWars._Scripts.Core.Patterns.Factory.Projectile;
+using _PrismWars._Scripts.Game.Player.Controllers;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
@@ -48,9 +51,9 @@ namespace _PrismWars._Scripts.Player {
         AttackMeleeController _attackMeleeController; 
         AttackRangeController _attackRangeController;
         
-        HealthComponent _healthComponent;
+        HealthController _healthController;
         ShardComponent _shardComponent;
-        ProjectileComponent _projectileComponent;
+        ProjectileController _projectileController;
         
         CompositeDisposable _disposables = new();
         SpriteRenderer _spriteRenderer;
@@ -69,7 +72,7 @@ namespace _PrismWars._Scripts.Player {
                 NetworkVariableReadPermission.Everyone,
                 NetworkVariableWritePermission.Owner);
         
-        CaptureTheCatComponent _captureTheCatComponent;
+        CatCaptureController _catCaptureController;
         
         public ulong ClientId => _clientId;
 
@@ -187,8 +190,8 @@ namespace _PrismWars._Scripts.Player {
                 this);
 
             if (IsOwner) {
-                _healthComponent = GetComponent<HealthComponent>();
-                _healthComponent.Initialize(_playerData.Value);
+                _healthController = GetComponent<HealthController>();
+                _healthController.Initialize(_playerData.Value);
                 
                 _shardComponent = GetComponent<ShardComponent>();
                 _shardComponent.Initialize(_playerData.Value.playerElement);
@@ -196,17 +199,17 @@ namespace _PrismWars._Scripts.Player {
                 _networkScoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
                 _networkScoreService.Initialize(_playerData.Value.playerElement);
                 
-                _projectileComponent = GetComponent<ProjectileComponent>();
-                _projectileComponent.Initialize(
+                _projectileController = GetComponent<ProjectileController>();
+                _projectileController.Initialize(
                     _attackRangeController,
                     _config.maxBulletCount, 
                     3f);
                 
                 _inputService = ServiceLocator.Singleton.Get<InputService>();
                 
-                _captureTheCatComponent = GetComponent<CaptureTheCatComponent>();
-                _captureTheCatComponent.Initialize();
-                _inputMoveDirection.OnValueChanged += _captureTheCatComponent.FlipXCat;
+                _catCaptureController = GetComponent<CatCaptureController>();
+                _catCaptureController.Initialize();
+                _inputMoveDirection.OnValueChanged += _catCaptureController.FlipXCat;
                 
                 // Input
                 _inputService.MoveInput
@@ -220,21 +223,21 @@ namespace _PrismWars._Scripts.Player {
                     .AddTo(_disposables);
                 _inputService.AttackMelee
                     .Subscribe(_ => {
-                        if (!_captureTheCatComponent.CatPickedUp) ;
+                        if (!_catCaptureController.CatPickedUp) ;
                         _attackMeleeController.MeleeAttack(gameObject, _spriteRenderer); 
                     })
                     .AddTo(_disposables);
                 _inputService.AttackRange
                     .Subscribe(_ => {
-                        if(!_captureTheCatComponent.CatPickedUp)
-                            _projectileComponent.RangeAttackServerRpc();
+                        if(!_catCaptureController.CatPickedUp)
+                            _projectileController.RangeAttackServerRpc();
                         else
-                            _captureTheCatComponent.ThrowCat(_isFlipX);
+                            _catCaptureController.ThrowCat(_isFlipX);
                         }
                     )
                     .AddTo(_disposables);
                 _inputService.Interact
-                    .Subscribe(_ => _captureTheCatComponent?.PickUpCat())
+                    .Subscribe(_ => _catCaptureController?.PickUpCat())
                     .AddTo(_disposables);
             }
 

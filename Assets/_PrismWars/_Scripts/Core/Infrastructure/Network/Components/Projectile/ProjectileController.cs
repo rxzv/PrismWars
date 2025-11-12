@@ -5,8 +5,8 @@ using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Components.Projectile {
-    public class ProjectileComponent : NetworkBehaviour, IInitializable<AttackRangeController, int, float> {
+namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile {
+    public class ProjectileController : NetworkBehaviour, IInitializable<AttackRangeController, int, float> {
         const int MAX_BULLET_COUNT = 10;
         const float MAX_RANGE_ATTACK_COOLDOWN = 3f;
         

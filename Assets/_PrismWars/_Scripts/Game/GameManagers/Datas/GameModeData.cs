@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Game.GameManagers {
+namespace _PrismWars._Scripts.Game.GameManagers.Datas {
     [CreateAssetMenu(fileName = "GameModeData", menuName = "Game/Game Mode Data")]
     public class GameModeData : ScriptableObject {
         public GameMode modeName;

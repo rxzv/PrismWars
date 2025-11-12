@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using _PrismWars._Scripts.Core.Infrastructure.Network.Components;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
@@ -13,11 +11,14 @@ namespace _PrismWars._Scripts.Core.Patterns.Factory.Cat {
 
         public override NetworkObject Spawn(INetworkData data, ulong senderClientId) {
             var playerInstance = Object.Instantiate(_prefab, _spawnPoint, Quaternion.identity);
-            var networkCat = playerInstance.GetComponent<CatController>();
-            var networkObjectReference = playerInstance.GetComponent<NetworkObject>();
-            playerInstance.GetComponent<NetworkObject>().SpawnWithOwnership(senderClientId);
-            networkCat.Initialize((NetworkCatData)data);
-            return networkObjectReference;
+           
+            playerInstance.TryGetComponent(out CatController networkCat);
+            playerInstance.TryGetComponent(out NetworkObject networkObject);
+            if(networkCat is null || networkObject is null) return null;
+            networkObject.SpawnWithOwnership(senderClientId);
+            var ncd = (NetworkCatData)data;
+            networkCat.Initialize(ncd);
+            return networkObject;
         }
     }
 }

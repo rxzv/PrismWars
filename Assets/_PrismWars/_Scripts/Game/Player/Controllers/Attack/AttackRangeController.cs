@@ -1,5 +1,4 @@
-using _PrismWars._Scripts.Components.Projectile;
-using _PrismWars._Scripts.UI;
+using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile;
 using _PrismWars._Scripts.UI.Model;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,7 +11,7 @@ namespace _PrismWars._Scripts.Player {
         Vector2 _firePoint;
         PlayerElement _playerElement;
         PlayerController _playerController;
-        ProjectileComponent _projectileComponent;
+        ProjectileController _projectileController;
         
         Transform _playerTransform;
 

@@ -1,5 +1,4 @@
 using System;
-using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
 using _PrismWars._Scripts.Game.GameManagers;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
@@ -7,7 +6,7 @@ using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components {
+namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat {
     public class CatController : NetworkBehaviour, IInitializable<NetworkCatData> {
         [SerializeField] string _catTag = "Cat";
         const string ZONE_TAG = "Zone";

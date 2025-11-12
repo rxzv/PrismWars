@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Game.GameManagers {
+namespace _PrismWars._Scripts.Game.GameManagers.Datas {
     [CreateAssetMenu(fileName = "MapData", menuName = "Game/Map Data")]
     public class MapData : ScriptableObject {
         public string mapName;

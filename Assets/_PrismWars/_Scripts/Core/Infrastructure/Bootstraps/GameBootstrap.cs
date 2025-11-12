@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Patterns.Factory;
+using _PrismWars._Scripts.Core.Patterns.Factory.Player;
 using _PrismWars._Scripts.Game.GameManagers;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI;

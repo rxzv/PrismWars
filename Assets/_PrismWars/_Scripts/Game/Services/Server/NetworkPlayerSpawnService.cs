@@ -1,4 +1,5 @@
 using _PrismWars._Scripts.Core.Patterns.Factory;
+using _PrismWars._Scripts.Core.Patterns.Factory.Player;
 using _PrismWars._Scripts.UI.Model;
 using R3;
 using Unity.Netcode;

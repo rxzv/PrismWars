@@ -5,9 +5,9 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace _PrismWars._Scripts.Components.Projectile {
+namespace _PrismWars._Scripts.Core.Patterns.Factory.Projectile {
     [RequireComponent(typeof(NetworkObject))]
-    public class ProjectileFactory : NetworkBehaviour, IService, IInitializable<Projectile> {
+    public class ProjectileFactory : NetworkBehaviour, IService, IInitializable<Components.Projectile.Projectile> {
         [SerializeField] bool _collectionCheck = true;
         [SerializeField] int _defaultCapacity = 10;
         [SerializeField] int _maxPoolSize = 100;
@@ -15,39 +15,39 @@ namespace _PrismWars._Scripts.Components.Projectile {
         NetworkVariable<PlayerElement> _currentType = new();
         NetworkVariable<ulong> _currentPlayerId = new();
         
-        Projectile _projectilePrefab;
+        Components.Projectile.Projectile _projectilePrefab;
 
-        readonly Dictionary<PlayerElement, IObjectPool<Projectile>> _pools = new();
+        readonly Dictionary<PlayerElement, IObjectPool<Components.Projectile.Projectile>> _pools = new();
         
         public readonly Subject<NetworkObjectReference> OnGetProjectile = new();
         public readonly Subject<NetworkObjectReference> OnReleaseProjectile = new();
         public readonly Subject<NetworkObjectReference> OnDestroyPoolObjectProjectile = new();
-        private IInitializable<Projectile> _initializableImplementation;
+        private IInitializable<Components.Projectile.Projectile> _initializableImplementation;
 
-        public void Initialize(Projectile projectilePrefab) {
+        public void Initialize(Components.Projectile.Projectile projectilePrefab) {
             _projectilePrefab = projectilePrefab;
         }
         
-        public Projectile Spawn(Vector3 position, Vector3 direction, PlayerElement element, ulong playerId) {
+        public Components.Projectile.Projectile Spawn(Vector3 position, Vector3 direction, PlayerElement element, ulong playerId) {
             _currentPlayerId.Value = playerId;
             var projectile = GetPoolFor(element)?.Get();
             projectile?.SetPosition(position, direction);
             return projectile;
         }
 
-        public void ReturnToPool(Projectile f, PlayerElement element) {
+        public void ReturnToPool(Components.Projectile.Projectile f, PlayerElement element) {
             if (!IsServer) return;
             if(f.gameObject.activeSelf)
                 GetPoolFor(element)?.Release(f);
         }
 
-        IObjectPool<Projectile> GetPoolFor(PlayerElement element) {
-            IObjectPool<Projectile> pool;
+        IObjectPool<Components.Projectile.Projectile> GetPoolFor(PlayerElement element) {
+            IObjectPool<Components.Projectile.Projectile> pool;
             _currentType.Value = element;
             
             if (_pools.TryGetValue(element, out pool)) return pool;
 
-            pool = new ObjectPool<Projectile>(
+            pool = new ObjectPool<Components.Projectile.Projectile>(
                 Create,
                 OnGet,
                 OnRelease,
@@ -59,8 +59,8 @@ namespace _PrismWars._Scripts.Components.Projectile {
             return pool;
         }
 
-        Projectile Create() {
-            Projectile projectile = Instantiate(_projectilePrefab);
+        Components.Projectile.Projectile Create() {
+            Components.Projectile.Projectile projectile = Instantiate(_projectilePrefab);
             projectile.SetType(_currentType.Value, _currentPlayerId.Value);
             
             projectile.gameObject.TryGetComponent(out NetworkObject networkObject);
@@ -69,17 +69,17 @@ namespace _PrismWars._Scripts.Components.Projectile {
             return projectile;
         }
 
-        void OnGet(Projectile p) {
+        void OnGet(Components.Projectile.Projectile p) {
             if (IsServer) 
                 OnGetRpc(p.NetworkObject);
         }
 
-        void OnRelease(Projectile p) {
+        void OnRelease(Components.Projectile.Projectile p) {
             if (IsServer) 
                 OnOnReleaseRpc(p.NetworkObject);
         }
 
-        void OnDestroyPoolObject(Projectile p) {
+        void OnDestroyPoolObject(Components.Projectile.Projectile p) {
             if (IsServer)
                 OnDestroyPoolObjectRpc(p.NetworkObject);
         }
