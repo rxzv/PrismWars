@@ -1,11 +1,11 @@
 using System.Collections;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Health;
-using _PrismWars._Scripts.Core.Patterns.Factory.Projectile;
+using _PrismWars._Scripts.Core.Patterns.Factory.ProjectileFactory;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Components.Projectile {
+namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.ProjectileComponent {
     public class Projectile : NetworkBehaviour {
         [SerializeField] float _speed;
         [SerializeField] float _damage;

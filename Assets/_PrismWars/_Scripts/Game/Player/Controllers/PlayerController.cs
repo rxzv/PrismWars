@@ -3,8 +3,8 @@ using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
-using _PrismWars._Scripts.Core.Patterns.Factory.Projectile;
 using _PrismWars._Scripts.Game.Player.Controllers;
+using _PrismWars._Scripts.Game.Player.Controllers.Attack;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
 using _PrismWars._Scripts.Utils;
@@ -59,7 +59,6 @@ namespace _PrismWars._Scripts.Player {
         SpriteRenderer _spriteRenderer;
         
         InputService _inputService;
-        ProjectileFactory _projectileFactory;
         
         NetworkVariable<NetworkPlayerData> _playerData = 
             new NetworkVariable<NetworkPlayerData>(default, 
@@ -115,7 +114,6 @@ namespace _PrismWars._Scripts.Player {
 
         public void Initialize(NetworkPlayerData playerConfig) {
             _playerData.Value = playerConfig;
-            _projectileFactory = ServiceLocator.Singleton.Get<ProjectileFactory>();
         }
 
         void FlipX(float previousValue, float newValue) {
@@ -184,10 +182,12 @@ namespace _PrismWars._Scripts.Player {
                 _clientId,
                 _config.meleeDamage);
             
+            _projectileController = GetComponent<ProjectileController>();
+            
             _attackRangeController = new AttackRangeController(
                 _config.playerElement,
                 Camera.main,
-                this);
+                _projectileController);
 
             if (IsOwner) {
                 _healthController = GetComponent<HealthController>();
@@ -199,7 +199,6 @@ namespace _PrismWars._Scripts.Player {
                 _networkScoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
                 _networkScoreService.Initialize(_playerData.Value.playerElement);
                 
-                _projectileController = GetComponent<ProjectileController>();
                 _projectileController.Initialize(
                     _attackRangeController,
                     _config.maxBulletCount, 
@@ -230,7 +229,7 @@ namespace _PrismWars._Scripts.Player {
                 _inputService.AttackRange
                     .Subscribe(_ => {
                         if(!_catCaptureController.CatPickedUp)
-                            _projectileController.RangeAttackServerRpc();
+                            _attackRangeController.RangeAttack();
                         else
                             _catCaptureController.ThrowCat(_isFlipX);
                         }
@@ -248,14 +247,6 @@ namespace _PrismWars._Scripts.Player {
             if (!IsOwner) return;
             _attackMeleeController.OnDrawGizmosSelected(transform);
         }
-
-        public void SpawnProjectile(Vector3 position, Vector3 direction, PlayerElement playerElement) {
-            SpawnProjectileRpc(position, direction, playerElement);
-        }
-        
-        [Rpc(SendTo.Server)]
-        void SpawnProjectileRpc(Vector3 position, Vector3 direction, PlayerElement playerElement) => 
-            _projectileFactory.Spawn(position, direction, playerElement, _clientId);
         
         public void Dispose() =>
             _disposables?.Dispose();

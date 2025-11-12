@@ -3,29 +3,32 @@ using _PrismWars._Scripts.UI.Model;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace _PrismWars._Scripts.Player {
+namespace _PrismWars._Scripts.Game.Player.Controllers.Attack {
     public class AttackRangeController {
         const float ATTACK_DISTANCE_FROM_PLAYER = 1f;
         
         Camera _camera;
         Vector2 _firePoint;
         PlayerElement _playerElement;
-        PlayerController _playerController;
         ProjectileController _projectileController;
         
         Transform _playerTransform;
 
         public AttackRangeController(PlayerElement playerElement, 
-            Camera camera, PlayerController playerController) {
+            Camera camera, ProjectileController projectileController) {
             _playerElement = playerElement;
             _camera = camera;
-            _playerController = playerController;
-            _playerTransform = _playerController.transform;
+            _projectileController = projectileController;
+            _playerTransform = projectileController.transform;
         }
 
-        public void SpawnProjectile() {
+        public void Shoot() {
             _firePoint = GetPositionTowardsMouse(_playerTransform, _camera);
-            _playerController.SpawnProjectile(_firePoint, GetShootingDirection(), _playerElement);
+            _projectileController.SpawnProjectile(_firePoint, GetShootingDirection(), _playerElement);
+        }
+
+        public void RangeAttack() {
+            _projectileController.CheckProjectilesForTheShot();
         }
         
         Vector2 GetPositionTowardsMouse(Transform transform, Camera camera) {

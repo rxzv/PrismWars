@@ -1,5 +1,5 @@
 using System;
-using _PrismWars._Scripts.Core.Patterns.Factory.Projectile;
+using _PrismWars._Scripts.Core.Patterns.Factory.ProjectileFactory;
 using R3;
 using Unity.Netcode;
 using Object = UnityEngine.Object;
