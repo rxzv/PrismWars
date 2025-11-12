@@ -6,7 +6,7 @@ using Unity.Netcode;
 using Object = UnityEngine.Object;
 
 namespace _PrismWars._Scripts.Game.Services.Server.PoolServices {
-    public class GenericPoolServerService : IInitializable, IDisposable {
+    public sealed class GenericPoolServerService : IInitializable, IDisposable {
         readonly CompositeDisposable _disposables = new();
         readonly IPoolEventSource _factory;
 
@@ -28,7 +28,7 @@ namespace _PrismWars._Scripts.Game.Services.Server.PoolServices {
                 .AddTo(_disposables);
         }
 
-        protected virtual void OnGetPoolObject(NetworkObjectReference nor) {
+        private void OnGetPoolObject(NetworkObjectReference nor) {
             Observable.EveryUpdate()
                 .Select(_ => nor.TryGet(out NetworkObject networkObject) ? networkObject : null)
                 .Where(networkObject => networkObject != null)
@@ -36,7 +36,7 @@ namespace _PrismWars._Scripts.Game.Services.Server.PoolServices {
                 .Subscribe(networkObject => networkObject.gameObject.SetActive(true));
         }
 
-        protected virtual void OnReleasePoolObject(NetworkObjectReference nor) {
+        private void OnReleasePoolObject(NetworkObjectReference nor) {
             Observable.EveryUpdate()
                 .Select(_ => nor.TryGet(out NetworkObject networkObject) ? networkObject : null)
                 .Where(networkObject => networkObject != null)
@@ -45,7 +45,7 @@ namespace _PrismWars._Scripts.Game.Services.Server.PoolServices {
                 .Subscribe(networkObject => networkObject.gameObject.SetActive(false));
         }
 
-        protected virtual void OnDestroyPoolObject(NetworkObjectReference nor) {
+        private void OnDestroyPoolObject(NetworkObjectReference nor) {
             Observable.EveryUpdate()
                 .Select(_ => nor.TryGet(out NetworkObject networkObject) ? networkObject : null)
                 .Where(networkObject => networkObject != null)

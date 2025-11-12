@@ -1,5 +1,5 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
-using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory.ShardFactory;
+using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory;
 using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.UI.Services.Mono;
 using Unity.Netcode;

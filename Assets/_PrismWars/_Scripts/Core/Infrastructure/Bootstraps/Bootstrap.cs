@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.ProjectileComponent;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
 using _PrismWars._Scripts.Core.Patterns.Factory.Cat;
-using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory.ProjectileFactory;
-using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory.ShardFactory;
+using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory;
 using _PrismWars._Scripts.Game.GameManagers.Datas;
 using _PrismWars._Scripts.Game.GameManagers.Managers;
-using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.Game.Services.Client;
 using _PrismWars._Scripts.Game.Services.Mono;
 using _PrismWars._Scripts.Game.Services.Server;
@@ -19,7 +17,7 @@ using UnityEngine.SceneManagement;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
     public class Bootstrap : MonoBehaviour {
-        public const string GAME_SCENE_NAME = "Game";
+        const string GAME_SCENE_NAME = "Game";
     
         [Header("Mono Services")] 
         [SerializeField] InputService _inputService;

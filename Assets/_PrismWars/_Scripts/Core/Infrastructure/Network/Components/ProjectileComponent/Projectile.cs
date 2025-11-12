@@ -1,7 +1,7 @@
 using System.Collections;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Health;
-using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory.ProjectileFactory;
+using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory;
 using _PrismWars._Scripts.Game.Player.Model;
 using Unity.Netcode;
 using UnityEngine;

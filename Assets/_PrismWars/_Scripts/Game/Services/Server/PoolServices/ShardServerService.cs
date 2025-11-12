@@ -1,6 +1,6 @@
 using System;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
-using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory.ShardFactory;
+using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory;
 
 namespace _PrismWars._Scripts.Game.Services.Server.PoolServices {
     public class ShardServerService : IService, IInitializable, IDisposable {
