@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using _PrismWars._Scripts.Core.Patterns.Factory;
 using _PrismWars._Scripts.Core.Patterns.Factory.Player;
-using _PrismWars._Scripts.Game.GameManagers;
 using _PrismWars._Scripts.Game.GameManagers.Managers;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.Game.Services.Mono;
@@ -21,7 +19,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
         [SerializeField] ClientUIManager clientUIManager;
         [SerializeField] GameOverUIService _gameOverUIService;
         [SerializeField] NetworkPlayerSpawnService _networkPlayerSpawnService;
-        [SerializeField] ServerGameManagerSpawner _serverGameManagerSpawner;
         [SerializeField] PlayerRespawnService _playerRespawnService;
         
         ProjectileServerService _projectileServerService;
@@ -41,7 +38,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             ServiceLocator.Singleton.Register(clientUIManager);
             ServiceLocator.Singleton.Register(_networkPlayerSpawnService);
             ServiceLocator.Singleton.Register(_cameraSpawnService);
-            ServiceLocator.Singleton.Register(_serverGameManagerSpawner);
             ServiceLocator.Singleton.Register(_playerRespawnService);
             ServiceLocator.Singleton.Register(_gameOverUIService);
             
@@ -71,7 +67,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Bootstraps {
             _playerRespawnService.Initialize(_mapManager.Data.fireSpawnPoints, _mapManager.Data.iceSpawnPoints);
             _gameOverUIService.Initialize();
             
-            _serverGameManagerSpawner.ClientInitialized();
+            var serverGameManagerSpawner = ServiceLocator.Singleton.Get<AwaitingInitializationService>();
+            serverGameManagerSpawner.ClientGameInitialized();
+            
             Debug.Log("GameScene Services initialized");
         }
 
