@@ -10,7 +10,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile {
-    public class ProjectileController : NetworkBehaviour, IInitializable<AttackRangeController, int, float> {
+    public class ProjectileController : NetworkBehaviour, IInitializable<RangeAttackController, int, float> {
         const int MAX_BULLET_COUNT = 10;
         const float MAX_RANGE_ATTACK_COOLDOWN = 3f;
         
@@ -19,7 +19,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile 
         Stack<int> _shotStack = new();
         GameCursorUIService _cursorService;
 
-        AttackRangeController _attackRangeController;
+        RangeAttackController _rangeAttackController;
         ProjectileFactory _projectileFactory;
         
         float _rangeAttackCooldown;
@@ -42,8 +42,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile 
             base.OnNetworkSpawn();
         }
 
-        public void Initialize(AttackRangeController attackRangeController, int maxBulletCount, float rangeAttackCooldown) {
-            _attackRangeController = attackRangeController;
+        public void Initialize(RangeAttackController rangeAttackController, int maxBulletCount, float rangeAttackCooldown) {
+            _rangeAttackController = rangeAttackController;
             SetBulletCountAvailableServerRpc(maxBulletCount, rangeAttackCooldown);
         }
 
@@ -107,7 +107,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile 
 
         [Rpc(SendTo.Owner)]
         void ShootRpc(int bulletIndex) {
-            _attackRangeController.Shoot();
+            _rangeAttackController.Shoot();
             _cursorService.BulletCooldown(bulletIndex);
         }
         

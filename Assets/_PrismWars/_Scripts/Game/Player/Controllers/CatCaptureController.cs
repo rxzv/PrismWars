@@ -18,6 +18,7 @@ namespace _PrismWars._Scripts.Game.Player.Controllers {
         GameObject _catObj;
         Rigidbody2D _catObjRb;
         CatController _catController;
+        SpriteRenderer _spriteRenderer;
         
         HealthController _healthController;
         PlayerElement _playerElement;
@@ -29,14 +30,18 @@ namespace _PrismWars._Scripts.Game.Player.Controllers {
             _healthController = GetComponent<HealthController>();
             _playerElement = GetComponent<PlayerController>().PlayerElement.Value;
             _healthController!.OnDeath += PlayerIsDeath;
+            _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         public void FlipXCat(float oldDir, float newDir) {
-            if(_catPickedUp && IsOwner && _catObj != null && _catController != null) {
-                if(newDir > 0)
+            if(!_catPickedUp || !IsOwner || _catObj == null || _catController == null) return;
+            switch (newDir) {
+                case > 0:
                     _catController.FlipX(true);
-                else if(newDir < 0)
+                    break;
+                case < 0:
                     _catController.FlipX(false);
+                    break;
             }
         }
 
@@ -81,11 +86,11 @@ namespace _PrismWars._Scripts.Game.Player.Controllers {
             }
         }
 
-        public void ThrowCat(bool isFlipX) {
+        public void ThrowCat() {
             if (_catPickedUp && IsOwner && _catObj != null && _catController != null) {
                 _catObjRb.bodyType = RigidbodyType2D.Dynamic;
                 var catToThrow = _catObj;
-                var throwDirection = isFlipX ? new Vector2(-1, 1) : Vector2.one;
+                var throwDirection = _spriteRenderer.flipX ? new Vector2(-1, 1) : Vector2.one;
                 var throwVelocity = throwDirection * THROW_FORCE;
                 
                 PerformLocalThrow(catToThrow, throwVelocity);

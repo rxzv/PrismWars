@@ -4,30 +4,24 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace _PrismWars._Scripts.Game.Player.Controllers.Attack {
-    public class AttackRangeController {
+    public class RangeAttackController : AttackController {
         const float ATTACK_DISTANCE_FROM_PLAYER = 1f;
         
         Camera _camera;
-        Vector2 _firePoint;
-        PlayerElement _playerElement;
         ProjectileController _projectileController;
-        
-        Transform _playerTransform;
 
-        public AttackRangeController(PlayerElement playerElement, 
-            Camera camera, ProjectileController projectileController) {
-            _playerElement = playerElement;
+        public RangeAttackController(Transform playerTransform, PlayerElement playerElement, 
+            Camera camera, ProjectileController projectileController) : base(playerTransform, playerElement){
             _camera = camera;
             _projectileController = projectileController;
-            _playerTransform = projectileController.transform;
-        }
+        } 
 
         public void Shoot() {
-            _firePoint = GetPositionTowardsMouse(_playerTransform, _camera);
-            _projectileController.SpawnProjectile(_firePoint, GetShootingDirection(), _playerElement);
+            _attackPos = GetPositionTowardsMouse(_playerTransform, _camera);
+            _projectileController.SpawnProjectile(_attackPos, GetShootingDirection(), _playerElement);
         }
-
-        public void RangeAttack() {
+        
+        public override void Attack() {
             _projectileController.CheckProjectilesForTheShot();
         }
         
@@ -43,11 +37,12 @@ namespace _PrismWars._Scripts.Game.Player.Controllers.Attack {
         Vector2 GetShootingDirection() {
             Ray mouseRay = _camera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-            Vector2 worldPosition = Physics.Raycast(mouseRay, out RaycastHit hit, 100f) ? hit.point :
+            Vector3 worldPosition = Physics.Raycast(mouseRay, out RaycastHit hit, 100f) ? hit.point :
                 mouseRay.GetPoint(50f);
             
-            Vector2 direction = (worldPosition - _firePoint).normalized;
+            Vector3 direction = (worldPosition - _attackPos).normalized;
             return direction;
         }
+
     }
 }

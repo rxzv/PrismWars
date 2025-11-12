@@ -211,7 +211,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  _speed: 10
-  _damage: 10
-  _despawnDelay: 2
-  Type: 0
+  _speed: 100
+  _damage: 20
+  _despawnDelay: 4

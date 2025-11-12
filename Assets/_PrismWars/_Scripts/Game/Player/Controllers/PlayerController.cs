@@ -1,14 +1,10 @@
 using System;
-using _PrismWars._Scripts.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
-using _PrismWars._Scripts.Core.Infrastructure.Network;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile;
-using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
 using _PrismWars._Scripts.Game.Player.Controllers;
 using _PrismWars._Scripts.Game.Player.Controllers.Attack;
 using _PrismWars._Scripts.Game.Services;
 using _PrismWars._Scripts.UI.Model;
-using _PrismWars._Scripts.Utils;
 using R3;
 using Unity.Netcode;
 using UnityEngine;
@@ -41,8 +37,6 @@ namespace _PrismWars._Scripts.Player {
         PlayerConfig _config;
         
         NetworkScoreService _networkScoreService;
-
-        bool _isFlipX = false;
         
         bool _isInitialized = false;
         
@@ -50,7 +44,7 @@ namespace _PrismWars._Scripts.Player {
         ClientJumpPrediction _jumpController;
         FlipXController _flipXController;
         AttackMeleeController _attackMeleeController; 
-        AttackRangeController _attackRangeController;
+        RangeAttackController _rangeAttackController;
         
         HealthController _healthController;
         ShardController _shardController;
@@ -119,10 +113,6 @@ namespace _PrismWars._Scripts.Player {
 
         void FlipX(float previousValue, float newValue) {
             _flipXController.FlipXClientRpc(newValue);
-            if(newValue > 0) 
-                _isFlipX = false;
-            else if(newValue < 0)
-                _isFlipX = true;
         }
 
         public override void OnNetworkSpawn() {
@@ -181,11 +171,13 @@ namespace _PrismWars._Scripts.Player {
                 _config.meleeAttackRange, 
                 _config.enemyLayer,
                 _clientId,
+                transform,
                 _config.meleeDamage);
             
             _projectileController = GetComponent<ProjectileController>();
             
-            _attackRangeController = new AttackRangeController(
+            _rangeAttackController = new RangeAttackController(
+                transform,
                 _config.playerElement,
                 Camera.main,
                 _projectileController);
@@ -201,7 +193,7 @@ namespace _PrismWars._Scripts.Player {
                 _networkScoreService.Initialize(_playerData.Value.playerElement);
                 
                 _projectileController.Initialize(
-                    _attackRangeController,
+                    _rangeAttackController,
                     _config.maxBulletCount, 
                     3f);
                 
@@ -224,15 +216,15 @@ namespace _PrismWars._Scripts.Player {
                 _inputService.AttackMelee
                     .Subscribe(_ => {
                         if (!_catCaptureController.CatPickedUp) ;
-                        _attackMeleeController.MeleeAttack(gameObject, _spriteRenderer); 
+                        _attackMeleeController.Attack(); 
                     })
                     .AddTo(_disposables);
                 _inputService.AttackRange
                     .Subscribe(_ => {
                         if(!_catCaptureController.CatPickedUp)
-                            _attackRangeController.RangeAttack();
+                            _rangeAttackController.Attack();
                         else
-                            _catCaptureController.ThrowCat(_isFlipX);
+                            _catCaptureController.ThrowCat();
                         }
                     )
                     .AddTo(_disposables);
