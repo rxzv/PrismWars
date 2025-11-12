@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
 using _PrismWars._Scripts.UI.Model;
 using R3;
@@ -6,7 +7,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace _PrismWars._Scripts.Components.Projectile {
+namespace _PrismWars._Scripts.Core.Patterns.Factory.ShardFactory {
     [RequireComponent(typeof(NetworkObject))]
     public class ShardFactory : NetworkBehaviour, IService, IInitializable<Shard> {
         [SerializeField] bool _collectionCheck = true;

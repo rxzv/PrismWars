@@ -1,12 +1,14 @@
 using _PrismWars._Scripts.Components.Projectile;
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
+using _PrismWars._Scripts.Core.Patterns.Factory.ShardFactory;
 using _PrismWars._Scripts.UI;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
-    public class ShardComponent : NetworkBehaviour, IInitializable<PlayerElement> {
+namespace _PrismWars._Scripts.Game.Player.Controllers {
+    public class ShardController : NetworkBehaviour, IInitializable<PlayerElement> {
 
         NetworkVariable<int> _countShards = new NetworkVariable<int>();
         

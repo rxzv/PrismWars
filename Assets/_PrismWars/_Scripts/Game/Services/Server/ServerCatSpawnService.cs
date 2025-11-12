@@ -1,3 +1,4 @@
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
 using _PrismWars._Scripts.Core.Patterns.Factory;
 using _PrismWars._Scripts.Core.Patterns.Factory.Cat;

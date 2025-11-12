@@ -3,7 +3,7 @@ using _PrismWars._Scripts.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Game.GameManagers {
+namespace _PrismWars._Scripts.Game.GameManagers.Managers {
     [RequireComponent(typeof(NetworkObject))]
     public class NetworkGameManager : NetworkBehaviour {
         const float SELECT_CHARACTER_TIME = 1f;

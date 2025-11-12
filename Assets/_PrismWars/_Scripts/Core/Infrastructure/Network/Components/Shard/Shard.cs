@@ -1,5 +1,6 @@
 using System.Collections;
-using _PrismWars._Scripts.Components.Projectile;
+using _PrismWars._Scripts.Core.Patterns.Factory.ShardFactory;
+using _PrismWars._Scripts.Game.Player.Controllers;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,9 +12,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
         SpriteRenderer _spriteRenderer;
         
         NetworkVariable<PlayerElement> _type = new();
-        public PlayerElement Element => _type.Value;
-        
-        Vector2 _direction;
 
         public override void OnNetworkSpawn() {
             base.OnNetworkSpawn();
@@ -31,26 +29,21 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
         }
 
         void Initialize() {
-            gameObject.layer = LayerMask.NameToLayer(Element.ToString());
+            gameObject.layer = LayerMask.NameToLayer(_type.Value.ToString());
             _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-            _spriteRenderer.material = GetMaterialByPlayerType(Element);
+            _spriteRenderer.material = GetMaterialByPlayerType(_type.Value);
         }
 
         public void SetPosition(Vector2 startPos, Vector2 direction) {
             transform.position = startPos;
-            _direction = direction;
             gameObject.SetActive(true);
-        }
-        void Update() {
-            // if (IsServer)
-                // transform.Translate(_direction * (_speed * Time.deltaTime));
         }
 
         void OnTriggerEnter2D(Collider2D other) {
             if (other.gameObject.layer != gameObject.layer) {
                 StopAllCoroutines();
-                ReturnToPoolRpc(Element);
-                var shard = other.GetComponent<ShardComponent>();
+                ReturnToPoolRpc(_type.Value);
+                var shard = other.GetComponent<ShardController>();
                 if (shard != null) {
                     shard.AddShardServerRpc();
                 }
@@ -58,7 +51,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
         }
         IEnumerator DespawnAfterDelay(float delay) {
             yield return new WaitForSeconds(delay);
-            ReturnToPoolRpc(Element);
+            ReturnToPoolRpc(_type.Value);
         }
         
         [Rpc(SendTo.Server)]
@@ -68,9 +61,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
 
         Material GetMaterialByPlayerType(PlayerElement playerElement) {
             return playerElement switch {
-                PlayerElement.Fire => Resources.Load<Material>($"Materials/FireColorMaterial"),
-                PlayerElement.Ice => Resources.Load<Material>($"Materials/IceColorMaterial"),
-                _ => default
+                PlayerElement.Fire => Resources.Load<Material>("Materials/FireColorMaterial"),
+                PlayerElement.Ice => Resources.Load<Material>("Materials/IceColorMaterial"),
+                _ => null
             };
         }
     }

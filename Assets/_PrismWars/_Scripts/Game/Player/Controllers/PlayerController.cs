@@ -1,5 +1,6 @@
 using System;
 using _PrismWars._Scripts.Components.Projectile;
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Infrastructure.Network;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Projectile;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard;
@@ -52,7 +53,7 @@ namespace _PrismWars._Scripts.Player {
         AttackRangeController _attackRangeController;
         
         HealthController _healthController;
-        ShardComponent _shardComponent;
+        ShardController _shardController;
         ProjectileController _projectileController;
         
         CompositeDisposable _disposables = new();
@@ -193,8 +194,8 @@ namespace _PrismWars._Scripts.Player {
                 _healthController = GetComponent<HealthController>();
                 _healthController.Initialize(_playerData.Value);
                 
-                _shardComponent = GetComponent<ShardComponent>();
-                _shardComponent.Initialize(_playerData.Value.playerElement);
+                _shardController = GetComponent<ShardController>();
+                _shardController.Initialize(_playerData.Value.playerElement);
                 
                 _networkScoreService = ServiceLocator.Singleton.Get<NetworkScoreService>();
                 _networkScoreService.Initialize(_playerData.Value.playerElement);

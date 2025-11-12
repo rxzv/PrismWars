@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using UnityEngine;
 
 public class ServiceLocator : MonoBehaviour {

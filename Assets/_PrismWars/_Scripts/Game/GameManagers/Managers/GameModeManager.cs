@@ -1,11 +1,12 @@
 using System.Linq;
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
 using _PrismWars._Scripts.Game.GameManagers.Datas;
 using _PrismWars._Scripts.UI.Model;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace _PrismWars._Scripts.Game.GameManagers {
+namespace _PrismWars._Scripts.Game.GameManagers.Managers {
     public class GameModeManager : NetworkBehaviour, IService {
         [SerializeField] GameModeData[] _gameModeDatas;
     

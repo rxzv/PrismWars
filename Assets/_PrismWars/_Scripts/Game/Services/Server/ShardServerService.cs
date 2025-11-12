@@ -1,9 +1,11 @@
 using System;
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
+using _PrismWars._Scripts.Core.Patterns.Factory.ShardFactory;
 using R3;
 using Unity.Netcode;
 using Object = UnityEngine.Object;
 
-namespace _PrismWars._Scripts.Components.Projectile {
+namespace _PrismWars._Scripts.Game.Services.Server {
     public class ShardServerService : IService, IInitializable, IDisposable {
         NetworkObjectReference _networkObject;
         
