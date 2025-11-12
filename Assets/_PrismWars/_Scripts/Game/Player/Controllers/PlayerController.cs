@@ -216,8 +216,8 @@ namespace _PrismWars._Scripts.Player {
                     .AddTo(_disposables);
                 _inputService.AttackMelee
                     .Subscribe(_ => {
-                        if (!_catCaptureController.CatPickedUp) ;
-                        _attackMeleeController.Attack(); 
+                        if (!_catCaptureController.CatPickedUp)
+                            _attackMeleeController.Attack(); 
                     })
                     .AddTo(_disposables);
                 _inputService.AttackRange

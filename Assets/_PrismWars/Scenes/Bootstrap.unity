@@ -516,7 +516,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputService: {fileID: 1933323808}
-  _networkGameTimer: {fileID: 1880840605}
+  networkTimer: {fileID: 1880840605}
   _networkCharacterSelectionManager: {fileID: 485329839}
   _projectileFactory: {fileID: 2145347370}
   _networkScoreService: {fileID: 1448864837}

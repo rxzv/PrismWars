@@ -10,13 +10,13 @@ namespace _PrismWars._Scripts.Game.GameManagers.Managers {
         float _startGameTime;
         NetworkVariable<GameState> _gameState = new();
         
-        NetworkGameTimer _networkGameTimer;
+        NetworkTimer _networkTimer;
         NetworkUIManager _networkUIManager;
         GameModeManager _gameModeManager;
 
         public override void OnNetworkSpawn() {
-            _networkGameTimer = ServiceLocator.Singleton.Get<NetworkGameTimer>();
-            _networkGameTimer.OnTimerComplete += OnTimerComplete;
+            _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
+            _networkTimer.OnTimerComplete += OnTimerComplete;
             _gameModeManager = ServiceLocator.Singleton.Get<GameModeManager>();
             _startGameTime = _gameModeManager.Data.timeLimit;
             
@@ -33,7 +33,7 @@ namespace _PrismWars._Scripts.Game.GameManagers.Managers {
         void StartGame() {
             if (IsServer) {
                 _gameState.Value = GameState.Init;
-                _networkGameTimer.StartTimerServerRpc(0f);
+                _networkTimer.StartTimerServerRpc(0f);
             }
         }
         
@@ -42,11 +42,11 @@ namespace _PrismWars._Scripts.Game.GameManagers.Managers {
                 switch (_gameState.Value) {
                     case GameState.Init:
                         _gameState.Value = GameState.SelectCharacter;
-                        _networkGameTimer.StartTimerServerRpc(SELECT_CHARACTER_TIME);
+                        _networkTimer.StartTimerServerRpc(SELECT_CHARACTER_TIME);
                         break;
                     case GameState.SelectCharacter:
                         _gameState.Value = GameState.GameStart;
-                        _networkGameTimer.StartTimerServerRpc(_startGameTime);
+                        _networkTimer.StartTimerServerRpc(_startGameTime);
                         break;
                     case GameState.GameStart:
                         _gameState.Value = GameState.GameOver;

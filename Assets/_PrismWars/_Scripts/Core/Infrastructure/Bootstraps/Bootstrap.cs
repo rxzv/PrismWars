@@ -26,7 +26,7 @@ public class Bootstrap : MonoBehaviour {
     [SerializeField] InputService _inputService;
     
     [Header("Network Services")] 
-    [SerializeField] NetworkGameTimer _networkGameTimer;
+    [SerializeField] NetworkTimer networkTimer;
     [SerializeField] NetworkCharacterSelectionManager _networkCharacterSelectionManager;
     [SerializeField] ProjectileFactory _projectileFactory;
     [SerializeField] NetworkScoreService  _networkScoreService;
@@ -75,7 +75,7 @@ public class Bootstrap : MonoBehaviour {
     void RegisterServices() {
         ServiceLocator.Singleton.Register(_inputService);
         ServiceLocator.Singleton.Register(_networkCharacterSelectionManager);
-        ServiceLocator.Singleton.Register(_networkGameTimer);
+        ServiceLocator.Singleton.Register(networkTimer);
         ServiceLocator.Singleton.Register(_projectileFactory);
         ServiceLocator.Singleton.Register(_shardFactory);
         ServiceLocator.Singleton.Register(_networkScoreService);
@@ -89,7 +89,7 @@ public class Bootstrap : MonoBehaviour {
         DontDestroyOnLoad(_inputService);
         DontDestroyOnLoad(_projectileFactory);
         DontDestroyOnLoad(_networkCharacterSelectionManager);
-        DontDestroyOnLoad(_networkGameTimer);
+        DontDestroyOnLoad(networkTimer);
         DontDestroyOnLoad(_networkScoreService);
         DontDestroyOnLoad(_shardFactory);
         DontDestroyOnLoad(_networkChangeScene);
@@ -108,7 +108,8 @@ public class Bootstrap : MonoBehaviour {
         _projectileFactory.Initialize(projectilePrefab);
         _shardFactory.Initialize(shardPrefab);
         
-        _networkChangeScene.ChangeScene(GAME_SCENE_NAME);
+        if(NetworkManager.Singleton.IsServer)
+            _networkChangeScene.ChangeScene(GAME_SCENE_NAME);
         Debug.Log("BootstrapScene Services initialize");
     }
 

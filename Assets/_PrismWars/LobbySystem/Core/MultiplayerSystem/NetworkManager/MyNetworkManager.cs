@@ -121,11 +121,10 @@ public class MyNetworkManager : PersistentNetworkSingleton<MyNetworkManager>
 
     #region Cleanup
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
         if (NetworkManager.Singleton == null) return;
 
-        // Unsubscribe all callbacks to prevent memory leaks
         NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
         NetworkManager.Singleton.OnClientConnectedCallback -= OnHostClientConnected;

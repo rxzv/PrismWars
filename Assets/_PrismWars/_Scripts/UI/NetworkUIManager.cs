@@ -25,10 +25,10 @@ namespace _PrismWars._Scripts.UI {
         
         public event Action OnCharacterSelectionConfirmed;
         
-        NetworkGameTimer _networkGameTimer;
+        NetworkTimer _networkTimer;
 
         public void Initialize() {
-            _networkGameTimer = ServiceLocator.Singleton.Get<NetworkGameTimer>();
+            _networkTimer = ServiceLocator.Singleton.Get<NetworkTimer>();
             _gameOverUIService = ServiceLocator.Singleton.Get<GameOverUIService>();
             
             ServiceLocator.Singleton.Register(_gameUIViewService);
@@ -82,8 +82,8 @@ namespace _PrismWars._Scripts.UI {
         }
 
         void Update() {
-            if(!_networkGameTimer) return;
-            var time = (int)_networkGameTimer.GetRemainingTime();
+            if(!_networkTimer) return;
+            var time = (int)_networkTimer.GetRemainingTime();
             _timer.text = time.ToString();
             if(!_isDead) return;
             var respawnTime = (int)_respawnTimer!.GetRemainingTime();

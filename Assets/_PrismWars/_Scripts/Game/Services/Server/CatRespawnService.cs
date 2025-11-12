@@ -93,7 +93,8 @@ namespace _PrismWars._Scripts.Game.Services {
         }
 
         public override void OnDestroy() {
-            _respawnTimer.OnTimerComplete -= RespawnCat;
+            if(_respawnTimer != null) 
+                _respawnTimer.OnTimerComplete -= RespawnCat;
         }
     }
 }
