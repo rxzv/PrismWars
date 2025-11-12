@@ -1,12 +1,13 @@
 using System.Collections;
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Health;
-using _PrismWars._Scripts.Core.Patterns.Factory.ProjectileFactory;
+using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory.ProjectileFactory;
 using _PrismWars._Scripts.Game.Player.Model;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.ProjectileComponent {
-    public class Projectile : NetworkBehaviour {
+    public class Projectile : NetworkBehaviour, IPoolObject {
         [SerializeField] float _speed;
         [SerializeField] float _damage;
         [SerializeField] float _despawnDelay = 5f;

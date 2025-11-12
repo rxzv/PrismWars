@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7038337328841156423}
   - component: {fileID: 5531341767825993637}
   m_Layer: 0
-  m_Name: NetworkSpawner
+  m_Name: AwaitingInit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

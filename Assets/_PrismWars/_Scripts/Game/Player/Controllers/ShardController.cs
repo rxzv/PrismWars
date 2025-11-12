@@ -1,5 +1,5 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
-using _PrismWars._Scripts.Core.Patterns.Factory.ShardFactory;
+using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory.ShardFactory;
 using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.UI.Services.Mono;
 using Unity.Netcode;
@@ -26,11 +26,11 @@ namespace _PrismWars._Scripts.Game.Player.Controllers {
         }
 
         void DropAndClearAllShards() {
-            DropAllShardsServerRpc(transform.position, Vector3.up, _playerElement, _countShards.Value);
+            DropAllShardsServerRpc(transform.position, Vector3.up, _playerElement, _countShards.Value, NetworkManager.Singleton.LocalClientId);
             DropAndClearShardsServerRpc();
         }
         
-        [ServerRpc(RequireOwnership = false)]
+        [Rpc(SendTo.Server)]
         void DropAndClearShardsServerRpc() {
             if (_countShards.Value > 0) {
                 _countShards.Value = 0;
@@ -38,11 +38,11 @@ namespace _PrismWars._Scripts.Game.Player.Controllers {
         }
 
         void DropShard() {
-            DropShardsServerRpc(transform.position, Vector3.up, _playerElement);
+            DropShardsServerRpc(transform.position, Vector3.up, _playerElement, NetworkManager.Singleton.LocalClientId);
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        void DropShardsServerRpc(Vector3 position, Vector3 direction, PlayerElement playerElement) {
+        [Rpc(SendTo.Server)]
+        void DropShardsServerRpc(Vector3 position, Vector3 direction, PlayerElement playerElement, ulong playerId) {
             Debug.Log("Dropped shards");
             _shardFactory = ServiceLocator.Singleton.Get<ShardFactory>();
             var randomPos = new Vector3(
@@ -50,10 +50,10 @@ namespace _PrismWars._Scripts.Game.Player.Controllers {
                 Random.Range(position.y, position.y + 0.5f),
                 position.z
             );
-            _shardFactory.Spawn(randomPos, direction, playerElement);
+            _shardFactory.Spawn(randomPos, direction, playerElement, playerId);
         }
-        [ServerRpc(RequireOwnership = false)]
-        void DropAllShardsServerRpc(Vector3 position, Vector3 direction, PlayerElement playerElement, int count) {
+        [Rpc(SendTo.Server)]
+        void DropAllShardsServerRpc(Vector3 position, Vector3 direction, PlayerElement playerElement, int count, ulong playerId) {
             Debug.Log("Dropped all shards");
             _shardFactory = ServiceLocator.Singleton.Get<ShardFactory>();
             for (int i = 0; i < count; i++) {
@@ -62,7 +62,7 @@ namespace _PrismWars._Scripts.Game.Player.Controllers {
                     Random.Range(position.y, position.y + 0.5f),
                     position.z
                 );
-                _shardFactory.Spawn(randomPos, direction, playerElement);
+                _shardFactory.Spawn(randomPos, direction, playerElement, playerId);
             }
         }
         void ShardsCountChanged(int previousValue, int newValue) {

@@ -1,5 +1,6 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Game.Services;
+using _PrismWars._Scripts.Game.Services.Client;
 using _PrismWars._Scripts.Game.Services.Server;
 using R3;
 using TMPro;

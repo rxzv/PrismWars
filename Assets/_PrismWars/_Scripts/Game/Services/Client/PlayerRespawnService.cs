@@ -10,7 +10,7 @@ using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace _PrismWars._Scripts.Game.Services {
+namespace _PrismWars._Scripts.Game.Services.Client {
     public class PlayerRespawnService : NetworkBehaviour, IService, IInitializable<Vector3[], Vector3[]> {
         const float PLAYER_TIME_TO_RESPAWN = 5f;
         Timer _respawnTimer;
@@ -55,7 +55,7 @@ namespace _PrismWars._Scripts.Game.Services {
             var id = _playerToRespawnId.Dequeue();
             pl.TryGet(out NetworkObject networkObject);
             networkObject.TryGetComponent(out PlayerController playerController);
-            if (playerController != null) {
+            if (playerController is not null) {
                 int spawnPointId;
                 Vector3 spawnPos;
                 switch (playerController.PlayerElement.Value) {
@@ -77,28 +77,25 @@ namespace _PrismWars._Scripts.Game.Services {
 
         [Rpc(SendTo.ClientsAndHost)]
         void PlayerUpdateSpawnPositionClientRpc(ulong clientId, Vector3 spawnPos, NetworkObjectReference player) {
-            if (clientId == NetworkManager.Singleton.LocalClientId) {
-                player.TryGet(out NetworkObject networkObject);
-                if (networkObject != null) {
-                    networkObject.TryGetComponent(out PlayerController playerController);
-                    playerController.PlayerSetRespawnPositionRpc(spawnPos);
-                }
-            }
+            if(clientId != NetworkManager.Singleton.LocalClientId) return;
+            player.TryGet(out NetworkObject networkObject);
+            if(networkObject is null) return;
+            networkObject.TryGetComponent(out PlayerController playerController);
+            playerController.PlayerSetRespawnPositionRpc(spawnPos);
         }
 
         [Rpc(SendTo.ClientsAndHost)]
         void PlayerRespawnClientRpc(ulong clientId, NetworkObjectReference player) {
             player.TryGet(out NetworkObject networkPlayer);
-            if (networkPlayer != null) {
-                if (clientId == NetworkManager.Singleton.LocalClientId) {
-                    OnPlayerRespawn?.Invoke();
-                    ServiceLocator.Singleton.Get<ClientUIManager>().OnPlayerRespawn();
-                    ServiceLocator.Singleton.Get<InputService>().InputActionEnable();
-                    var playerController = networkPlayer.gameObject.GetComponent<PlayerController>();
-                    playerController.enabled = true;
-                    playerController.PlayerShowRpc();
-                }
-            } 
+            if(networkPlayer is null) return;
+            if(clientId != NetworkManager.Singleton.LocalClientId) return;
+            OnPlayerRespawn?.Invoke();
+            ServiceLocator.Singleton.Get<ClientUIManager>().OnPlayerRespawn();
+            ServiceLocator.Singleton.Get<InputService>().InputActionEnable();
+            networkPlayer.gameObject.TryGetComponent(out PlayerController playerController);
+            if(playerController is null) return;
+            playerController.enabled = true;
+            playerController.PlayerShowRpc();
         }
 
         [Rpc(SendTo.ClientsAndHost)]

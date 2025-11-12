@@ -1,5 +1,4 @@
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
-using _PrismWars._Scripts.Core.Infrastructure.Network.Components;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
 using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.Player;

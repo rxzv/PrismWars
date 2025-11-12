@@ -1,12 +1,13 @@
 using System.Collections;
-using _PrismWars._Scripts.Core.Patterns.Factory.ShardFactory;
+using _PrismWars._Scripts.Core.Infrastructure.Interfaces;
+using _PrismWars._Scripts.Core.Patterns.Factory.PoolFactory.ShardFactory;
 using _PrismWars._Scripts.Game.Player.Controllers;
 using _PrismWars._Scripts.Game.Player.Model;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
-    public class Shard : NetworkBehaviour {
+    public class Shard : NetworkBehaviour, IPoolObject {
         [SerializeField] float _despawnDelay = 5f;
         
         SpriteRenderer _spriteRenderer;
@@ -23,7 +24,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.Shard {
             StartCoroutine(DespawnAfterDelay(_despawnDelay));
         }
 
-        public void SetType(PlayerElement element) {
+        public void SetType(PlayerElement element, ulong playerId) {
             _type.Value = element;
             Initialize();
         }

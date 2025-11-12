@@ -4,6 +4,7 @@ using _PrismWars._Scripts.Game.Player.Controllers;
 using _PrismWars._Scripts.Game.Player.Controllers.Attack;
 using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.Game.Services;
+using _PrismWars._Scripts.Game.Services.Client;
 using _PrismWars._Scripts.Game.Services.Mono;
 using R3;
 using Unity.Netcode;

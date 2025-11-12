@@ -13,8 +13,8 @@ namespace _PrismWars._Scripts.Game.Services.Mono {
     
         readonly CompositeDisposable _disposables = new();
     
-        public void Initialize(CinemachineCamera camera) {
-            _camera = camera;
+        public void Initialize(CinemachineCamera cinemachineCamera) {
+            _camera = cinemachineCamera;
             var networkPlayerSpawnService = ServiceLocator.Singleton.Get<NetworkPlayerSpawnService>();
             networkPlayerSpawnService.OnPlayerSpawned
                 .Where(tuple => tuple.clientId == NetworkManager.Singleton.LocalClientId)

@@ -3,6 +3,7 @@ using System.Linq;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.Game.Services;
+using _PrismWars._Scripts.Game.Services.Client;
 using _PrismWars._Scripts.Utils;
 using TMPro;
 using UnityEngine;

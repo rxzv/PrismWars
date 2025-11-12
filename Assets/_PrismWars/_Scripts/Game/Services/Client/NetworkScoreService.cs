@@ -5,7 +5,7 @@ using _PrismWars._Scripts.Game.GameManagers.Managers;
 using _PrismWars._Scripts.Game.Player.Model;
 using Unity.Netcode;
 
-namespace _PrismWars._Scripts.Game.Services {
+namespace _PrismWars._Scripts.Game.Services.Client {
     public class NetworkScoreService : NetworkBehaviour, IService, IInitializable<PlayerElement>{
 
         [NonSerialized]

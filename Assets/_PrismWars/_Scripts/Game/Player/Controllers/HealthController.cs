@@ -3,6 +3,7 @@ using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Health;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Game.Player.Model;
 using _PrismWars._Scripts.Game.Services;
+using _PrismWars._Scripts.Game.Services.Client;
 using _PrismWars._Scripts.UI.Services.Mono;
 using Unity.Netcode;
 using UnityEngine;
