@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: -583727497946263191}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -499,6 +499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e83fa0d0d6042cb884f8dadd2052ade, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1001 &7966555265653642942
 PrefabInstance:
   m_ObjectHideFlags: 0

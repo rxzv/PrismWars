@@ -50,7 +50,7 @@ namespace _PrismWars._Scripts.Game.Player.Model {
         }
     }
 
-    public enum PlayerElement {
+    public enum PlayerElement{
         None,
         Fire,
         Ice
