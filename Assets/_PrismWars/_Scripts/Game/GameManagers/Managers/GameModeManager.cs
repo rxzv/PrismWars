@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using _PrismWars._Scripts.Core.Infrastructure.Interfaces.Services;
 using _PrismWars._Scripts.Core.Infrastructure.Network.Components.Cat;
@@ -10,7 +11,9 @@ using UnityEngine;
 namespace _PrismWars._Scripts.Game.GameManagers.Managers {
     public class GameModeManager : NetworkBehaviour, IService {
         [SerializeField] GameModeData[] _gameModeDatas;
-    
+
+        const string HILL_CAPTURE_COMPONENT_PATH = "NetworkServicePrefabs/HillCaptureComponent";
+        const string BOMB_CART_PATH = "NetworkServicePrefabs/BombCart";
         GameModeData _currentGameMode;
         NetworkVariable<bool> _isSpawnedGameMode = new();
         public GameModeData Data => _currentGameMode;
@@ -25,28 +28,28 @@ namespace _PrismWars._Scripts.Game.GameManagers.Managers {
 
         public void SpawnGameMode() {
             if(!IsServer) return;
-            if (_currentGameMode != null && !_isSpawnedGameMode.Value) {
-                _isSpawnedGameMode.Value = true;
-                switch (_currentGameMode.modeName) {
-                    case GameMode.Deathmatch:
-                        //
-                        break;
-                    case GameMode.KingOfTheHill:
-                        SpawnHillCaptureComponent();
-                        break;
-                    case GameMode.CaptureTheCat:
-                        SpawnServerCatSpawnService();
-                        break;
-                    case GameMode.BombLoad:
-                        //
-                        break;
-                }
+            if(_currentGameMode == null || _isSpawnedGameMode.Value) return;
+            _isSpawnedGameMode.Value = true;
+            switch (_currentGameMode.modeName) {
+                case GameMode.Deathmatch:
+                    break;
+                case GameMode.KingOfTheHill:
+                    SpawnObject(HILL_CAPTURE_COMPONENT_PATH);
+                    break;
+                case GameMode.CaptureTheCat:
+                    SpawnServerCatSpawnService();
+                    break;
+                case GameMode.BombLoad:
+                    SpawnObject(BOMB_CART_PATH);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
-
-        void SpawnHillCaptureComponent() {
+        
+        void SpawnObject(string path) {
             if(!IsServer) return;
-            var prefab = Resources.Load<GameObject>("NetworkServicePrefabs/HillCaptureComponent");
+            var prefab = Resources.Load<GameObject>(path);
             var instance = Instantiate(prefab);
             instance.GetComponent<NetworkObject>().Spawn();
         }
