@@ -25,7 +25,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
             _rigidbody = GetComponent<Rigidbody2D>();
             _stateMachine = GetComponent<BombCartStateMachine>();
             _networkTransform = GetComponent<NetworkTransform>();
-            _rigidbody.bodyType = RigidbodyType2D.Kinematic;
+            _rigidbody.bodyType = RigidbodyType2D.Dynamic;
 
             if(_networkTransform == null) return;
             _networkTransform.Interpolate = true;
@@ -36,12 +36,14 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
         public void SetTargetElement(PlayerElement element) {
             if (!IsServer) return;
             _targetElement.Value = element;
+            _currentWaypointIndex.Value = 0;
         }
 
         public void Move() {
             if (!IsServer) return;
             if (CurrentWaypoints == null || CurrentWaypoints.Count == 0) return;
             
+            if(_rigidbody.bodyType != RigidbodyType2D.Dynamic) _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             var currentWaypoint = CurrentWaypoints[_currentWaypointIndex.Value];
             var direction = (currentWaypoint - transform.position).normalized;
             
@@ -56,23 +58,8 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
 
         public void Stop() {
             if (!IsServer) return;
+            _rigidbody.bodyType = RigidbodyType2D.Static;
             _rigidbody.linearVelocity = Vector2.zero;
-        }
-
-        void OnDrawGizmos() {
-            if (_fireToIceWaypoints is { Count: > 0 }) {
-                Gizmos.color = Color.red;
-                for (var i = 0; i < _fireToIceWaypoints.Count - 1; i++) {
-                    Gizmos.DrawLine(_fireToIceWaypoints[i], _fireToIceWaypoints[i + 1]);
-                }
-            }
-            
-            if (_iceToFireWaypoints is { Count: > 0 }) {
-                Gizmos.color = Color.blue;
-                for (var i = 0; i < _iceToFireWaypoints.Count - 1; i++) {
-                    Gizmos.DrawLine(_iceToFireWaypoints[i], _iceToFireWaypoints[i + 1]);
-                }
-            }
         }
     }
 }
