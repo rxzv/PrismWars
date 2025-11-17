@@ -238,7 +238,7 @@ MonoBehaviour:
   SyncPositionZ: 0
   SyncRotAngleX: 0
   SyncRotAngleY: 0
-  SyncRotAngleZ: 0
+  SyncRotAngleZ: 1
   SyncScaleX: 0
   SyncScaleY: 0
   SyncScaleZ: 0
@@ -278,7 +278,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 0
 --- !u!114 &2788818089241852937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -316,10 +316,6 @@ MonoBehaviour:
   _iceToFireWaypoints:
   - {x: -5, y: -3.41, z: 0}
   - {x: -9, y: -5.4, z: 0}
-  _targetElement:
-    m_InternalValue: 0
-  _currentWaypointIndex:
-    m_InternalValue: 0
 --- !u!114 &-4261108731009996207
 MonoBehaviour:
   m_ObjectHideFlags: 0
