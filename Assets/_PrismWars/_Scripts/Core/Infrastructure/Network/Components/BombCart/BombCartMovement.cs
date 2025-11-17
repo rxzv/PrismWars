@@ -11,10 +11,11 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
         [SerializeField] List<Vector3> _fireToIceWaypoints;
         [SerializeField] List<Vector3> _iceToFireWaypoints;
         
-        NetworkVariable<PlayerElement> _targetElement = new();
-        NetworkVariable<int> _currentWaypointIndex = new();
+        [SerializeField]NetworkVariable<PlayerElement> _targetElement = new();
+        [SerializeField]NetworkVariable<int> _currentWaypointIndex = new();
         Rigidbody2D _rigidbody;
         NetworkTransform _networkTransform;
+        BombCartStateMachine _stateMachine;
         
         public PlayerElement CurrentTargetElement => _targetElement.Value;
         List<Vector3> CurrentWaypoints => _targetElement.Value == PlayerElement.Fire ? 
@@ -22,7 +23,9 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
 
         public override void OnNetworkSpawn() {
             _rigidbody = GetComponent<Rigidbody2D>();
+            _stateMachine = GetComponent<BombCartStateMachine>();
             _networkTransform = GetComponent<NetworkTransform>();
+            _rigidbody.bodyType = RigidbodyType2D.Kinematic;
 
             if(_networkTransform == null) return;
             _networkTransform.Interpolate = true;
@@ -33,7 +36,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
         public void SetTargetElement(PlayerElement element) {
             if (!IsServer) return;
             _targetElement.Value = element;
-            _currentWaypointIndex.Value = 0;
         }
 
         public void Move() {
@@ -46,9 +48,10 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
             _rigidbody.linearVelocity = direction * _moveSpeed;
 
             if(!(Vector2.Distance(transform.position, currentWaypoint) < 0.1f)) return;
-            if (_currentWaypointIndex.Value < CurrentWaypoints.Count - 1) {
+            if (_currentWaypointIndex.Value < CurrentWaypoints.Count - 1) 
                 _currentWaypointIndex.Value++;
-            }
+            else if(_currentWaypointIndex.Value == CurrentWaypoints.Count - 1) 
+                _stateMachine.SetState(_stateMachine.InZoneState);
         }
 
         public void Stop() {

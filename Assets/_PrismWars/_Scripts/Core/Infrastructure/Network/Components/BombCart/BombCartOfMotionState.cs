@@ -19,6 +19,7 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
         
             if (dominantElement == PlayerElement.None) {
                 StateMachine.SetState(StateMachine.OfRestState);
+                _movement.Stop();
                 return;
             }
 

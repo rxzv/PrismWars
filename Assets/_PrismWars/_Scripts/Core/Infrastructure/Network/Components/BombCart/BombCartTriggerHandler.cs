@@ -7,10 +7,8 @@ using UnityEngine;
 namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
     public class BombCartTriggerHandler : NetworkBehaviour {
         const string PLAYER_TAG = "Player";
-        const string ZONE_TAG = "Zone";
         NetworkList<int> _playerIdsInTrigger = new();
-        readonly Dictionary<ulong, PlayerElement> _playerElements = new();
-        readonly List<GameObject> _zonesInTrigger = new();
+        Dictionary<ulong, PlayerElement> _playerElements = new();
 
         public override void OnNetworkSpawn() {
             if (IsServer) {
@@ -30,10 +28,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
                     _playerElements[netObj.OwnerClientId] = playerElement;
                 }
             }
-            if (other.CompareTag(ZONE_TAG)) {
-                _zonesInTrigger.Add(other.gameObject);
-                OnZoneEntered(other.gameObject);
-            }
         }
 
         void OnTriggerExit2D(Collider2D other) {
@@ -44,34 +38,6 @@ namespace _PrismWars._Scripts.Core.Infrastructure.Network.Components.BombCart {
                 _playerIdsInTrigger.Remove(playerId);
                 _playerElements.Remove(netObj.OwnerClientId);
             }
-
-            if (other.CompareTag("Zone")) {
-                _zonesInTrigger.Remove(other.gameObject);
-            }
-        }
-
-        void OnZoneEntered(GameObject zoneObject) {
-            var stateMachine = GetComponent<BombCartStateMachine>();
-            var movement = GetComponent<BombCartMovement>();
-            
-            if (movement == null) return;
-
-            // Определяем элемент зоны по Layout
-            var zoneElement = GetZoneElement(zoneObject);
-            
-            // Тележка достигла вражеской базы (противоположной текущему целевому элементу)
-            if (zoneElement != PlayerElement.None && zoneElement != movement.CurrentTargetElement)
-            {
-                stateMachine.SetState(stateMachine.InZoneState);
-            }
-        }
-
-        PlayerElement GetZoneElement(GameObject zoneObject) {
-            return zoneObject.layer.ToString() switch {
-                "Fire" => PlayerElement.Fire,
-                "Ice" => PlayerElement.Ice,
-                _ => PlayerElement.None
-            };
         }
 
         public PlayerElement GetDominantElement() {
