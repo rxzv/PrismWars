@@ -16,11 +16,11 @@ MonoBehaviour:
   preview: {fileID: 0}
   mapPrefab: {fileID: 7570406304657491717, guid: e058ea53ca9ac5a4f96195fef31ef290, type: 3}
   fireSpawnPoints:
-  - {x: -5.95, y: -5.85, z: 0}
-  - {x: -6.95, y: -5.85, z: 0}
-  - {x: -7.925, y: -5.85, z: 0}
-  - {x: -8.95, y: -5.85, z: 0}
-  - {x: -9.95, y: -5.85, z: 0}
+  - {x: -7, y: -5.85, z: 0}
+  - {x: -8, y: -5.85, z: 0}
+  - {x: -9, y: -5.85, z: 0}
+  - {x: -10, y: -5.85, z: 0}
+  - {x: -11, y: -5.85, z: 0}
   iceSpawnPoints:
   - {x: 6, y: -5.85, z: 0}
   - {x: 7, y: -5.85, z: 0}
